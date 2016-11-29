@@ -452,6 +452,9 @@ a {
   font-family: 'Roboto', sans-serif;
 }
 
+.weather-wrapper {
+  margin: 0 auto !important;  
+}
 .weather-module-meta {
   margin-bottom: 48px;
   font-size: 12px;

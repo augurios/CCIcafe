@@ -7,10 +7,10 @@
     
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<link href="bower_components/angular-snap/angular-snap.min.css" rel="stylesheet">
 	<link href="stylesheets/style.css" rel="stylesheet">
-
+	<link href="stylesheets/easy-weather.css" rel="stylesheet">
 
 	<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 	 
@@ -25,7 +25,8 @@
 	<script src="bower_components/angular-snap/angular-snap.min.js"></script>
 	<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 	<script src="javascripts/angularApp.js"></script>
-	<script src="javascripts/openWeather.js"></script>
+	<script src="javascripts/easy-weather.js"></script>
+	<script src="javascripts/easy-weather-keys.js"></script>
 	
 	
 
@@ -69,30 +70,9 @@
 				        <p>Bienvenido {{ currentUser() }}</p>
 				      </div>
 					  
-					  <div class="weather-wrapper hide">
+					  <div class="weather-wrapper">
 
-							<img src="" class="weather-icon" alt="Weather Icon" />
 							
-							<p><strong>Place</strong>
-							<br /><span class="weather-place"></span></p>
-							
-							<p><strong>Temperature</strong>
-							<br /><span class="weather-temperature"></span> (<span class="weather-min-temperature"></span> - <span class="weather-max-temperature"></span>)</p>
-							
-							<p><strong>Description</strong>
-							<br /><span class="weather-description capitalize"></span></p>
-							
-							<p><strong>Humidity</strong>
-							<br /><span class="weather-humidity"></span></p>
-							
-							<p><strong>Wind speed</strong>
-							<br /><span class="weather-wind-speed"></span></p>
-							
-							<p><strong>Sunrise</strong>
-							<br /><span class="weather-sunrise"></span></p>
-							
-							<p><strong>Sunset</strong>
-							<br /><span class="weather-sunset"></span></p>
 						
 						</div>
 					  
@@ -110,18 +90,14 @@
 		
 		<script>
 	
-			$(document).ready(function($){
-				$.ajax({
-					url: "http://api.wunderground.com/api/c98eba09df40e7bf/conditions/q/CR/San_Jose.json",
-					dataType : "jsonp",
-					success : function(parsed_json) {
-						var forecast = parsed_json['current_observation'];
-						console.log(forecast)
-						var newForecastString = '<h3 class="weather-place">' + forecast['display_location']['full'] + ' </h3> <img src="'+ forecast['icon_url'] +'" class="weather-icon" alt="'+ forecast['icon'] +'" /><div class="weather-temperature">'+ forecast['temperature_string'] +'</div><div class="weather-module-meta"><p>Humedad: <span class="weather-humidity">'+ forecast['relative_humidity'] +'</span> | Viento: <span class="weather-wind-speed">'+ forecast['wind_kph'] +' kph</span></p></div>';
-						$(".weather-module").append(newForecastString);
-						 
-					}
-				}); 
+			$('.weather-wrapper').EasyWeather({
+				language: 'sp',
+				Keys: {
+					owm: { key: function() { return 'cb8be1d2a64d8e31a4e56819f95b509b'; } },
+					fio: { key: function() { return 'fa519651750073a39baff5dbf42c8a7f'; } },
+					wug: { key: function() { return 'c98eba09df40e7bf'; } }
+				},
+				location: 'San Jose, Costa Rica'
 			});
 		
 		</script>
@@ -1131,8 +1107,7 @@
 						</div>
 					</div>
 				</div>
-		  </script><!--Calculo de Fertilizacion actual-->
-	<script type="text/ng-template" id="/campo.html">
+		  </script><!--Calculo de Fertilizacion actual-->	<script type="text/ng-template" id="/campo.html">
 			<div class="roya-wrap">
 						<h2 class="section-header">
 		  				Hoja de campo
@@ -1317,7 +1292,6 @@
 					</div>
 				</div>
 		  </script>
-
 	<script type="text/ng-template" id="/weather.html">
 			<div class="home-wrap weather">
 			 <div class="container">
@@ -2567,7 +2541,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 <script src = "bower_components/angular-scroll-glue/src/scrollglue.js"></script>
 <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<script type="text/javascript" src="cordova.js"></script>
+
 
 
 </body>
