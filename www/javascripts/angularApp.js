@@ -449,6 +449,8 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
     
 }]);
 
+
+
 app.controller('GalloCtrl', [
 '$scope',
 '$state',
@@ -1090,6 +1092,8 @@ app.controller('CampoCtrl', [
 
 		    $scope.saveTable = function () {
 		        campo.create($scope.campodata);
+		        
+		        alert("Informacion Enviada");
 		    };
 	        
 	    };
@@ -1610,6 +1614,26 @@ function($stateProvider, $urlRouterProvider) {
 	.state('weather', {
 	  url: '/weather',
 	  templateUrl: '/weather.html',
+	  controller: 'RoyaCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
+	})
+	.state('forecast', {
+	  url: '/forecast',
+	  templateUrl: '/forecast.html',
+	  controller: 'RoyaCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
+	})
+	.state('moon', {
+	  url: '/moon',
+	  templateUrl: '/moon.html',
 	  controller: 'RoyaCtrl',
 	  onEnter: ['$state', 'auth', function($state, auth){
 	    if(!auth.isLoggedIn()){

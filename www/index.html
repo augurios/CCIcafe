@@ -27,7 +27,7 @@
 	<script src="javascripts/angularApp.js"></script>
 	<script src="javascripts/easy-weather.js"></script>
 	<script src="javascripts/easy-weather-keys.js"></script>
-	
+	<script src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
 	
 
 	<style> .glyphicon-thumbs-up { cursor:pointer; } </style>
@@ -80,8 +80,10 @@
 					      
 					   
 				      </div>
-
-				      <!-- <a href="#/weather" class="btn btn-primary">Ver Mas</a> -->
+					  <br />
+				       <a href="#/weather" class="btn btn-primary">Mas Informacion</a> <br />
+				       <a href="#/forecast" class="btn btn-primary">Pronostico 10 dias</a> <br />
+				       <a href="#/moon" class="btn btn-primary">Astronomia</a><br />
 
 					</div>
 			   	</div>
@@ -92,12 +94,8 @@
 	
 			$('.weather-wrapper').EasyWeather({
 				language: 'sp',
-				Keys: {
-					owm: { key: function() { return 'cb8be1d2a64d8e31a4e56819f95b509b'; } },
-					fio: { key: function() { return 'fa519651750073a39baff5dbf42c8a7f'; } },
-					wug: { key: function() { return 'c98eba09df40e7bf'; } }
-				},
-				location: 'San Jose, Costa Rica'
+				providerId: 'owm',
+				providerSequence: false,
 			});
 		
 		</script>
@@ -1073,7 +1071,6 @@
 										<option value="0" selected >Seleccione una opcion</option>
 										<option value="Fungicidas" >Fungicida</option>
 										<option value="Insecticida" >Insecticida</option>
-										<option value="Foliar" >Foliar</option>
 									</select>
 
 									<strong>Nombre del Producto:</strong> <select ng-model="dosage.productName"  id="productType" class="form-control" required>
@@ -1093,9 +1090,9 @@
 
 									<span><strong>Plantas por Hectárea: </strong></span>
 									<input type="radio" id="optionArea1" ng-value="false" name="areas" ng-model="dosage.plantsByHa" value="4000"><label for="optionArea1">4000</label>
-									<input type="radio" id="optionArea2" ng-value="false" name="areas" ng-model="dosage.plantsByHa" value="5000"><label for="optionArea2">5000</label>
-									<input type="radio" id="optionArea3" ng-value="false" name="areas" ng-model="dosage.plantsByHa"value="ot"><label for="optionArea3">Otro</label>
-									<input  id="otherArea" type="number" ng-model="dosage.plantsByHa" class="form-control" value="1"/>
+									<input type="radio" id="optionArea2" ng-value="false" name="areas" ng-model="dosage.plantsByHa2" value="5000"><label for="optionArea2">5000</label>
+									<input type="radio" id="optionArea3" ng-value="false" name="areas" ng-model="dosage.plantsByHa3" value="dosage.plantsByHaot"><label for="optionArea3">Otro</label>
+									<input  id="otherArea" type="number" ng-model="dosage.plantsByHaot" class="form-control" value="1"/>
 
 									<br><span><strong>Estañones por Hectárea: {{dosage.estanionByHa}}  </strong></span><br><br>
 
@@ -1107,7 +1104,8 @@
 						</div>
 					</div>
 				</div>
-		  </script><!--Calculo de Fertilizacion actual-->	<script type="text/ng-template" id="/campo.html">
+		  </script><!--Calculo de Fertilizacion actual-->	
+	<script type="text/ng-template" id="/campo.html">
 			<div class="roya-wrap">
 						<h2 class="section-header">
 		  				Hoja de campo
@@ -1115,7 +1113,7 @@
 					<div class="container">
 						<div class="row">
 		                    <div class="col-md-8 col-md-offset-2">
-			                   <form ng-submit="saveTable()" name="hojaform" id="hojaform" data-toggle="validator">
+			                   <form ng-submit="saveTable()" name="hojaform" ngModel="hojaForm" id="hojaform" data-toggle="validator">
 				                   <div class="form-group ">
 								      <label class="control-label requiredField" for="finca">
 								       Finca ID
@@ -1291,40 +1289,135 @@
 		                </div>
 					</div>
 				</div>
+				<script>
+					$("#hojaform").submit(function(event) {
+
+						$("#hojaform").trigger('reset');
+						
+						});
+					
+					
+				</script>
 		  </script>
 	<script type="text/ng-template" id="/weather.html">
 			<div class="home-wrap weather">
 			 <div class="container">
 				   	<div class="row">
 				   		<div class="col-md-6 col-md-offset-3">
-				   		  <div class="page-header">
-					        <h3>NARANJO - ALAJUELA</h3>
-					      </div>
+				   		  
 	
 					      <div class="weather-module">
-					      	<div class="degree">23º</div>
-					   		<div class="weather-module-meta">
-					   			<p>Nuboso 21º - 19º</p>
-					   			<p>Humedad: 68% | Viento: 21k/h ESE</p>
-					   		</div>
+					      	
 					      </div>
 	
 						</div>
 				   	</div>
 			   </div>
 	
-				<div class="section-weather">
-					<div class="container">
-						<div class="row">
-							<div class="col-md-12">
-								<h3>28 JULIO - 2 DE AGOSTO</h3>
-								<h3>AGOSTO</h3>
-							</div>
-						</div>
-					</div>
-				</div>
+				
 	
 			</div>
+			
+			
+			<script>
+				$('.weather-module').EasyWeather({
+				language: 'sp',
+				showDetails: true,
+				providerId: 'owm',
+				providerSequence: false,
+			});
+			</script>
+		</script>
+	<script type="text/ng-template" id="/forecast.html">
+			<div class="home-wrap weather">
+			 <div class="container">
+				   	<div class="row">
+				   		<div class="col-md-6 col-md-offset-3">
+				   		  
+	
+					      <div class="weather-module">
+					      	
+					      </div>
+	
+						</div>
+				   	</div>
+			   </div>
+	
+				
+	
+			</div>
+			
+			
+			<script>
+				$('.weather-module').EasyWeather({
+				language: 'sp',
+				forecasts: true,
+				nbForecastDays: 10,
+				providerId: 'wug'
+			});
+			</script>
+		</script>
+	<script type="text/ng-template" id="/moon.html">
+			
+			<div class="home-wrap weather">
+			 <div class="container">
+				   	<div class="row">
+				   		<div class="col-md-6 col-md-offset-3">
+				   		 <div class="page-header">
+					        <h2>Astronomia</h2>
+					      </div>
+	
+					      <div class="astro">
+					      	
+					      </div>
+	
+						</div>
+				   	</div>
+			   </div>
+	
+				
+	
+			</div>
+			
+			
+			<script>
+					$(document).ready(function() {
+						var country = geoplugin_countryName();
+						var zone = geoplugin_region();
+						
+				
+				
+				var decoded = $("<textarea/>").html(zone).text();
+				
+					if(decoded == "San José") {
+						 decoded = "sanjose"
+					}
+										
+				  $.ajax({
+				    url: "http://api.wunderground.com/api/72df18b7f213607b/astronomy/lang:SP/q/" + country + "/" + decoded + ".json",
+				    dataType: "jsonp",
+				    success: function(parsed_json) {
+				      var moon_phase = parsed_json['moon_phase'];
+				      var moonData = {};
+				      moonData['Luna Iluminada'] = moon_phase['percentIlluminated'] + '%',
+				      moonData['Edad lunar'] = moon_phase['ageOfMoon'],
+				      moonData['Fase lunar'] = moon_phase['phaseofMoon'],
+				      moonData['Tiempo Real'] = moon_phase['current_time']['hour'] + ":" + moon_phase['current_time']['minute'],
+				      moonData['Amanecer'] = moon_phase['sunrise']['hour'] + ":" + moon_phase['sunrise']['minute'],
+				      moonData['Atardecer'] = moon_phase['sunset']['hour'] + ":" + moon_phase['sunset']['minute'];
+				
+				      for (index in moonData) {
+				        if (moonData.hasOwnProperty(index)) {
+				          var newHourlyString = $('<span/>').text(index);
+				          var newHourlyParagraph = $('<p/>').text(moonData[index]);
+				          $(".astro").append(newHourlyString);
+				          $(".astro").append(newHourlyParagraph);
+				        }
+				      }
+				    }
+				  });
+				});
+			</script>
 		</script>
 	<script type="text/ng-template" id="/support.html">
 
@@ -1533,7 +1626,7 @@
 														      class="form-control"
 														      placeholder="Area total"
 														      ng-model="editUnit.areaTotal"></input>
-														      (Manzanas)
+														      (Hectareas)
 													</div>
 												</div>
 												<div class="col-xs-6">
@@ -1542,7 +1635,7 @@
 														      class="form-control"
 														      placeholder="Area con café"
 														      ng-model="editUnit.areaCafe"></input>
-														      (Manzanas)
+														      (Hectareas)
 													</div>
 												</div>
 												<div class="col-xs-6">
@@ -1551,7 +1644,7 @@
 														      class="form-control"
 														      placeholder="Tamaño del lote"
 														      ng-model="editUnit.lote"></input>
-														      (Manzanas)
+														      (Hectareas)
 													</div>
 												</div>
 												<div class="col-xs-6">
@@ -1857,7 +1950,7 @@
 													      class="form-control"
 													      placeholder="Producción"
 													      ng-model="unit.rendimiento"></input>
-													      (cereza/manzana)
+													      (cereza/Hectareas)
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -2014,7 +2107,7 @@
 														      class="form-control"
 														      placeholder="Area total"
 														      ng-model="newUnit.areaTotal"></input>
-														      (Manzanas)
+														      (Hectareas)
 													</div>
 												</div>
 												<div class="col-xs-6">
@@ -2023,7 +2116,7 @@
 														      class="form-control"
 														      placeholder="Area con café"
 														      ng-model="newUnit.areaCafe"></input>
-														      (Manzanas)
+														      (Hectareas)
 													</div>
 												</div>
 												<div class="col-xs-6">
@@ -2032,7 +2125,7 @@
 														      class="form-control"
 														      placeholder="Tamaño del lote"
 														      ng-model="newUnit.lote"></input>
-														      (Manzanas)
+														      (Hectareas)
 													</div>
 												</div>
 												<div class="col-xs-6">
@@ -2394,7 +2487,7 @@
 														      class="form-control"
 														      placeholder="Producción"
 														      ng-model="unit.rendimiento"></input>
-														      (cereza/manzana)
+														      (cereza/Hectareas)
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -2534,6 +2627,9 @@
 		   </div>
 		</div>
 	</script>
+	
+	
+
 
 
 	  <!-- Latest compiled and minified JavaScript -->
