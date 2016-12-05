@@ -28,7 +28,8 @@
 	
 	<script src="javascripts/easy-weather-keys.js"></script>
 	<script src="javascripts/easy-weather.js"></script>
-	<script src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
+	<script language="JavaScript" src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
+
 	
 
 	<style> .glyphicon-thumbs-up { cursor:pointer; } </style>
@@ -92,22 +93,12 @@
 		</div>
 		
 		<script>
-		$(document).ready(function() {
-			
-			var country = geoplugin_countryName();
-			var zone = geoplugin_region();
-			decoded = $("<textarea/>").html(zone).text();
-				
-			if(decoded == "San José") {
-				decoded = "sanjose"
-			}
+		
 			
 			$('.weather-wrapper').EasyWeather({
 				language: 'sp',
 				providerId: 'owm',
-				providerSequence: false,
-				location: 'costa rica, ' + decoded + ''
-			});
+				providerSequence: false
 			
 		});
 		
@@ -1335,25 +1326,15 @@
 			
 			
 			<script>
-			$(document).ready(function() {
 			
-				var country = geoplugin_countryName();
-				var zone = geoplugin_region();
-				decoded = $("<textarea/>").html(zone).text();
-					
-				if(decoded == "San José") {
-					decoded = "sanjose"
-				}
 				
 				$('.weather-module').EasyWeather({
 					language: 'sp',
 					providerId: 'owm',
 					providerSequence: false,
-					showDetails: true,
-					location: 'costa rica, ' + decoded + ''
+					showDetails: true
 				});
-				
-			});
+			
 			
 			
 		</script>
@@ -1379,23 +1360,12 @@
 			
 			
 			<script>
-				$(document).ready(function() {
-			
-					var country = geoplugin_countryName();
-					var zone = geoplugin_region();
-					decoded = $("<textarea/>").html(zone).text();
-						
-					if(decoded == "San José") {
-						decoded = "sanjose"
-					}
 					$('.weather-module').EasyWeather({
 						language: 'sp',
 						forecasts: true,
 						nbForecastDays: 10,
-						providerId: 'wug',
-						location: 'costa rica, ' + decoded + ''
+						providerId: 'wug'
 					});
-				});
 				
 				
 				
@@ -1426,16 +1396,8 @@
 			
 			<script>
 					$(document).ready(function() {
-						var country = geoplugin_countryName();
-						var zone = geoplugin_region();
-						var decoded = $("<textarea/>").html(zone).text();
-				
-						if(decoded == "San José") {
-							 decoded = "sanjose"
-						}
-										
 						  $.ajax({
-						    url: "http://api.wunderground.com/api/72df18b7f213607b/astronomy/lang:SP/q/" + country + "/" + decoded + ".json",
+						    url: "http://api.wunderground.com/api/72df18b7f213607b/astronomy/lang:SP/q/costarica/sanjose.json",
 				    dataType: "jsonp",
 				    success: function(parsed_json) {
 				      var moon_phase = parsed_json['moon_phase'];
