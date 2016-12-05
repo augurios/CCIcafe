@@ -25,8 +25,9 @@
 	<script src="bower_components/angular-snap/angular-snap.min.js"></script>
 	<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 	<script src="javascripts/angularApp.js"></script>
-	<script src="javascripts/easy-weather.js"></script>
+	
 	<script src="javascripts/easy-weather-keys.js"></script>
+	<script src="javascripts/easy-weather.js"></script>
 	<script src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
 	
 
@@ -91,12 +92,26 @@
 		</div>
 		
 		<script>
-	
+		$(document).ready(function() {
+			
+			var country = geoplugin_countryName();
+			var zone = geoplugin_region();
+			decoded = $("<textarea/>").html(zone).text();
+				
+			if(decoded == "San José") {
+				decoded = "sanjose"
+			}
+			
 			$('.weather-wrapper').EasyWeather({
 				language: 'sp',
 				providerId: 'owm',
 				providerSequence: false,
+				location: 'costa rica, ' + decoded + ''
 			});
+			
+		});
+		
+		
 		
 		</script>
 		
@@ -1320,13 +1335,28 @@
 			
 			
 			<script>
+			$(document).ready(function() {
+			
+				var country = geoplugin_countryName();
+				var zone = geoplugin_region();
+				decoded = $("<textarea/>").html(zone).text();
+					
+				if(decoded == "San José") {
+					decoded = "sanjose"
+				}
+				
 				$('.weather-module').EasyWeather({
-				language: 'sp',
-				showDetails: true,
-				providerId: 'owm',
-				providerSequence: false,
+					language: 'sp',
+					providerId: 'owm',
+					providerSequence: false,
+					showDetails: true,
+					location: 'costa rica, ' + decoded + ''
+				});
+				
 			});
-			</script>
+			
+			
+		</script>
 		</script>
 	<script type="text/ng-template" id="/forecast.html">
 			<div class="home-wrap weather">
@@ -1349,12 +1379,26 @@
 			
 			
 			<script>
-				$('.weather-module').EasyWeather({
-				language: 'sp',
-				forecasts: true,
-				nbForecastDays: 10,
-				providerId: 'wug'
-			});
+				$(document).ready(function() {
+			
+					var country = geoplugin_countryName();
+					var zone = geoplugin_region();
+					decoded = $("<textarea/>").html(zone).text();
+						
+					if(decoded == "San José") {
+						decoded = "sanjose"
+					}
+					$('.weather-module').EasyWeather({
+						language: 'sp',
+						forecasts: true,
+						nbForecastDays: 10,
+						providerId: 'wug',
+						location: 'costa rica, ' + decoded + ''
+					});
+				});
+				
+				
+				
 			</script>
 		</script>
 	<script type="text/ng-template" id="/moon.html">
@@ -1384,17 +1428,14 @@
 					$(document).ready(function() {
 						var country = geoplugin_countryName();
 						var zone = geoplugin_region();
-						
+						var decoded = $("<textarea/>").html(zone).text();
 				
-				
-				var decoded = $("<textarea/>").html(zone).text();
-				
-					if(decoded == "San José") {
-						 decoded = "sanjose"
-					}
+						if(decoded == "San José") {
+							 decoded = "sanjose"
+						}
 										
-				  $.ajax({
-				    url: "http://api.wunderground.com/api/72df18b7f213607b/astronomy/lang:SP/q/" + country + "/" + decoded + ".json",
+						  $.ajax({
+						    url: "http://api.wunderground.com/api/72df18b7f213607b/astronomy/lang:SP/q/" + country + "/" + decoded + ".json",
 				    dataType: "jsonp",
 				    success: function(parsed_json) {
 				      var moon_phase = parsed_json['moon_phase'];

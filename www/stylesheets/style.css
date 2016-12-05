@@ -460,6 +460,12 @@ a {
   font-size: 12px;
 }
 
+.weather-module {
+  /* width: 100% !important; */
+  /* text-align: center !important; */
+  margin: 52px auto !important;
+}
+
 .home-wrap .btn-primary,
 .roya-wrap .btn-primary {
     background-color: #3ebfff;
@@ -474,6 +480,28 @@ a {
     line-height: 30px;
     transition: all 0.4s ease;
     margin-bottom: 24px;
+    width: 100%;
+}
+
+
+.astro {
+    background: white;
+    border-radius: 4px;
+    color: #333;
+    margin: 24px 40px;
+    padding: 24px;
+}
+
+.astro span {
+    font-size: 14px;
+    font-weight: bolder;
+    font-family: Helvetica, sans-serif;
+}
+
+.astro p {
+   font-weight: bolder;
+   font-size: 32px;
+   margin-bottom: 24px;
 }
 
 .home-wrap .btn-primary:hover,
@@ -579,6 +607,14 @@ a {
   display: block;
   width: 100%;
   margin-bottom: 4px;
+}
+
+#otherArea {
+    display: none;
+}
+
+input:checked + label + #otherArea {
+    display: block;
 }
 
 .roya-wrap.initiated .intro {

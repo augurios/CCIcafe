@@ -20,14 +20,8 @@ Note: Sign-up URLs may change
 ------------------------------------------------------------------------*/
 var EasyWeather = {
 	Keys: {
-		wwo: { key: function() { return 'YOUR KEY GOES HERE'; } },
 		owm: { key: function() { return 'cb8be1d2a64d8e31a4e56819f95b509b'; } },
-		wug: { key: function() { return 'c98eba09df40e7bf'; } } },
-		ham: { key: function() { return 'YOUR KEY GOES HERE'; }, secret_key: function() { return 'YOUR KEY GOES HERE'; } },
-		fio: { key: function() { return 'fa519651750073a39baff5dbf42c8a7f'; } }, }
+		wug: { key: function() { return 'c98eba09df40e7bf'; } },
+		fio: { key: function() { return 'fa519651750073a39baff5dbf42c8a7f'; } }
 	}
 };
-
-
-					
-					
