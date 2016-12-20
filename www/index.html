@@ -29,8 +29,20 @@
 	
 	<script src="javascripts/easy-weather-keys.js"></script>
 	<script src="javascripts/easy-weather.js"></script>
-	<script src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
 	
+
+<script type="text/javascript">function setupGeo(o) {
+        window.geoplugin_request = function() { return o.ip; };
+        window.geoplugin_status = function() { return '200'; };
+        window.geoplugin_city = function() { return o.city; };
+        window.geoplugin_region = function() {return o.region_name; };
+        window.geoplugin_countryCode = function() { return o.country_code; };
+        window.geoplugin_countryName = function() { return o.country_name; };
+        window.geoplugin_latitude = function() { return o.latitude; };
+        window.geoplugin_longitude = function() { return o.longitude; };
+
+}</script>
+<script type="text/javascript" src="http://freegeoip.net/json/?callback=setupGeo"></script>	
 
 	<style> .glyphicon-thumbs-up { cursor:pointer; } </style>
 </head>

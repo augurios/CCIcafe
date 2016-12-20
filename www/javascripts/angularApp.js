@@ -36,7 +36,7 @@ app.factory('widget', ['$http', function($http){
 	var w = {};
 	w.getAll = function()
 	{
-		return $http.get('/getWidgets').success(function(data){
+		return $http.get('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/getWidgets').success(function(data){
 			return data;
 		});
 	};
