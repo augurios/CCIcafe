@@ -1,8 +1,8 @@
-var app = angular.module('coffeeScriptAdmin', ['btford.socket-io','ui.router','luegg.directives']);
+var app = angular.module('coffeeScriptAdmin', ['btford.socket-io','ui.router','luegg.directives','ngSanitize']);
 
 // Main controller 
-app.controller('MainCtrl',['$scope', 'auth', '$rootScope',
-function($scope, auth, $rootScope){
+app.controller('MainCtrl',['$scope', 'auth', '$rootScope', 'widget',
+function($scope, auth, $rootScope, widget){
 	$scope.isLoggedIn = auth.isLoggedIn;
 	$scope.currentUser = auth.currentUser;
 	$scope.logOut = auth.logOut;
@@ -15,6 +15,12 @@ function($scope, auth, $rootScope){
 		$('body').addClass('loggedOff');
 	}
 	
+  // Get all widget
+  widget.getAll().then(function(data)
+    {
+      $scope.widget = data;
+    });
+
 	$rootScope.$on('$viewContentLoaded', function (event) {
 		Morris.Area({
         element: 'morris-area-chart',
@@ -79,6 +85,18 @@ function($scope, auth, $rootScope){
 	
             console.log('lock & loaded')
     })
+}]);
+
+// Services for widget
+app.factory('widget', ['$http', function($http){
+  var w = {};
+  w.getAll = function()
+  {
+    return $http.get('/getWidgets').success(function(data){
+      return data;
+    });
+  };
+  return w;
 }]);
 
 // Authorize controller

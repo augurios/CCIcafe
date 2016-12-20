@@ -132,6 +132,7 @@ a {
 
 .modal-open .snap-content {
   overflow: hidden;
+  transform:initial !important;
 }
 /* login screen */
 
@@ -512,7 +513,8 @@ a {
 
 /* roya calculador */
 
-.roya-wrap {
+.roya-wrap,
+.vul-wrap {
   background-color: #F0F3F2;
   min-height: 100%;
   padding-top: 60px;
@@ -1082,4 +1084,9 @@ input:checked + label + #otherArea {
     margin: 7px 0 0 5px;
     display: inline-flex;
     font-weight: bold
+}
+
+}
+.modal-open .snap-content {
+	transform : none !important;
 }

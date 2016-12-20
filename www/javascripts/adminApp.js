@@ -1,4 +1,4 @@
-var app = angular.module('coffeeScriptAdmin', ['btford.socket-io', 'ui.router', 'luegg.directives', 'ui.tinymce', 'ui.bootstrap']);
+var app = angular.module('coffeeScriptAdmin', ['btford.socket-io', 'ui.router', 'luegg.directives', 'ui.tinymce', 'ui.bootstrap', 'ngSanitize']);
 app.directive('fileModel', ['$parse', function ($parse) {
     return {
         restrict: 'A',
@@ -26,12 +26,13 @@ app.filter('startFrom', function () {
 });
 
 // Main controller 
-app.controller('MainCtrl', ['$scope', 'auth', 'roya', 'chats', 'user',
-	function ($scope, auth, chats, roya, user) {
+app.controller('MainCtrl', ['$scope', 'auth', 'roya', 'chats', 'user', 'widget',
+	function ($scope, auth, chats, roya, user, widget) {
 	    $scope.isLoggedIn = auth.isLoggedIn;
 	    $scope.currentUser = auth.currentUser;
 	    $scope.curUserRole = auth.currentUserRole();
 	    $scope.logOut = auth.logOut;
+	    $scope.msg = '';
 	    user.getAll().then(function (users) {
 	        $scope.userList = users;
 	    });
@@ -51,7 +52,38 @@ app.controller('MainCtrl', ['$scope', 'auth', 'roya', 'chats', 'user',
 	        $('body').removeClass('loggedin');
 	        $('body').addClass('loggedOff');
 	    }
+	    // Add new widget
+	    $scope.addWidget = function(wid)
+	    {
+	    	wid.user = auth.currentUserObject()._id;
+	    	widget.create(wid).then(function(data){
+	    		$scope.wid = {};
+	    		$('#myModal').modal('hide');
+	    		$scope.msg = 'widget Added successfully.';
+				widget.getAll().then(function(data)
+			   	{
+			   		$scope.widget = data;
+			   	});	    		
+	    	});
+	    }
+
+	    widget.getAll().then(function(data)
+	   	{
+	   		$scope.widget = data;
+	   	});
+
+	   	$scope.delwid = function(id)
+	   	{
+	   		widget.remove(id).then(function(data)
+	   		{
+	   			$scope.widget = data;	
+	   		});
+	   	}
+	   	
 	}]);
+	
+	
+app.filter('unsafe', function($sce) { return $sce.trustAsHtml; });
 
 // Authorize controller
 app.controller('AuthCtrl', [
@@ -82,6 +114,30 @@ app.controller('AuthCtrl', [
 	        });
 	    };
 	}]);
+
+// Services for widget
+app.factory('widget', ['$http', function($http){
+	var w = {};
+	w.getAll = function()
+	{
+		return $http.get('/getWidgets').success(function(data){
+			return data;
+		});
+	};
+	w.create = function(wid)
+	{
+		return $http.post('/admin/addwidget', wid).success(function(data){
+    		return data;
+    	});
+	};
+	w.remove = function(id)
+	{
+		return $http.delete('/admin/widget/'+id).success(function(data) {
+			return data;
+		});
+	}
+	return w;
+}]);
 
 app.factory('posts', ['$http', 'auth', function ($http, auth) {
     var o = {
@@ -142,7 +198,7 @@ app.factory('socket', ['socketFactory',
 	function (socketFactory) {
 	    return socketFactory({
 	        prefix: '',
-	        ioSocket: io.connect('http://coffeecloud.centroclima.org:3000')
+	        ioSocket: io.connect('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000')
 	    });
 	}
 ]);
@@ -672,9 +728,10 @@ app.controller('TechRecCtrl', [
 	'auth',
 	'$location',
 	'techRecService',
+	'socket',
     '$window',
     'user',
-	function ($scope, auth, $location, techRecService, $window, user) {
+	function ($scope, auth, $location, techRecService, socket, $window, user) {
 	    var currentTest = null;
 	    var loadAll = function () {
 	        techRecService.getAll().then(function (tests) {
@@ -723,7 +780,31 @@ app.controller('TechRecCtrl', [
 	        $scope.detail = currentTest;
 	        console.log(currentTest);
 	        $('#detailModal').modal('show');
+	        user.get($scope.detail.user).then(function(obj)
+	    	{
+	    		$scope.reciverDetail = obj;
+	    	});
+	    }
 
+	    // Send message to user with unit detail
+	    $scope.msgsend = function()
+	    {
+	    	$scope.loguser = auth.currentUserObject(); 
+	    	var str =  'Unit Name : '+$scope.detail.departamento;
+	    		str += ' Id : '+$scope.detail._id;
+	    		str += ' Message : '+$scope.msgcontent;
+	    	msg = {
+				bodyMsg: str,
+				sender_id: $scope.loguser._id,
+			}
+			var data_server = {
+				message: msg,
+				to_user: $scope.reciverDetail.username,
+				from_id: $scope.loguser.username
+			};
+			socket.emit('get msg', data_server);
+			$scope.msgcontent = '';
+			$scope.msg = 'Message sent successfully.';
 	    }
 
 	    $scope.removeTest = function (id) {

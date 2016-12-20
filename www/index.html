@@ -24,12 +24,12 @@
 	<script src="bower_components/snapjs/snap.min.js"></script>
 	<script src="bower_components/angular-snap/angular-snap.min.js"></script>
 	<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4UV7wDq9fK_rQsP8yZqYwW-mnnz0J1Lc"></script>
 	<script src="javascripts/angularApp.js"></script>
 	
 	<script src="javascripts/easy-weather-keys.js"></script>
 	<script src="javascripts/easy-weather.js"></script>
-	<script language="JavaScript" src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
-
+	<script src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
 	
 
 	<style> .glyphicon-thumbs-up { cursor:pointer; } </style>
@@ -47,6 +47,7 @@
 	      <li><a href="#/gallo" snap-toggle><i class="fa fa-leaf"></i> Cálculo de Ojo de Gallo</a></li>
 	      <li><a href="#/dosage" snap-toggle><i class="fa fa-cog"></i> Cálculo de Dosificación</a></li>
 	      <li><a href="#/campo" snap-toggle><i class="fa fa-cog"></i> Hoja de campo </a></li>
+	      <li><a href="#/vulnerability" snap-toggle><i class="fa fa-cog"></i> Vulnerabilidad</a></li>
 	      <!--<li><a href="#" snap-toggle><i class="fa fa-cog"></i> Cálculo de fertilizante</a></li>
 	      <li><a href="#" snap-toggle><i class="fa fa-calculator"></i> Cálculo de cosecha</a></li>
 	      <li><a href="#" snap-toggle><i class="fa fa-shopping-cart"></i> Proveedores</a></li>-->
@@ -86,19 +87,29 @@
 				       <a href="#/weather" class="btn btn-primary">Mas Informacion</a> <br />
 				       <a href="#/forecast" class="btn btn-primary">Pronostico 10 dias</a> <br />
 				       <a href="#/moon" class="btn btn-primary">Astronomia</a><br />
-
+				       
 					</div>
 			   	</div>
 		   </div>
 		</div>
 		
 		<script>
-		
+		$(document).ready(function() {
+			
+			var country = geoplugin_countryName();
+			var zone = geoplugin_region();
+			decoded = $("<textarea/>").html(zone).text();
+				
+			if(decoded == "San José") {
+				decoded = "sanjose"
+			}
 			
 			$('.weather-wrapper').EasyWeather({
 				language: 'sp',
 				providerId: 'owm',
-				providerSequence: false
+				providerSequence: false,
+				location: 'costa rica, ' + decoded + ''
+			});
 			
 		});
 		
@@ -1072,45 +1083,2231 @@
 							<div class="col-lg-6 col-lg-offset-3">
 								<br>
 								<br>
+								<form>
 									<span><strong>Tipo de Producto</strong></span>
 									<select ng-model="dosage.productType"  id="productType" class="form-control" >
-										<option value="0" selected >Seleccione una opcion</option>
-										<option value="Fungicidas" >Fungicida</option>
-										<option value="Insecticida" >Insecticida</option>
+										<option value="Broca" >Broca</option>
+										<option value="Roya" >Roya</option>
+										<option value="Ojo de gallo" >Ojo de gallo</option>
+										<option value="Derrite" >Derrite</option>
+										<option value="Derrite" >Mal de hilachas</option>
 									</select>
 
-									<strong>Nombre del Producto:</strong> <select ng-model="dosage.productName"  id="productType" class="form-control" required>
-										<option value="Opera" selected >Opera</option>
-										<option value="Atemi" >Atemi</option>
-										<option value="Esfera" >Esfera</option>
-										<option value="Opus" >Opus</option>
+									<strong>Nombre del Producto:</strong> 
+									
+									<select ng-model="dosage.productName"  id="productType" class="form-control" required>
+										<option ng-show="dosage.productType == 'Broca'" value="cloropirifos48,2.0,2000,800" selected >Clorpirifos 48%</option>
+										<option ng-show="dosage.productType == 'Broca'" value="imidacloprid35,0.8,800,320" >Imidacloprid 35%</option>
+										<option ng-show="dosage.productType == 'Roya'" value="opera18-30SE,0.1,1000,400" >Opera 18,30 SE Roya</option>
+										<option ng-show="dosage.productType == 'Roya'" value="esfera26-75EC,0.4,400,160" >Esfera 26,75 EC Roya</option>
+										<option ng-show="dosage.productType == 'Roya'" value="soprano12-5SC,0.5,500,200" >Soprano 12,5 SC</option>
+										<option ng-show="dosage.productType == 'Roya'" value="atemi10SL,0.4,400,160" >Atemi 10 SL</option>
+										
+										<option ng-show="dosage.productType == 'Roya'" value="cyprosol10SL,0.4,400,160" >Cyprosol 10 SL</option>
+										<option ng-show="dosage.productType == 'Roya'" value="opus12-5SC,0.5,500,200" >Opus 12,5 SC</option>
+										
+										<option ng-show="dosage.productType == 'Roya'" value="propicon25SC,0.5,500,200" >Propicon 25 SC</option>
+										<option ng-show="dosage.productType == 'Ojo de gallo'" value="atemi10SL+Cepex10SL,0.50+2,500+2000,200+800" >Atemi 10 SL + Cepex 10 SL</option>
+										<option ng-show="dosage.productType == 'Ojo de gallo'" value="cyprosol10SL+Cepex10SL,0.50+2,500+2000,200+800" >Cyprosol 10 SL +  Cepex 10 SL</option>
+										<option ng-show="dosage.productType == 'Ojo de gallo'" value="silvacur30EC+Cepex10SL,0.75+2,750+2000,300+800" >Silvacur 30 EC + Cepex 10 SL</option>
+										<option ng-show="dosage.productType == 'Ojo de gallo'" value="tebutriacell30EC+Cepex10SL,0.75+2,750+2000,300+800" >Tebutriacell 30 EC + Cepex 10 SL</option>
+										
+										<option ng-show="dosage.productType == 'Derrite'" value="opera18-30SE,1.0,1000,400" >Opera 18,30 SE </option>
+										<option ng-show="dosage.productType == 'Derrite'" value="esfera26-75EC,0.4,400,160" >Esfera 26,75 EC </option>
+										<option ng-show="dosage.productType == 'Mal de hilachas'" value="opera18-30SE,1.0,1000,400" >Opera 18,30 SE</option>
+										<option ng-show="dosage.productType == 'Mal de hilachas'" value="esfera26-75EC,0.6,600,240" >Esfera 26,75 EC</option>
 									</select>
 
-									<span><strong>Dosis producto cc/ha:</strong> <input type="number" ng-model="dosage.ProductDosage" class="form-control"  value="1"> </span>
+									<span>
+										<strong>Plantas Atomizadas:</strong> 
+										<input type="number" ng-model="dosage.plantsAtomised" class="form-control"  value="1"> 
+									</span>
 
-									<span><strong>Plantas Atomizadas:</strong> <input type="number" ng-model="dosage.plantsAtomised" class="form-control"  value="1"> </span>
+									<span>
+										<strong>Litros Gastados:</strong> 
+										<input type="number" ng-model="dosage.litersWornOut" class="form-control"  value="1">
+									</span>
 
-									<span><strong>Litros Gastados:</strong> <input type="number" ng-model="dosage.litersWornOut" class="form-control"  value="1"> </span>
-
-									<span><strong>Litros por Hectárea:</strong> <input type="number" ng-model="dosage.litersByHa" class="form-control"  value="1"> </span>
-
-									<span><strong>Plantas por Hectárea: </strong></span>
-									<input type="radio" id="optionArea1" ng-value="false" name="areas" ng-model="dosage.plantsByHa" value="4000"><label for="optionArea1">4000</label>
-									<input type="radio" id="optionArea2" ng-value="false" name="areas" ng-model="dosage.plantsByHa2" value="5000"><label for="optionArea2">5000</label>
-									<input type="radio" id="optionArea3" ng-value="false" name="areas" ng-model="dosage.plantsByHa3" value="dosage.plantsByHaot"><label for="optionArea3">Otro</label>
-									<input  id="otherArea" type="number" ng-model="dosage.plantsByHaot" class="form-control" value="1"/>
-
-									<br><span><strong>Estañones por Hectárea: {{dosage.estanionByHa}}  </strong></span><br><br>
+									
 
 									<br><span><strong>Resultado (cc/estañon): {{dosage.dosageByEstanion}}  </strong></span><br><br>
-
+										
 									<button type="button" ng-click="calculateDosage()" class="btn btn-modal">Resultado (cc/estañon)</button>
-
+								</form>
 							</div>
 						</div>
 					</div>
 				</div>
-		  </script><!--Calculo de Fertilizacion actual-->	
+		  </script>
+	<script type="text/ng-template" id="/vulnerability.html">
+		
+			<div class="vul-wrap">
+						<h2 class="section-header">
+		  				 Herramienta de Vulnerabilidad
+		  			</h2>
+					<div class="container">
+						<div class="row">
+							<div class="col-lg-6 col-lg-offset-3">
+								<br>
+								<br>
+								<form role="form" class="form" id="frmPreguntas" action="guardar.php" method="post">
+								
+								                  <fieldset>
+								                      <legend>Datos Generales</legend>
+										      	<label>Fecha y Hora:</label>
+										      	<input name="fecha" id="fechaBoleta" class="form-control"/>
+								                <label>Departamento:</label>
+								                <select name="depto" id="nomDepto" class="form-control"></select>
+								                <label>Municipio:</label>
+								                <select name="municipio" id="nomMuni" class="form-control"></select>
+								                <label>Comunidad:</label>
+								                <input name="comunidad" id="nomComunidad" value="" class="form-control"/>
+								                <label>Coordenadas</label>
+								                <div class="form-group">
+								                    <div class="input-group">
+								                      <div class="input-group-addon">Latitud:</div>
+								                      <input name="latitud" type="text" class="form-control" id="latitud" placeholder="(Ingrese con precisión)">
+								                    </div>
+								                </div>
+								                <div class="form-group">
+								                    <div class="input-group">
+								                      <div class="input-group-addon">Longitud:</div>
+								                      <input name="longitud" type="text" class="form-control" id="exampleInputAmount" placeholder="(Ingrese con precisión)">
+								                    </div>
+								                </div>
+								                <label>Productor(a):</label>
+										      	<input name="entrevistado" id="nomEntrevistado" value="" class="form-control"/>
+								                <label>DPI:</label>
+								                <input name="dpi" id="dpi" value="" class="form-control"/>
+								                <label>Carnet ANACAFE:</label> 
+								                <input name="carnetanacafe" id="carnetAnacafe" value="" class="form-control"/>
+								                <label>Nivel de escolaridad:</label>
+								                      <select name="escolaridad" class="form-control" id="escolaridad">
+								                          <option value="preprimaria">Preprimaria</option>
+								                          <option value="primaria">Primaria</option>
+								                          <option value="basico">Básico</option>
+								                          <option value="diversificado">Diversificado</option>
+								                          <option value="universidad">Universidad</option>
+								                          <option value="postgrado">Postgrado</option>
+								                      </select>
+								                <label>Edad:</label>
+								                <input name="edad" id="edadProductor" value="" class="form-control"/>
+								                <label>Sexo:</label>
+								                      <select name="sexo" class="form-control" id="sexoProductor">
+								                        <option value="M">Masculino</option>
+								                        <option valud="F">Femenino</option>
+								                      </select>
+										      	<label>Lugar:</label>
+										      	<input name="lugar" id="lugarProductor" value="" class="form-control"/>
+								</fieldset>
+								                  <fieldset>
+								                      <legend>Sobre la unidad productora</legend>
+								                      <label>Altura:</label>
+								                      <input name="altura" id="altura" value="" class="form-control"/>
+								                      <label>Área total:</label>
+								                      <input name="area" id="area" value="" class="form-control"/>
+								                      <label>Área de café:</label>
+								                      <input name="areacafe" id="areacafe" value="" class="form-control"/>
+								                      <label>Pendiente:</label>
+								                      <input name="pendiente" id="pendiente" value="" class="form-control"/>
+								                      <label>Producción promedio:</label>
+								                      <input name="produccionpromedio" id="produccion" value="" class="form-control"/> 
+								                      <label>Variedades:</label>
+								                      <input name="variedades" id="variedades" value="" class="form-control"/>
+								                      <label>Número de meses secos:</label>
+								                      <input name="mesessecos" id="mesessecos" value="" class="form-control"/>
+								                      <label>Observaciones iniciales</label>
+								                      <textarea class="form-control" name="observacionesini"></textarea>
+								                      </fieldset>
+								                <div align="center">
+								                    <a href="#cuestionario" class="btn btn-primary" id="btnSiguiente" style="margin:10px 0">Iniciar</a>
+								                </div>
+										      
+										  
+										 
+										
+										    <div id="Preguntas" style="display:none">
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Ha habido cambios en la temperatura en los últimos diez años?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" name="pregunta[1][]" value="si" class="oprespuesta" rel="1">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" name="pregunta[1][]" value="medio" class="oprespuesta"rel="1">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" name="pregunta[1][]" value="no" class="oprespuesta"rel="1">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Las lluvias han sido irregulares en los últimos 5 a 10 años?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="2" name="pregunta[2][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="2" name="pregunta[2][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="2" name="pregunta[2][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Ha habido un aumento de lluvia con inundaciones y derrumbes en los últimos 5 a 10 años?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="3" name="pregunta[3][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="3" name="pregunta[3][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="3" name="pregunta[3][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Hay riesgo de huracanes y tormentas tropicales?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="4" name="pregunta[4][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="4" name="pregunta[4][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="4" name="pregunta[4][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Ha habido sequías, disminución o ausencia de agua en la propiedad en los últimos 5 a 10 años?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="5" name="pregunta[5][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="5" name="pregunta[5][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="5" name="pregunta[5][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿La fuerza y frecuencia de vientos fuertes ha aumentado en los últimos 5 a 10 años?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="6" name="pregunta[6][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="6" name="pregunta[6][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="6" name="pregunta[6][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿La mayoría de los suelos en los cafetales y en otros usos de la tierra en la unidades productivas presentan señales de erosión?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="7" name="pregunta[7][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="7" name="pregunta[7][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="7" name="pregunta[7][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿La fertilidad de los suelos ha disminuido en los últimos 5 a 10 años?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="8" name="pregunta[8][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="8" name="pregunta[8][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="8" name="pregunta[8][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Hay floración irregular del café?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="9" name="pregunta[9][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="9" name="pregunta[9][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="9" name="pregunta[9][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Hay incremento de caída de flores y frutos del café?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="10" name="pregunta[10][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="10" name="pregunta[10][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="10" name="pregunta[10][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿En los últimos 5 a 10 años se ha incrementado el daño de plagas y enfermedades en los cafetales?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="11" name="pregunta[11][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="11" name="pregunta[11][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="11" name="pregunta[11][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿La producción de café viene bajando desde hace unos 5 a 10 años?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="25" name="pregunta[25][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="25" name="pregunta[25][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="25" name="pregunta[25][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+											      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Faltan prácticas de conservación del suelo en la mayor parte del área?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="12" name="pregunta[12][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="12" name="pregunta[12][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="12" name="pregunta[12][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿En los suelos de los cafetales (entre  las de plantas) no hay cobertura de hierbas y hojarascas?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="13" name="pregunta[13][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="13" name="pregunta[13][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="13" name="pregunta[13][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿La diversificación (árboles de servicio, maderables, frutales y otros cultivos de seguridad alimentaria) y la diversidad de aves en el cafetal es baja o inexistente?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="14" name="pregunta[14][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="14" name="pregunta[14][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="14" name="pregunta[14][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Hay áreas de cafetales a pleno sol, con poca sombra (<20%) o con exceso (>70%)?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="15" name="pregunta[15][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="15" name="pregunta[15][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="15" name="pregunta[15][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Los cafetales son viejos (más de 15 años de establecidos)?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="16" name="pregunta[16][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="16" name="pregunta[16][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="16" name="pregunta[16][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿No se tienen variedades de café resistentes a la sequía y altas temperaturas? ¿No se tienen variedades de café resistentes a enfermedades principales (roya, ojo de gallo)?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="17" name="pregunta[17][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="17" name="pregunta[17][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="17" name="pregunta[17][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Está ausente poda anual y deshija de cafetos?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="18" name="pregunta[18][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="18" name="pregunta[18][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="18" name="pregunta[18][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Está ausente resiembra de cafetos cada año?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="19" name="pregunta[19][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="19" name="pregunta[19][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="19" name="pregunta[19][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿Se aplican más de 440 libras de N/ha/año (308 libras de N/mz/año) de origen sintético (químico)?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="20" name="pregunta[20][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="20" name="pregunta[20][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="20" name="pregunta[20][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿No se aplican abonos e aplican abonos orgánicos al cafetal? ¿No se manejan la pulpa y aguas mieles?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="21" name="pregunta[21][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="21" name="pregunta[21][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="21" name="pregunta[21][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿La mayoría de las quebradas y fuentes de agua no tienen cobertura forestal?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="22" name="pregunta[22][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="22" name="pregunta[22][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="22" name="pregunta[22][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿La mayoría de las áreas de otros usos de la unidad productiva no tienen cobertura forestal?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="23" name="pregunta[23][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="23" name="pregunta[23][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="23" name="pregunta[23][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										      	<div class="panel panel-default">
+										      		<div class="panel-body">
+											      	<div class="form-group">
+											      		<p>
+											<b>¿No existen procesos organizativos sobre mitigación y adaptación al cambio climático?</b> 
+											      		</p>
+											      		<div class="radio">
+											      			<label>
+											      				<input type="radio" value="si" class="oprespuesta" rel="24" name="pregunta[24][]">
+											      				Si
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="medio" class="oprespuesta" rel="24" name="pregunta[24][]">
+											      				+/-
+											      			</label>
+											      		</div>
+														<div class="radio">
+											      			<label>
+											      				<input type="radio" value="no" class="oprespuesta" rel="24" name="pregunta[24][]">
+											      				No
+											      			</label>
+											      		</div>
+													</div>
+													</div>
+												</div>
+										        <div align="center">
+										        <a href="#cuestionario" class="btn btn-primary" id="btnFinalizar">Guardar</a>
+										        </div>
+										        </div>
+										    <div id="resultados" style="display:none">
+										        <div class="panel panel-default">
+										            <div class="panel-heading" role="tab" id="detallesBoleta">
+										                <h4 class="panel-title">
+										                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										                        Resultados
+										                    </a>
+										                </h4>
+										            </div>
+										            <div class="panel-body">
+										                <div class="form-group">
+										                    <label>Puntaje Final</label>
+										                    <div align="right">
+										                    <h2 id="puntajeNum">11</h2>
+										                    </div>
+										                    <label>Categoría de referencia</label>
+										                </div>
+										                <div class="tabla" align="center">
+										                <table>
+										                    <thead>
+										                        <tr><th class="centro"></th><th class="centro">Rango de Puntaje</th></tr>
+										                    </thead>
+										                    <tbody>
+										                        <tr id="rango1">
+										                            <td class="bueno inactivo">Vulnerabilidad prácticamente ausente. Excelente capacidad adaptativa.</td>
+										                            <td class="centro bueno inactivo">20 a 25</td>
+										                        </tr>
+										                        <tr id="rango2">
+										                            <td class="bueno inactivo">Vulnerabilidad baja. Alta capacidad adaptativa</td>
+										                            <td class="centro bueno inactivo">15 a 19</td>
+										                        </tr>
+										                        <tr id="rango3">
+										                            <td class="medioalto inactivo">Vulnerabilidad y capacidad adaptativa moderadas</td>
+										                            <td class="centro medioalto inactivo">8 a 14</td>
+										                        </tr>
+										                        <tr id="rango4">
+										                            <td class="medioalto inactivo">Vulnerabilidad y capacidad adaptativa regulares</td>
+										                            <td class="centro medioalto inactivo">1 a 7</td>
+										                        </tr>
+										                        <tr id="rango5">
+										                            <td class="mediobajo inactivo">Vulnerabilidad y capacidad adaptativa medianamente críticas</td>
+										                            <td class="centro mediobajo inactivo">-6 a 0</td>
+										                        </tr>
+										                        <tr id="rango6">
+										                            <td class="mediobajo inactivo">Vulnerabilidad y capacidad adaptativa críticas</td>
+										                            <td class="centro mediobajo inactivo">-13 a -7</td>
+										                        </tr>
+										                        <tr id="rango7">
+										                            <td class="malo inactivo">Vulnerabilidad y capacidad adaptativa muy críticas</td>
+										                            <td class="centro malo inactivo">-20 a -14</td>
+										                        </tr>
+										                        <tr id="rango8">
+										                            <td class="malo inactivo">Totalmente vulnerable y sin ninguna capacidad adaptativa</td>
+										                            <td class="centro malo inactivo">-25 a -21</td>
+										                        </tr>
+										                    </tbody>
+										                </table>
+										                <div align="center">
+										                    <a href="#" class="btn btn-primary btnNueva">Nueva encuesta</a>
+										                    <a href="#recomendaciones" class="btn btn-primary" id="btnRecomendaciones">Ver Recomendaciones<span class="badge" style="margin-left:5px" id="cantrecomienda"></span></a>
+										                </div>
+										                </div>
+										            </div>
+										        </div>
+										    </div>
+										    <div id="recomendaciones" style="display:none">
+										        <div class="panel panel-default">
+										            <div class="panel-heading" role="tab" id="detallesBoleta">
+										                <h4 class="panel-title">
+										                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										                        Recomendaciones
+										                    </a>
+										                </h4>
+										            </div> 
+										            <div class="panel-body">
+										                <p>
+										                    Marque las casillas de las recomendaciones que el productor ya ha implementado en su totalidad o parcialmente. Puede escribir un comentario acerca de los avances que puede observar.  Al terminar asegúrese de guardar la información.
+										                </p>
+										                <div class="panel panel-default boxrecomienda" id="recomienda1">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										                                En los últimos diez años ha habido cambios en la temperatura
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body"> 
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[1][]" class="oprecomienda"/>Incorporar variedades resistentes. (A, M)</li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[1][]" class="oprecomienda"/>Utilizar cafetos de injertos de arábicos sobre robustas. (A, M)</li>
+										                        <li><input type="checkbox" value="3" name="recomendacion_[1][]" class="oprecomienda"/>Emplear sistemas de producción adaptados y diversi cados. (A, M)</li>
+										                        <li><input type="checkbox" value="4" name="recomendacion_[1][]" class="oprecomienda"/>Implementar sistemas agroforestales y de reforestación. (A, M)</li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[1][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										                <div class="panel panel-default boxrecomienda" id="recomienda2">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										                                En los últimos años las lluvias han sido irregulares
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[2][]" class="oprecomienda"/>Utilizar prácticas de cosecha de agua en unidad productiva (A)</li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[2][]" class="oprecomienda"/>Aplicar abonos foliares durante los períodos de sequía (A)</li>
+										                        <li><input type="checkbox" value="3" name="recomendacion_[2][]" class="oprecomienda"/>Implementar sistemas de riego (A)</li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[2][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										                <div class="panel panel-default boxrecomienda" id="recomienda3">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										Ha aumentado la incidencia de lluvias con inundaciones y derrumbes.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[3][]" class="oprecomienda"/>
+										Emplear prácticas de conservación de suelos. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[3][]" class="oprecomienda"/>
+										Diseñar y manejar la sombra del café. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="3" name="recomendacion_[3][]" class="oprecomienda"/>
+										Evitar cultivos en áreas de alto riesgo (pendientes muy fuertes, márgenes de ríos). (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[3][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										                <div class="panel panel-default boxrecomienda" id="recomienda4">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										Hay riesgo de huracanes y tormentas tropicales.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[4][]" class="oprecomienda"/>
+										Mantenerse informado por medio de los sistemas de alerta para tomar medidas de seguridad con anticipación. (A)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[4][]" class="oprecomienda"/>
+										Evitar cultivos en áreas de alto riesgo (pendientes muy fuertes, márgenes de ríos). (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[4][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										                <div class="panel panel-default boxrecomienda" id="recomienda5">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										Ha habido sequías en los últimos años. Se ha reducido la cantidad de agua disponible para la unidad productiva.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[5][]" class="oprecomienda"/>
+										Utilizar prácticas de cosecha de agua en unidad productiva. (A)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[5][]" class="oprecomienda"/>
+										Diseñar y manejar la sombra del café. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="3" name="recomendacion_[5][]" class="oprecomienda"/>
+										Asegurar una buena cobertura del suelo. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[5][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										                <div class="panel panel-default boxrecomienda" id="recomienda6">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										Hay vientos fuertes y tienden a incrementarse.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[6][]" class="oprecomienda"/>
+										Instalar barreras vivas con árboles. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[6][]" class="oprecomienda"/>
+										Diseñar y manejar la sombra del café. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[6][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										                <div class="panel panel-default boxrecomienda" id="recomienda7">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										La mayoría de los suelos en los cafetales y otros usos de la tierra en la unidad productiva presentan señales de erosión.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[7][]" class="oprecomienda"/>
+										Emplear prácticas de conservación de suelos (curvas de nivel, barreras vivas y muertas, cobertura del suelo, manejo selectivo de hierbas). (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[7][]" class="oprecomienda"/>
+										Diseñar y manejar la sombra del café. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[7][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										                <div class="panel panel-default boxrecomienda" id="recomienda8">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										La fertilidad de los suelos se está perdiendo.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[8][]" class="oprecomienda"/>
+										Establecer un programa de fertilización según análisis químico del suelo. (A)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[8][]" class="oprecomienda"/>
+										Agregar materia orgánica. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="3" name="recomendacion_[8][]" class="oprecomienda"/>
+										Diseñar y manejar la sombra del café con fuerte aporte de leguminosas.(A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[8][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										                <div class="panel panel-default boxrecomienda" id="recomienda9">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										El café florece de manera irregular.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[9][]" class="oprecomienda"/>
+										Establecer un programa de fertilización adecuado. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[9][]" class="oprecomienda"/>
+										Aplicar riego adecuado y oportuno. (A)
+										                        </li>
+										                        <li><input type="checkbox" value="3" name="recomendacion_[9][]" class="oprecomienda"/>
+										Diseñar y manejar la sombra. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[9][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda10">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										Se ha incrementado la caída de flores y frutos del café.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[10][]" class="oprecomienda"/>
+										Establecer un programa de fertilización adecuado (P, K, Ca, S). (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[10][]" class="oprecomienda"/>
+										Aplicar riego adecuado y oportuno. (A)
+										                        </li>
+										                        <li><input type="checkbox" value="3" name="recomendacion_[10][]" class="oprecomienda"/>
+										Diseñar y manejar la sombra del café con fuerte aporte de leguminosas.(A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[10][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda11">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										El daño causado al cafetal por plagas y enfermedades es cada vez mayor.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[11][]" class="oprecomienda"/>
+										Hacer diagnósticos oportunos para determinar niveles de incidencia. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[11][]" class="oprecomienda"/>
+										Aplicar medidas de control ajustadas al comportamiento de clima y carga fructífera. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="3" name="recomendacion_[11][]" class="oprecomienda"/>
+										Mantenerse informado por medio de los sistemas de alerta para tomar medidas de prevención y control. (A)
+										                        </li>
+										                        <li><input type="checkbox" value="4" name="recomendacion_[11][]" class="oprecomienda"/>
+										Dar un manejo integral al cafetal. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="5" name="recomendacion_[11][]" class="oprecomienda"/>
+										Emplear el manejo integrado de plagas. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="6" name="recomendacion_[11][]" class="oprecomienda"/>
+										Diseñar y manejar la sombra. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="7" name="recomendacion_[11][]" class="oprecomienda"/>
+										Combinar lotes con diferentes variedades resistentes a distintas enfermedades. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[11][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda12">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										La producción del café se ha ido reduciendo en los últimos años.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[12][]" class="oprecomienda"/>
+										Hacer un diagnóstico integral del cafetal (productivo, plagas y enfermedades, sombra, cobertura del suelo). (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[12][]" class="oprecomienda"/>
+										Hacer un análisis químico del suelo y, de ser posible, un análisis foliar. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="3" name="recomendacion_[12][]" class="oprecomienda"/>
+										Revisar el programa de fertilización y manejo de sombra. (A)
+										                        </li>
+										                        <li><input type="checkbox" value="4" name="recomendacion_[12][]" class="oprecomienda"/>
+										Revisar la necesidad de sustituir o incorporar nuevas variedades de café.(A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[12][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda13">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										Faltan prácticas de conservación de suelo en la mayor parte del área.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[13][]" class="oprecomienda"/>
+										Aplicar prácticas de conservación de suelos (curvas al nivel, barreras muertas y vivas, acequias, cobertura de suelos). (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[13][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda14">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										En los suelos de los cafetales (entre  las de plantas) no hay cobertura de hierbas ni hojarasca.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[14][]" class="oprecomienda"/>
+										Dar un manejo selectivo a las hierbas para asegurar una buena cobertura (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[14][]" class="oprecomienda"/>
+										Diseñar y manejar la sombra para que aporte materia orgánica. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[14][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda15">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										La diversi cación del cafetal (árboles de servicio, maderables, frutales y otros cultivos) y/o de la unidad productiva es baja o no existe.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[15][]" class="oprecomienda"/>
+										Diseñar y manejar sistemas agroforestales que combinen maderables, frutales y otros cultivos, en asocio con buenas densidades de árboles leguminosos. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[15][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda16">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										Hay áreas de cafetal a pleno sol, con <20% de cobertura de sombra o con >70%.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[16][]" class="oprecomienda"/>
+										Diseñar y manejar sistemas agroforestales apropiados para cada condición. Buscar las mejores condiciones de sombra con niveles entre 30 y 55% con buena distribución en todo el cafetal. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[16][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda17">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										Los cafetales son viejos (más de 15 años).
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[17][]" class="oprecomienda"/>
+										Programar renovaciones acordes a las condiciones del productor. Si no es posible renovar de una sola vez toda el área, programar renovaciones por etapas. Las áreas de café viejo se mantienen con un manejo adecuado de podas, sombra, deshijas y fertilización. (A)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[17][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda18">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										No se tienen variedades de café resistentes a la sequía, altas temperaturas y/o enfermedades serias, como roya y ojo de gallo.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[18][]" class="oprecomienda"/>
+										Identi car la disponibilidad de variedades autorizadas de alto potencial, tales como Anacafé 14, Robusta, Híbridos F1, Catimores). (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[18][]" class="oprecomienda"/>
+										Tener lotes de variedades diferentes con tolerancia/resistencia a enfermedades distintas. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[18][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda19">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										No se aplican podas ni deshijas a los cafetos cada año.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[19][]" class="oprecomienda"/>
+										Después de la cosecha, iniciar un programa de podas y deshijas. De manera ideal, se deben hacer dos deshijas al año. (A)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[19][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda20">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										No se resiembran cafetos cada año.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[20][]" class="oprecomienda"/>
+										Hacer resiembras anuales para reponer las plantas que mueren. Tener siempre un vivero para producir plantas de calidad. (A)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[20][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda21">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										Se aplican más de 440 libras de N/ha/año de origen sintético (químico). Entre los fertilizantes nitrogenados sintéticos están la urea, nitrato de amonio, sulfato de amonio.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[21][]" class="oprecomienda"/>
+										Sustituir o complementar los programas de fertilización química con abonos orgánicos (idealmente producidos en la propia unidad productiva). (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[21][]" class="oprecomienda"/>
+										Buscar niveles de productividad relativamente constantes y rentables con aplicaciones moderadas de nitrógeno. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[21][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda22">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										No se aplican abonos orgánicos.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[22][]" class="oprecomienda"/>
+										Incorporar abonos orgánicos de calidad en programa de fertilización. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[22][]" class="oprecomienda"/>
+										Elaborar abonos orgánicos en la unidad productiva misma. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[22][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda23">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										La mayoría de las quebradas y fuentes de agua están sin cobertura forestal.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[23][]" class="oprecomienda"/>
+										Recuperar la cobertura forestal en las nacientes de agua. Si hay fuentes de agua en el cafetal, protegerlas con sistemas agroforestales, cobertura del suelo y no aplicar agroquímicos. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[23][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda24">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										La mayoría de las áreas de otros usos de la unidad productiva no tienen árboles.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[24][]" class="oprecomienda"/>
+										Utilizar diferentes arreglos de sistemas agroforestales, reforestación y regeneración natural para garantizar una producción agrícola diversi cada y servicios ambientales. (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[24][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										<div class="panel panel-default boxrecomienda" id="recomienda25">
+										                    <div class="panel-heading" role="tab" id="detallesBoleta">
+										                        <h4 class="panel-title">
+										                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										No existen procesos organizativos sobre mitigación y adaptación al cambio climático.
+										                            </a>
+										                        </h4>
+										                    </div>
+										                    <div class="panel-body">
+										                        <ul>
+										                        <li><input type="checkbox" value="1" name="recomendacion_[25][]" class="oprecomienda"/>
+										Establecer y/o fortalecer acciones organizadas (capacitación, asistencia técnica, procesos de comunicación) para el establecimiento y seguimiento de programas de adaptación y mitigación. (A, M)
+										                        </li>
+										                        <li><input type="checkbox" value="2" name="recomendacion_[25][]" class="oprecomienda"/>
+										Crear comités de seguimiento para la mejora continua de las unidades productivas . (A, M)
+										                        </li>
+										                        </ul>
+										                        <div class="boxcomentario" align="right">
+										                            <a href="#" class="btn btn-default btnComentar">Comentar</a>
+										                            <div class="areaComentario" align="right">
+										                                <a href="#" class="btn btn-default btnEscondeComentario">Cerrar</a>
+										                                <textarea name="recomendaciones[25][]" class="form-control" align="left"></textarea>
+										                            </div>
+										                        </div>
+										                    </div>
+										                </div>
+										    <div align="center">
+										        <a href="#" class="btn btn-primary" id="btnGuardarRecomienda">Guardar</a>
+										        <a href="#" class="btn btn-default btnNueva">Nueva Encuesta</a>
+										    </div>
+										            </div>
+										        </div>
+										    </div>
+								      </form>
+							</div>
+						</div>
+					</div>
+				</div>
+	<script>
+		var deptos = {
+    "Alta Verapaz": [
+        "Cahabón",
+        "Chahal",
+        "Chisec",
+        "Cobán",
+        "Fray Bartolomé de las Casas",
+        "Lanquín",
+        "Panzós",
+        "Raxruha",
+        "San Cristóbal Verapaz",
+        "San Juan Chamelco",
+        "San Pedro Carchá",
+        "Santa Cruz Verapaz",
+        "Senahú",
+        "Tactic",
+        "Tamahú",
+        "Tucurú",
+        "Santa Catarina La Tinta"
+    ],
+    "Baja Verapaz": [
+        "Cubulco",
+        "Granados",
+        "Purulhá",
+        "Rabinal",
+        "Salamá",
+        "San Jerónimo",
+        "San Miguel Chicaj",
+        "Santa Cruz El Chol"
+    ],
+    "Chimaltenango": [
+        "Acatenango",
+        "Chimaltenango",
+        "El Tejar",
+        "Parramos",
+        "Patzicía",
+        "Patzún",
+        "Pochuta",
+        "San Andrés Itzapa",
+        "San José Poaquil",
+        "San Juan Comalapa",
+        "San Martín Jilotepeque",
+        "Santa Apolonia",
+        "Santa Cruz Balanyá",
+        "Tecpán Guatemala",
+        "Yepocapa",
+        "Zaragoza"
+    ],
+    "Chiquimula": [
+        "Camotán",
+        "Chiquimula",
+        "Concepción Las Minas",
+        "Esquipulas",
+        "Ipala",
+        "Jocotán",
+        "Olopa",
+        "Quezaltepeque",
+        "San Jacinto",
+        "San José La Arada",
+        "San Juan Ermita"
+    ],
+    "El Progreso": [
+        "El Jícaro",
+        "Guastatoya",
+        "Morazán",
+        "San Agustín Acasaguastlán",
+        "San Antonio La Paz",
+        "San Cristóbal Acasaguastlán",
+        "Sanarate"
+    ],
+    "Escuintla": [
+        "Escuintla",
+        "Guanagazapa",
+        "Iztapa",
+        "La Democracia",
+        "La Gomera",
+        "Masagua",
+        "Nueva Concepción",
+        "Palín",
+        "San José",
+        "San Vicente Pacaya",
+        "Santa Lucía Cotzumalguapa",
+        "Siquinalá",
+        "Tiquisate"
+    ],
+    "Guatemala": [
+        "Amatitlán",
+        "Chinautla",
+        "Chuarrancho",
+        "Fraijanes",
+        "Guatemala City",
+        "Mixco",
+        "Palencia",
+        "Petapa",
+        "San José del Golfo",
+        "San José Pinula",
+        "San Juan Sacatepéquez",
+        "San Pedro Ayampuc",
+        "San Pedro Sacatepéquez",
+        "San Raymundo",
+        "Santa Catarina Pinula",
+        "Villa Canales"
+    ],
+    "Huehuetenango": [
+        "Aguacatán",
+        "Chiantla",
+        "Colotenango",
+        "Concepción Huista",
+        "Cuilco",
+        "Huehuetenango",
+        "Ixtahuacán",
+        "Jacaltenango",
+        "La Democracia",
+        "La Libertad",
+        "Malacatancito",
+        "Nentón",
+        "San Antonio Huista",
+        "San Gaspar Ixchil",
+        "San Juan Atitán",
+        "San Juan Ixcoy",
+        "San Mateo Ixtatán",
+        "San Miguel Acatán",
+        "San Pedro Necta",
+        "San Rafael La Independencia",
+        "San Rafael Petzal",
+        "San Sebastián Coatán",
+        "San Sebastián Huehuetenango",
+        "Santa Ana Huista",
+        "Santa Bárbara",
+        "Santa Cruz Barillas",
+        "Santa Eulalia",
+        "Santiago Chimaltenango",
+        "Soloma",
+        "Tectitán",
+        "Todos Santos Cuchumatan"
+    ],
+    "Izabal": [
+        "El Estor",
+        "Livingston",
+        "Los Amates",
+        "Morales",
+        "Puerto Barrios"
+    ],
+    "Jutiapa": [
+        "Agua Blanca",
+        "Asunción Mita",
+        "Atescatempa",
+        "Comapa",
+        "Conguaco",
+        "El Adelanto",
+        "El Progreso",
+        "Jalpatagua",
+        "Jerez",
+        "Jutiapa",
+        "Moyuta",
+        "Pasaco",
+        "Quezada",
+        "San José Acatempa",
+        "Santa Catarina Mita",
+        "Yupiltepeque",
+        "Zapotitlán"
+    ],
+    "Petén": [
+        "Dolores",
+        "Flores",
+        "La Libertad",
+        "Melchor de Mencos",
+        "Poptún",
+        "San Andrés",
+        "San Benito",
+        "San Francisco",
+        "San José",
+        "San Luis",
+        "Santa Ana",
+        "Sayaxché",
+        "Las Cruces"
+    ],
+    "Quetzaltenango": [
+        "Almolonga",
+        "Cabricán",
+        "Cajolá",
+        "Cantel",
+        "Coatepeque",
+        "Colomba",
+        "Concepción Chiquirichapa",
+        "El Palmar",
+        "Flores Costa Cuca",
+        "Génova",
+        "Huitán",
+        "La Esperanza",
+        "Olintepeque",
+        "Ostuncalco",
+        "Palestina de Los Altos",
+        "Quetzaltenango",
+        "Salcajá",
+        "San Carlos Sija",
+        "San Francisco La Unión",
+        "San Martín Sacatepéquez",
+        "San Mateo",
+        "San Miguel Sigüilá",
+        "Sibilia",
+        "Zunil"
+    ],
+    "Quiché": [
+        "Canillá",
+        "Chajul",
+        "Chicamán",
+        "Chiché",
+        "Chichicastenango",
+        "Chinique",
+        "Cunén",
+        "Ixcán",
+        "Joyabaj",
+        "Nebaj",
+        "Pachalum",
+        "Patzité",
+        "Sacapulas",
+        "San Andrés Sajcabajá",
+        "San Antonio Ilotenango",
+        "San Bartolomé Jocotenango",
+        "San Juan Cotzal",
+        "San Pedro Jocopilas",
+        "Santa Cruz del Quiché",
+        "Uspantán",
+        "Zacualpa"
+    ],
+    "Retalhuleu": [
+        "Champerico",
+        "El Asintal",
+        "Nuevo San Carlos",
+        "Retalhuleu",
+        "San Andrés Villa Seca",
+        "San Felipe",
+        "San Martín Zapotitlán",
+        "San Sebastián",
+        "Santa Cruz Muluá"
+    ],
+    "Sacatepéquez": [
+        "Alotenango",
+        "Antigua",
+        "Ciudad Vieja",
+        "Jocotenango",
+        "Magdalena Milpas Altas",
+        "Pastores",
+        "San Antonio Aguas Calientes",
+        "San Bartolomé Milpas Altas",
+        "San Lucas Sacatepéquez",
+        "San Miguel Dueñas",
+        "Santa Catarina Barahona",
+        "Santa Lucía Milpas Altas",
+        "Santa María de Jesús",
+        "Santiago Sacatepéquez",
+        "Santo Domingo Xenacoj",
+        "Sumpango"
+    ],
+    "San Marcos": [
+        "Ayutla",
+        "Catarina",
+        "Comitancillo",
+        "Concepción Tutuapa",
+        "El Quetzal",
+        "El Rodeo",
+        "El Tumbador",
+        "Esquipulas Palo Gordo",
+        "Ixchiguan",
+        "La Reforma",
+        "Malacatán",
+        "Nuevo Progreso",
+        "Ocos",
+        "Pajapita",
+        "Río Blanco",
+        "San Antonio Sacatepéquez",
+        "San Cristóbal Cucho",
+        "San José Ojetenam",
+        "San Lorenzo",
+        "San Marcos",
+        "San Miguel Ixtahuacán",
+        "San Pablo",
+        "San Pedro Sacatepéquez",
+        "San Rafael Pie de La Cuesta",
+        "San Sibinal",
+        "Sipacapa",
+        "Tacaná",
+        "Tajumulco",
+        "Tejutla"
+    ],
+    "Santa Rosa": [
+        "Barberena",
+        "Casillas",
+        "Chiquimulilla",
+        "Cuilapa",
+        "Guazacapán",
+        "Nueva Santa Rosa",
+        "Oratorio",
+        "Pueblo Nuevo Viñas",
+        "San Juan Tecuaco",
+        "San Rafael Las Flores",
+        "Santa Cruz Naranjo",
+        "Santa María Ixhuatán",
+        "Santa Rosa de Lima",
+        "Taxisco"
+    ],
+    "Sololá": [
+        "Concepción",
+        "Nahualá",
+        "Panajachel",
+        "San Andrés Semetabaj",
+        "San Antonio Palopó",
+        "San José Chacaya",
+        "San Juan La Laguna",
+        "San Lucas Tolimán",
+        "San Marcos La Laguna",
+        "San Pablo La Laguna",
+        "San Pedro La Laguna",
+        "Santa Catarina Ixtahuacan",
+        "Santa Catarina Palopó",
+        "Santa Clara La Laguna",
+        "Santa Cruz La Laguna",
+        "Santa Lucía Utatlán",
+        "Santa María Visitación",
+        "Santiago Atitlán",
+        "Sololá"
+    ],
+    "Suchitepéquez": [
+        "Chicacao",
+        "Cuyotenango",
+        "Mazatenango",
+        "Patulul",
+        "Pueblo Nuevo",
+        "Río Bravo",
+        "Samayac",
+        "San Antonio Suchitepéquez",
+        "San Bernardino",
+        "San Francisco Zapotitlán",
+        "San Gabriel",
+        "San José El Idolo",
+        "San Juan Bautista",
+        "San Lorenzo",
+        "San Miguel Panán",
+        "San Pablo Jocopilas",
+        "Santa Bárbara",
+        "Santo Domingo Suchitepequez",
+        "Santo Tomas La Unión",
+        "Zunilito"
+    ],
+    "Totonicapán": [
+        "Momostenango",
+        "San Andrés Xecul",
+        "San Bartolo",
+        "San Cristóbal Totonicapán",
+        "San Francisco El Alto",
+        "Santa Lucía La Reforma",
+        "Santa María Chiquimula",
+        "Totonicapán"
+    ],
+    "Zacapa": [
+        "Cabañas",
+        "Estanzuela",
+        "Gualán",
+        "Huité",
+        "La Unión",
+        "Río Hondo",
+        "San Diego",
+        "Teculután",
+        "Usumatlán",
+        "Zacapa"
+    ]
+}
+
+//window.location.hash = '#inicio';
+    	var arrData=[];
+    	var hechas=0;
+    	var pos = null;
+		var arrRealizadas = [];
+        var arrSeccion = [{"label":"Inicio","anchor":"inicio"}];
+        var resultado=0;
+        var encuestanueva=true;
+    	jQuery(document).ready(function(){
+	    	
+    		if(localStorage.encuestas!=null){
+/*arrData = [];
+				localStorage.removeItem('encuestas');*/
+    			arrData=JSON.parse(localStorage.encuestas);
+    			jQuery('#nomUsuario').val(localStorage.usuario);
+    		}else{
+    			arrData = [];
+    			//localStorage.setItem('usuario','');
+                //localStorage.setItem('encuestas',arrData);
+    		}
+            jQuery.each(deptos,function(key,value){
+                jQuery('#nomDepto').append('<option value="'+key+'">'+key+'</option>')
+            })
+            poblar('Alta Verapaz');
+            jQuery('#nomDepto').change(function(){
+                jQuery('#nomMuni').empty();
+                var nomDepto = jQuery(this).val();
+                poblar(nomDepto);
+            });
+			//jQuery.ajaxSetup({async:false});
+			var objFecha = new Date();
+			jQuery('#fechaBoleta').val(objFecha.getFullYear()+'-'+('0' + (objFecha.getMonth()+1)).slice(-2)+'-'+objFecha.getDate()+' '+objFecha.getHours()+':'+objFecha.getMinutes());
+            jQuery('#btnCuestionario').click(function(){
+                jQuery('#opciones').css('display','none');
+                jQuery('.opciones').removeClass('active')
+                jQuery(this).parent().addClass('active')
+                jQuery('#Cuestionario').css('display','block');
+                jQuery('#iniCuestionario').css('display','block');
+                jQuery('#Preguntas').css('display','none');
+                jQuery('#navbar').removeClass('in');
+            }); 
+            /*jQuery('#btnOpciones').click(function(){
+			    /*jQuery('#numEncuestas').val(arrData.length);
+                jQuery('#opciones').css('display','block');
+                jQuery('#Cuestionario').css('display','none');
+                jQuery('.opciones').removeClass('active')
+                jQuery(this).parent().addClass('active')
+                jQuery('#navbar').removeClass('in');
+            });*/
+              jQuery('#btnSiguiente').click(function(event){
+	              	event.preventDefault();
+                    jQuery('#iniCuestionario').css('display','none');
+                    jQuery('#Preguntas').css('display','block');
+                  window.scrollTo(0,0);
+
+            });
+            jQuery('#btnFinalizar').click(function(){
+    			var a  =confirm('¿Todos los datos son correctos?');
+    			if(a){
+                    guardarDatosCore();
+                    jQuery('.oprespuesta[value="si"]:checked').each(function(value){
+                        var numpregunta=jQuery(this).attr('rel');
+                        jQuery('#recomienda'+numpregunta).css('display','block');
+                        resultado=resultado-1; 
+                    });
+                    jQuery('#cantrecomienda').html(resultado*-1);
+                    jQuery('.oprespuesta[value="medio"]:checked').each(function(value){
+                        resultado=resultado+0.5;
+                    });
+                    jQuery('.oprespuesta[value="no"]:checked').each(function(value){
+                        resultado=resultado+1;
+                    });
+                    jQuery('#puntajeNum').html(resultado);
+                    jQuery('tr').children('td').addClass('inactivo');
+                    var clase='';
+                    if((resultado>=20)&&(resultado<=25)){
+                        clase='rango1';
+                    }else if((resultado>=15)&&(resultado<20)){
+                        clase='rango2';
+                    }else if((resultado>=8)&&(resultado<15)){
+                        clase='rango3';
+                    }else if((resultado>=1)&&(resultado<8)){
+                        clase='rango4';
+                    }else if((resultado>=-6)&&(resultado<1)){
+                        clase='rango5';
+                    }else if((resultado>=-13)&&(resultado<-6)){
+                        clase='rango6';
+                    }else if((resultado>=-20)&&(resultado<-13)){
+                        clase='rango7';
+                    }else if((resultado>=-25)&&(resultado<-20)){
+                        clase='rango8';
+                    }
+                    jQuery('#'+clase).children('td').removeClass('inactivo');
+	    			alert('Boleta Guardada');
+	    			//jQuery('input[type="radio"]').prop('checked',false);
+					var objFecha = new Date();
+					/*jQuery('#fechaBoleta').val(objFecha.getDate()+'-'+objFecha.getMonth()+'-'+objFecha.getFullYear()+' '+objFecha.getHours()+':'+objFecha.getMinutes());*/
+                   /*jQuery('#Preguntas').css('display','none');
+                   jQuery('#resultados').css('display','block');*/
+                    window.location.hash='#resultados';
+                   window.scrollTo(0,0);
+    			}
+    			return false;
+
+           });
+            jQuery('.btnNueva').click(function(){
+                arrSeccion = [{"label":"Inicio","anchor":"inicio"}];
+                resultado=0;
+                encuestanueva=true;
+                jQuery('input').val('');
+                jQuery('input[type="radio"]').prop('checked',false);
+                jQuery('input[type="checkbox"]').prop('checked',false);
+                window.location.hash='#inicio';
+                return false;
+            });
+			jQuery('#btnEliminar').click(function(){
+				var a = confirm('¿Desea eliminar los datos? No se podrán recuperar');
+				if(a){
+					arrData = [];
+					localStorage.removeItem('encuestas');
+					localStorage.setItem('encuestas',JSON.stringify(arrData));
+			  		jQuery('#numEncuestas').val(arrData.length);
+				}
+				return false;
+			});
+			jQuery('#btnNomUsuario').click(function(){
+				localStorage.setItem('usuario',jQuery('#nomUsuario').val());
+                alert(localStorage.getItem('usuario'));
+				return false;
+			});
+			jQuery('#btnSincronizar').click(function(){ 
+				var a = confirm('¿Desea sincronizar los datos?');
+				if(a){
+					jQuery('#progreso').css('display','block');
+					jQuery('#total').html(arrData.length);
+					jQuery(this).css('visibility','hidden');
+					enviarInformacion(0);
+				}
+				return false;
+			});
+			if(localStorage.getItem('usuario')==''){
+				window.location.hash='#opciones';
+				alert('Guarde un nombre de usuario antes de llenar encuestas.  Puede volver a la encuesta haciendo click en "Cuestionario"');
+                window.scrollTo(0,0);   
+			}
+            initBreadcrumb();
+            jQuery(window).on('hashchange',function(){ 
+                switch(window.location.hash){
+                    case '#inicio':{
+                        jQuery('#iniCuestionario').css('display','block');
+                        jQuery('#iniCuestionario').siblings().css('display','none');
+                        arrSeccion=[{"label":"Inicio","anchor":"inicio"}];
+                        break;
+                    }
+                    case '#cuestionario':{
+                        jQuery('#Preguntas').css('display','block');
+                        jQuery('#Preguntas').siblings().css('display','none');
+                       arrSeccion=[{"label":"Inicio","anchor":"inicio"},{"label":"Preguntas","anchor":"cuestionario"}];
+                        break;
+                    }
+                    case '#resultados':{
+                        if(encuestanueva){
+                            window.location.hash='#inicio';
+                        }else {
+                            jQuery('#resultados').css('display','block');
+                            jQuery('#resultados').siblings().css('display','none');
+                            arrSeccion = [{"label":"Inicio","anchor":"inicio"},{"label":"Preguntas","anchor":"cuestionario"},{"label":"Resultados","anchor":"resultados"}];
+                        }
+                        break;
+                    }
+                    case '#opciones':{
+    			         jQuery('#nomUsuario').val(localStorage.usuario);
+                        jQuery('#numEncuestas').val(arrData.length);
+                        jQuery('#opciones').css('display','block');
+                        jQuery('#Cuestionario').css('display','none');
+                        jQuery('.opciones').removeClass('active')
+                        jQuery(this).parent().addClass('active')
+                        jQuery('#navbar').removeClass('in');
+                        window.scrollTo(0,0);
+                        break;
+                    }
+                    case '#recomendaciones':{
+                        if(encuestanueva){
+                            window.location.hash='#inicio';
+                        }else{ 
+                            jQuery('#resultados').css('display','none');
+                            jQuery('#recomendaciones').css('display','block');
+                            arrSeccion = [{"label":"Inicio","anchor":"inicio"},{"label":"Preguntas","anchor":"cuestionario"},{"label":"Resultados","anchor":"resultados"}];
+                        }
+                        window.scrollTo(0,0);
+                        break;
+                    }
+                }
+                initBreadcrumb();  
+            })
+            jQuery('.btnComentar').click(function(){
+                jQuery(this).siblings('.areaComentario').css('display','block');
+                jQuery(this).css('display','none');
+                return false;
+            });
+            jQuery('.btnEscondeComentario').click(function(){
+                jQuery(this).parent('.areaComentario').css('display','none');
+                jQuery(this).parent('.areaComentario').siblings('.btnComentar').css('display','block');
+                return false;
+            });
+            jQuery('#btnGuardarRecomienda').click(function(){
+                guardarDatosCore();
+                alert('Datos Guardados');
+            });
+    	});
+        
+        function guardarDatosCore(){
+            resultado=0;
+            var objPreguntas = jQuery('#frmPreguntas').serializeArray();
+            var objEncuesta = {
+                "preguntas":objPreguntas
+                };
+            if(encuestanueva){
+                arrData.push(objEncuesta);
+                encuestanueva=false;
+            }else{
+                arrData[arrData.length-1]=objEncuesta;
+            }
+            var info = JSON.stringify(arrData);
+            localStorage.setItem('encuestas',info);   
+        }  
+        
+        /**
+        Inicializa los breadcrumbs
+        */
+        function initBreadcrumb(){
+            jQuery('#elbreadcrumb').empty();
+            poblarBreadcrumb();
+        }
+        
+        /**
+        Pobla el breadcrumb
+        */
+        function poblarBreadcrumb(){
+            for(var i=0;i<arrSeccion.length;i++){
+                var obj = arrSeccion[i];
+                jQuery('#elbreadcrumb').append('<li><a href="#'+obj.anchor+'">'+obj.label+'</a></li>')
+            }
+        }
+        
+        function poblar(strDepto){
+            var arrMunis = deptos[strDepto]
+            for(var i=0;i<arrMunis.length;i++){
+                jQuery('#nomMuni').append('<option value="'+arrMunis[i]+'">'+arrMunis[i]+'</option>');
+            }
+        }
+    	
+    	function enviarInformacion(posicion){ 
+			var obj = arrData[posicion];
+			pos = posicion;
+            
+			jQuery.post('guardar.php',{"info":obj},function(data){
+				hechas=hechas+1;
+				jQuery('#avance').html(hechas+'/'+arrData.length);
+				jQuery('#progresosincroniza').css('width',((hechas/arrData.length)*100)+'%');
+				if(hechas==arrData.length){ 
+					jQuery('#progreso').css('display','none');
+					jQuery('#btnSincronizar').css('visibility','visible');
+				}
+				arrRealizadas.push(pos);
+				if(posicion<(arrData.length-1)){
+					enviarInformacion(posicion+1);
+				}else terminoEnviar();
+			},'html');
+    	}
+    	
+    	function terminoEnviar(){
+			/*for(var i=0;i<arrRealizadas.length;i++){
+				arrData.splice(arrRealizadas[i],1);
+			}*/
+			if(arrData.length==0){
+				alert('Todos los datos fueron sincronizados');
+			}else{
+				alert('Algunos datos no fueron sincronizados, intente de nuevo');
+			}
+	  		jQuery('#numEncuestas').val(arrData.length);  
+			localStorage.setItem('encuestas',JSON.stringify(arrData));
+    	}
+	</script>
+	</script>
 	<script type="text/ng-template" id="/campo.html">
 			<div class="roya-wrap">
 						<h2 class="section-header">
@@ -1326,15 +3523,25 @@
 			
 			
 			<script>
+			$(document).ready(function() {
 			
+				var country = geoplugin_countryName();
+				var zone = geoplugin_region();
+				decoded = $("<textarea/>").html(zone).text();
+					
+				if(decoded == "San José") {
+					decoded = "sanjose"
+				}
 				
 				$('.weather-module').EasyWeather({
 					language: 'sp',
 					providerId: 'owm',
 					providerSequence: false,
-					showDetails: true
+					showDetails: true,
+					location: 'costa rica, ' + decoded + ''
 				});
-			
+				
+			});
 			
 			
 		</script>
@@ -1360,12 +3567,23 @@
 			
 			
 			<script>
+				$(document).ready(function() {
+			
+					var country = geoplugin_countryName();
+					var zone = geoplugin_region();
+					decoded = $("<textarea/>").html(zone).text();
+						
+					if(decoded == "San José") {
+						decoded = "sanjose"
+					}
 					$('.weather-module').EasyWeather({
 						language: 'sp',
 						forecasts: true,
 						nbForecastDays: 10,
-						providerId: 'wug'
+						providerId: 'wug',
+						location: 'costa rica, ' + decoded + ''
 					});
+				});
 				
 				
 				
@@ -1396,8 +3614,16 @@
 			
 			<script>
 					$(document).ready(function() {
+						var country = geoplugin_countryName();
+						var zone = geoplugin_region();
+						var decoded = $("<textarea/>").html(zone).text();
+				
+						if(decoded == "San José") {
+							 decoded = "sanjose"
+						}
+										
 						  $.ajax({
-						    url: "http://api.wunderground.com/api/72df18b7f213607b/astronomy/lang:SP/q/costarica/sanjose.json",
+						    url: "http://api.wunderground.com/api/72df18b7f213607b/astronomy/lang:SP/q/" + country + "/" + decoded + ".json",
 				    dataType: "jsonp",
 				    success: function(parsed_json) {
 				      var moon_phase = parsed_json['moon_phase'];
@@ -1620,7 +3846,7 @@
 														<input type="text"
 														      class="form-control"
 														      placeholder="Geo Referencia"
-														      ng-model="editUnit.ubicacion" required></input>
+														      ng-model="editUnit.ubicacion" ng-click="mapInit()" id="latlongid1" required></input>
 													</div>
 												</div>
 												<div class="col-xs-6">
@@ -1628,11 +3854,18 @@
 														<input type="text"
 														      class="form-control"
 														      placeholder="Area total"
-														      ng-model="editUnit.areaTotal"></input>
+														      ng-model="editUnit.areaTotal" ></input>
 														      (Hectareas)
 													</div>
 												</div>
-												<div class="col-xs-6">
+												<div class="clearfix"></div>
+												<div class="col-xs-12">
+													<div class="collapse map" >
+														<div id="map-canvas1" style="height:200px;width:100%;" ></div>
+													</div>
+												</div>
+												<div class="clearfix"></div>
+												<div class="col-xs-6" style="margin-top:10px;">
 													<div class="form-group">
 														<input type="text"
 														      class="form-control"
@@ -1641,7 +3874,7 @@
 														      (Hectareas)
 													</div>
 												</div>
-												<div class="col-xs-6">
+												<div class="col-xs-6" style="margin-top:10px;">
 													<div class="form-group">
 														<input type="text"
 														      class="form-control"
@@ -2101,7 +4334,7 @@
 														<input type="text"
 														      class="form-control"
 														      placeholder="Geo Referencia"
-														      ng-model="newUnit.ubicacion" required></input>
+														      ng-model="newUnit.ubicacion" ng-click="mapInit()" id="latlongid" required></input>
 													</div>
 												</div>
 												<div class="col-xs-6">
@@ -2113,7 +4346,14 @@
 														      (Hectareas)
 													</div>
 												</div>
-												<div class="col-xs-6">
+												<div class="clearfix"></div>
+												<div class="col-xs-12">
+													<div class="collapse map" >
+														<div id="map-canvas" style="height:200px;width:100%;" ></div>
+													</div>
+												</div>
+												<div class="clearfix"></div>
+												<div class="col-xs-6" style="margin-top:10px;">
 													<div class="form-group">
 														<input type="text"
 														      class="form-control"
@@ -2122,7 +4362,7 @@
 														      (Hectareas)
 													</div>
 												</div>
-												<div class="col-xs-6">
+												<div class="col-xs-6"  style="margin-top:10px;">
 													<div class="form-group">
 														<input type="text"
 														      class="form-control"
@@ -2576,7 +4816,7 @@
 														</div>
 													</div>
 												</div>
-												
+																						
 											</div>
 										    
 										  </form>

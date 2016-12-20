@@ -19,13 +19,30 @@ app.factory('socket', ['socketFactory',
     }
 ]);
 
-app.controller('MainCtrl',['$scope','posts', 'auth',
-function($scope, posts, auth){
+app.controller('MainCtrl',['$scope','posts', 'auth', 'widget',
+function($scope, posts, auth, widget){
 	$scope.isLoggedIn = auth.isLoggedIn;
 	$scope.currentUser = auth.currentUser;
-	
+	// Get all widget
+	widget.getAll().then(function(data)
+   	{
+   		$scope.widget = data;
+   	});
 	
 }]);
+
+// Services for widget
+app.factory('widget', ['$http', function($http){
+	var w = {};
+	w.getAll = function()
+	{
+		return $http.get('/getWidgets').success(function(data){
+			return data;
+		});
+	};
+	return w;
+}]);
+
 app.controller('PostsCtrl', [
 '$scope',
 'posts',
@@ -717,17 +734,39 @@ function($scope, $state, auth,localStorageService, socket){
   }*/
 
   $scope.calculateDosage= function(){
-
-
-
-    tempEstanions= $scope.dosage.litersByHa/200;
-
-
-    $scope.dosage.estanionByHa = parseFloat(tempEstanions).toFixed(2);
-
-    $scope.dosage.dosageByEstanion = ($scope.dosage.ProductDosage/$scope.dosage.litersByHa)*200;
-
+	var ProductDetails = $scope.dosage.productName.split(",");
+	
+	if ($scope.dosage.productType != 'Ojo de gallo') {
+		$scope.dosage.dosageByEstanion = (ProductDetails[1]/500)*ProductDetails[3];
+	} else {
+		var prodDtlSplt = ProductDetails[1].split("+"),
+			prodDtl = parseInt(prodDtlSplt[0]) + parseInt(prodDtlSplt[1]),
+			prodDtlBSplt = ProductDetails[3].split("+"),
+			prodDtlB = parseInt(prodDtlBSplt[0]) + parseInt(prodDtlBSplt[1]);
+			$scope.dosage.dosageByEstanion = (prodDtl/500)*prodDtlB;
+			
+	}
+    
+    
   }
+
+
+}]);
+
+app.controller('VulneCtrl', [
+'$scope',
+'$state',
+'auth',
+'localStorageService',
+'socket',
+function($scope, $state, auth,localStorageService, socket){
+
+  $scope.currentUser=auth.currentUser;
+  /*if($scope.plantsByHa=='ot'){
+
+  }*/
+
+
 
 
 }]);
@@ -924,6 +963,7 @@ function ($scope, auth, socket, user) {
 
 app.controller('ProfileCtrl',['$http','$scope', 'auth', 'unit', 'user',
 function($http, $scope, auth, unit, user){
+	var map;
 	$scope.isLoggedIn = auth.isLoggedIn;
 	$scope.currentUser = auth.currentUser;
 	$scope.userId = auth.userId;
@@ -1016,6 +1056,8 @@ function($http, $scope, auth, unit, user){
 			
 		$scope.newUnit.departamento = $("#departamentos option:selected").text();
 		$scope.newUnit.municipio = $("#departamentos-munis option:selected").text();
+		$scope.newUnit.lat = $('[name="lat"]').val();
+		$scope.newUnit.lng = $('[name="lng"]').val();
 		
 	    unit.create($scope.newUnit,auth.userId()).error(function(error){
 	      $scope.error = error;
@@ -1068,6 +1110,166 @@ function($http, $scope, auth, unit, user){
 	  };
   
      muni14.addDepts('departamentos');
+
+   function wait(ms){
+   var start = new Date().getTime();
+   var end = start;
+   while(end < start + ms) {
+     end = new Date().getTime();
+  }
+}
+
+    function initialize() {
+	var myLatlng, myLat, myLng;
+	var x;
+	var ax  = [];
+	var infoWindow = new google.maps.InfoWindow({map: map});
+	if(!document.getElementById('latlongid').value) {
+		if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+			
+			myLat = position.coords.latitude;
+			myLng = position.coords.longitude;
+           // map.setCenter(pos);
+            myLatlng = new google.maps.LatLng(myLat , myLng); 
+            
+            var myOptions = {
+	 zoom: 13,
+	 center: myLatlng,
+	 mapTypeId: google.maps.MapTypeId.ROADMAP
+	}
+	map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+
+	map1 = new google.maps.Map(document.getElementById("map-canvas1"), myOptions);
+
+	var marker = new google.maps.Marker({
+	 draggable: true,
+	 position: myLatlng,
+	 map: map,
+	 title: "Your location"
+	});
+
+	var marker1 = new google.maps.Marker({
+		 draggable: true,
+		 position: myLatlng,
+		 map: map1,
+		 title: "Your location"
+	});	
+	
+
+		google.maps.event.addListener(marker, 'dragend', function(event) {
+		    
+		    $scope.newUnit.ubicacion = '('+event.latLng.lat()+' , '+event.latLng.lng()+')';
+		     document.getElementById('latlongid').value = event.latLng.lat() +',' + event.latLng.lng();
+		    console.log("this is marker info", event.latLng.lat() +' , ' + event.latLng.lng());
+		    
+		});
+
+		google.maps.event.addListener(marker1, 'dragend', function(event) {
+			
+		    placeMarker(event.latLng);
+		    $scope.editUnit.ubicacion = '('+event.latLng.lat()+' , '+event.latLng.lng()+')';
+		    document.getElementById('latlongid').value = event.latLng.lat() +',' + event.latLng.lng();
+		    console.log("this is marker info", event.latLng.lat() +' , ' + event.latLng.lng());
+		    
+		});
+		google.maps.event.addDomListener(window, 'load', initialize);
+            
+          }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+          });
+          console.log("this is positon", myLat);
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+        }
+	//myLatlng = new google.maps.LatLng(42.94033923363181 , -10.37109375); 
+	
+	}
+	else {
+		x = document.getElementById('latlongid').value;
+	x = x.replace(/[{()}]/g, '');
+	ax= x.split(",");
+	myLatlng = new google.maps.LatLng(ax[0],ax[1]);
+	
+	var myOptions = {
+	 zoom: 13,
+	 center: myLatlng,
+	  disableDoubleClickZoom: true,
+	 mapTypeId: google.maps.MapTypeId.ROADMAP
+	}
+	map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+
+	map1 = new google.maps.Map(document.getElementById("map-canvas1"), myOptions);
+
+	var marker = new google.maps.Marker({
+	 draggable: true,
+	 position: myLatlng,
+	 map: map,
+	 title: "Your location"
+	});
+
+	var marker1 = new google.maps.Marker({
+		 draggable: true,
+		 position: myLatlng,
+		 map: map1,
+		 title: "Your location"
+	});	
+	
+
+		google.maps.event.addListener(marker, 'dragend', function(event) {
+		    
+		    $scope.newUnit.ubicacion = '('+event.latLng.lat()+' , '+event.latLng.lng()+')';
+		     document.getElementById('latlongid').value = event.latLng.lat() +',' + event.latLng.lng();
+		    console.log("this is marker info", event.latLng.lat() +' , ' + event.latLng.lng());
+		    
+		});
+
+		google.maps.event.addListener(marker1, 'dragend', function(event) {
+			
+		    placeMarker(event.latLng);
+		    $scope.editUnit.ubicacion = '('+event.latLng.lat()+' , '+event.latLng.lng()+')';
+		    document.getElementById('latlongid1').value = event.latLng.lat() +',' + event.latLng.lng();
+		    console.log("this is marker info", event.latLng.lat() +' , ' + event.latLng.lng());
+		    
+		});
+		
+		// double click event
+   /*   google.maps.event.addListener(map1, 'dblclick', function(e) {
+        var positionDoubleclick = e.latLng;
+        marker1.setPosition(positionDoubleclick);
+        // if you don't do this, the map will zoom in
+      }); */
+		google.maps.event.addDomListener(window, 'load', initialize);
+	
+	}
+
+	
+	
+}
+	
+	function placeMarker(location) {
+  var marker = new google.maps.Marker({
+      position: location,
+      draggable:true,
+      map: map
+  });
+
+  map.setCenter(location);
+}
+
+	// Initialize map
+	$scope.mapInit = function()
+	{
+		$('.map').collapse('toggle');
+		initialize();
+	}
+
+
 }]);
 
 app.controller('CampoCtrl', [
@@ -1595,6 +1797,16 @@ function($stateProvider, $urlRouterProvider) {
 	  url: '/dosage',
 	  templateUrl: '/dosage.html',
 	  controller: 'DosageCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
+	})//Dosage
+	.state('vulnerability', {
+	  url: '/vulnerability',
+	  templateUrl: '/vulnerability.html',
+	  controller: 'VulneCtrl',
 	  onEnter: ['$state', 'auth', function($state, auth){
 	    if(!auth.isLoggedIn()){
 	      $state.go('login');
