@@ -528,6 +528,15 @@ ul.alert-dropdown {
     cursor: pointer;
 }
 
+.attachment-image {
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position: center top;
+  height: 150px;
+  width: 150px;
+  float:left;
+}
+
 .chat-image {
   background-repeat: no-repeat;
   background-size:cover;

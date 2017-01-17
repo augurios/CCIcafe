@@ -9,8 +9,9 @@
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<link href="bower_components/angular-snap/angular-snap.min.css" rel="stylesheet">
-	<link href="stylesheets/style.css" rel="stylesheet">
 	<link href="stylesheets/easy-weather.css" rel="stylesheet">
+	<link href="stylesheets/style.css" rel="stylesheet">
+	
 
 	<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 	 
@@ -24,6 +25,8 @@
 	<script src="bower_components/snapjs/snap.min.js"></script>
 	<script src="bower_components/angular-snap/angular-snap.min.js"></script>
 	<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-base64/2.0.5/angular-base64.min.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4UV7wDq9fK_rQsP8yZqYwW-mnnz0J1Lc"></script>
 	<script src="javascripts/angularApp.js"></script>
 	
@@ -58,7 +61,7 @@
 	      <li><a href="#/roya" snap-toggle><i class="fa fa-leaf"></i> Cálculo de Roya</a></li>
 	      <li><a href="#/gallo" snap-toggle><i class="fa fa-leaf"></i> Cálculo de Ojo de Gallo</a></li>
 	      <li><a href="#/dosage" snap-toggle><i class="fa fa-cog"></i> Cálculo de Dosificación</a></li>
-	      <li><a href="#/campo" snap-toggle><i class="fa fa-cog"></i> Hoja de campo </a></li>
+	      <li><a href="#/campo" snap-toggle><i class="fa fa-cog"></i> Hoja de enfermedad </a></li>
 	      <li><a href="#/vulnerability" snap-toggle><i class="fa fa-cog"></i> Vulnerabilidad</a></li>
 	      <!--<li><a href="#" snap-toggle><i class="fa fa-cog"></i> Cálculo de fertilizante</a></li>
 	      <li><a href="#" snap-toggle><i class="fa fa-calculator"></i> Cálculo de cosecha</a></li>
@@ -98,7 +101,7 @@
 					  <br />
 				       <a href="#/weather" class="btn btn-primary">Mas Informacion</a> <br />
 				       <a href="#/forecast" class="btn btn-primary">Pronostico 10 dias</a> <br />
-				       <a href="#/moon" class="btn btn-primary">Astronomia</a><br />
+				       <a href="#/moon" class="btn btn-primary">Astronomía</a><br />
 				       
 					</div>
 			   	</div>
@@ -120,8 +123,18 @@
 				language: 'sp',
 				providerId: 'owm',
 				providerSequence: false,
-				location: 'costa rica, ' + decoded + ''
+				location: 'costa rica, ' + decoded + '',
+				todayLabel: 'Hoy',
+				detailLabels: {
+					humidity: 'Humedad: ',
+					precipitation: 'Precipitacion: ',
+					wind: 'Viento: ',
+					pressure: 'Presion: ',
+					visibility: 'Visibilidad: '
+				},
+				theme: 'ew-transparent'
 			});
+			
 			
 		});
 		
@@ -132,11 +145,6 @@
 		
 	</script>
 	<script type="text/ng-template" id="/posts.html">
-	 		
-			  
-			
-	  
-
 	  <div class="container blog-post">
 		  <div class="row">
 			  <div class="col-md-12">
@@ -156,7 +164,6 @@
 			  </div>
 		  </div>
 	   </div>
-
 	</script>
 	<script type="text/ng-template" id="/register.html">
 	  <div class="register-wrap">
@@ -757,6 +764,46 @@
 				    </div>
 				    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
 				    <a href="#/register">¿No tiene cuenta?</a>
+				    <a href="#/forgotpassword">Cambia la contraseña</a>
+				    <div class="row signature">
+					    <div class="col-xs-6">
+						     <img src="images/USAIDLOGO.png" alt="" class="login-usaid img-responsive"/>
+					    </div>
+					    <div class="col-xs-6">
+						    <p>Programa Regional de Cambio Climático</p>
+					    </div>
+					</div>
+				  </form>
+				</div>
+			</div>
+		</div>
+	</div>
+	  </script>
+	<script type="text/ng-template" id="/forgorpasswordscreen.html">
+		<div class="login-wrap">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">  
+				  <div ng-show="error" class="alert alert-danger row">
+				    <span>{{ error.message }}</span>
+				  </div>
+				  <div ng-show="success" class="alert alert-success row">
+				    <span>{{ success.message }}</span>
+				  </div>
+
+				  <form ng-submit="GenOtp()">
+				    <img src="images/pages-logo-dark.png" alt="" class="login-img img-responsive"/>
+				    <img src="images/LogoICAFE.svg" alt="" class="ana-img img-responsive"/>
+				    <div class="form-group">
+				       <label for="email">Email</label>
+				      <input type="text" name="email"
+				      class="form-control"
+				      ng-model="user.Email"></input>
+				    </div>
+				    
+				    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+				    <a href="#/register">¿No tiene cuenta?</a>
+				    <a href="#/login">Iniciar sesión </a>
 				    <div class="row signature">
 					    <div class="col-xs-6">
 						     <img src="images/USAIDLOGO.png" alt="" class="login-usaid img-responsive"/>
@@ -771,6 +818,89 @@
 		</div>
 	</div>
 	  </script>	
+	<script type="text/ng-template" id="/resetpassword.html">
+		<div class="login-wrap">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">  
+				  <div ng-show="error" class="alert alert-danger row">
+				    <span>{{ error.message }}</span>
+				  </div>
+				  <div ng-show="success" class="alert alert-success row">
+				    <span>{{ success.message }}</span>
+				  </div>
+
+				  <form ng-submit="ChangePassword()">
+				    <img src="images/pages-logo-dark.png" alt="" class="login-img img-responsive"/>
+				    <img src="images/LogoICAFE.svg" alt="" class="ana-img img-responsive"/>
+				    <div class="form-group">
+				      <label for="email">New Password</label>
+				      <input type="password" name="password"
+				      class="form-control"
+				      ng-model="user.password"></input>
+				    </div>
+				    <div class="form-group">
+				      <label for="email">Confirm Password</label>
+				      <input type="password" name="cpassword"
+				      class="form-control"
+				      ng-model="user.cpassword"></input>
+				    </div>
+				    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+				    <a href="#/register">¿No tiene cuenta?</a>
+				    <a href="#/login">Iniciar sesión</a>
+				    <div class="row signature">
+					    <div class="col-xs-6">
+						     <img src="images/USAIDLOGO.png" alt="" class="login-usaid img-responsive"/>
+					    </div>
+					    <div class="col-xs-6">
+						    <p>Programa Regional de Cambio Climático</p>
+					    </div>
+					</div>
+				  </form>
+				</div>
+			</div>
+		</div>
+	</div>
+	  </script>	
+	<script type="text/ng-template" id="/otpscreen.html">
+		<div class="login-wrap">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">  
+				  <div ng-show="error" class="alert alert-danger row">
+				    <span>{{ error.message }}</span>
+				  </div>
+				  <div ng-show="success" class="alert alert-success row">
+				    <span>{{ success.message }}</span>
+				  </div>
+
+				  <form ng-submit="VerifyOTP()">
+				    <img src="images/pages-logo-dark.png" alt="" class="login-img img-responsive"/>
+				    <img src="images/LogoICAFE.svg" alt="" class="ana-img img-responsive"/>
+				    <div class="form-group">
+				       <label for="email">OTP</label>
+				      <input type="text" name="number"
+				      class="form-control"  maxlength="6"
+				      ng-model="user.otp"></input>
+				    </div>
+				    
+				    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+				<!--     <a href="#/register">¿No tiene cuenta?</a>
+				    <a href="#/login">Atrás para iniciar sesión </a>
+				    <div class="row signature">
+					    <div class="col-xs-6">
+						     <img src="images/USAIDLOGO.png" alt="" class="login-usaid img-responsive"/>
+					    </div>
+					    <div class="col-xs-6">
+						    <p>Programa Regional de Cambio Climático</p>
+					    </div>
+					</div> -->
+				  </form>
+				</div>
+			</div>
+		</div>
+	</div>
+	  </script>
 	<script type="text/ng-template" id="/location.html">
 	  		<div class="location-wrap">
 				<div class="container">
@@ -919,12 +1049,12 @@
 									</div>
 									<ul class="severity-list" ng-show="test.advMode">
 										<li>Seleccione la severidad para el grupo de hojas:</li>
-										<li ng-click="addLeaf('0%')" style="color:lime"><img src="/images/escala1.png" /> <span>0%</span></li>
-										<li ng-click="addLeaf('10%')" style="color:green"><img src="/images/escala2.png" /> 10%</span></li>
-										<li ng-click="addLeaf('20%')" style="color:yellow"><img src="/images/escala3.png" /> <span>20%</span></li>
-										<li ng-click="addLeaf('30%')" style="color:rgba(192, 151, 29, 1)"><img src="/images/escala4.png" /> <span>30%</span></li>
-										<li ng-click="addLeaf('40%')" style="color:orange"><img src="/images/escala5.png" /> <span>40%</span></li>
-										<li ng-click="addLeaf('80%')" style="color:red"><img src="/images/escala6.png" /> <span>80%</span></li>
+										<li ng-click="addLeaf('0%')" style="color:lime"><img src="images/escala1.png" /> <span>0%</span></li>
+										<li ng-click="addLeaf('10%')" style="color:green"><img src="images/escala2.png" /> 10%</span></li>
+										<li ng-click="addLeaf('20%')" style="color:yellow"><img src="images/escala3.png" /> <span>20%</span></li>
+										<li ng-click="addLeaf('30%')" style="color:rgba(192, 151, 29, 1)"><img src="images/escala4.png" /> <span>30%</span></li>
+										<li ng-click="addLeaf('40%')" style="color:orange"><img src="images/escala5.png" /> <span>40%</span></li>
+										<li ng-click="addLeaf('80%')" style="color:red"><img src="images/escala6.png" /> <span>80%</span></li>
 									</ul>
 									<ul class="severity-list" ng-hide="test.advMode">
 										<li>Indique el numero de hojas afectadas:</li>
@@ -3322,32 +3452,79 @@
 	</script>
 	<script type="text/ng-template" id="/campo.html">
 			<div class="roya-wrap">
-						<h2 class="section-header">
-		  				Hoja de campo
+					<h2 class="section-header">
+		  				Hoja de Enfermedad
 		  			</h2>
-					<div class="container">
-						<div class="row">
-		                    <div class="col-md-8 col-md-offset-2">
-			                   <form ng-submit="saveTable()" name="hojaform" ngModel="hojaForm" id="hojaform" data-toggle="validator">
-				                   <div class="form-group ">
-								      <label class="control-label requiredField" for="finca">
-								       Finca ID
-								       <span class="asteriskField">
-								        *
-								       </span>
-								      </label>
-								      <input class="form-control" id="finca" name="finca" type="text" ng-model="campodata.fincaid" required="true" />
-								     </div>
-								     <div class="form-group ">
-								      <label class="control-label requiredField" for="fecha">
-								       Fecha
-								       <span class="asteriskField">
-								        *
-								       </span>
-								      </label>
-								      <input class="form-control" id="fecha" name="fecha" placeholder="MM/DD/YYYY" type="text" ng-model="campodata.fecha" required="true" />
-								     </div>
-								     <div class="form-group ">
+		  			
+		  			
+		  			<div class="container">
+						<div class="row intro">
+							<div class="col-lg-6 col-lg-offset-3">
+								<h2>BIENVENIDO <span>{{ currentUser() }}</span></h2>
+								<p>Hoja de Enfermedad</p>
+								
+								
+								<h4 class="clearfix">Seleccione la Unidad para Iniciar</h4>
+								
+								<div class="unidades-wrap">
+						   			<div class="unidad" ng-repeat="unit in units" id="{{unit._id}}" ng-click="startTest(unit)">
+						
+							   			<span>{{unit.nombre}}</span>
+							   			
+							   			<i class="glyphicon glyphicon-chevron-right"></i>
+							   			
+							   		</div>
+							    </div>
+							    <a href="#/profile">Agregar Unidades</a>
+								
+								<!-- <button class="btn btn-primary" ng-click="startTest($event)">Basico</button>
+								<button class="btn btn-primary adv" ng-click="startTest($event)">Avanzado</button> -->
+								
+							</div>
+						</div>
+						<div class="row test">
+							<div class="col-lg-6 col-lg-offset-3">
+								<div class="plantContainer">
+									<h6>Unidad: {{ test.unidad.nombre }}</h6>
+									
+									<div class="plantList">
+										<div class="plantListItem" ng-repeat="plantas in test.plantas">
+											<span>Planta {{ $index + 1 }}</span>
+											<div class="plantControls">											
+												<button class="btn remove" ng-click="removePlant($index)">X</button>
+											</div>
+										</div>
+									</div>
+									<div class="testControls">
+										<button class="btn btn-primary" ng-click="addPlant()" >Agregar Planta</button>
+										<button class="btn btn-primary" ng-click="SaveTestRecord()" >Guardar</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row results">
+							<div class="col-lg-6 col-lg-offset-3">
+								<div ng-hide="test.advMode">
+									<h2>Formulario Enviado</h2>
+									
+									<a href="#/support" class="btn btn-primary" >Solicitar Asesoría Técnica</a>
+								</div>
+								
+							</div>
+						</div>
+						
+						
+						<div class="modal fade" id="plantModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+						  <div class="modal-dialog" role="document">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						        <h4 class="modal-title" id="myModalLabel">Planta {{plantname}}</h4>
+						      </div>
+						      <div class="modal-body">
+						        <form name="hojaform" ngModel="hojaForm" id="hojaform" data-toggle="validator">
+				                  
+								  <div class="form-group ">
 								      <label class="control-label " for="bandolas">
 								       Bandolas
 								      </label>
@@ -3492,7 +3669,7 @@
 								     </div>
 								     <div class="form-group">
 								      <div>
-								       <button class="btn btn-primary " name="submit" type="submit">
+								       <button class="btn btn-primary"  ng-click="addPlantMutiple(campodata)" name="submit" type="submit" data-dismiss="modal" aria-label="Close">
 								        Guardar Camabios
 								       </button>
 								      </div>
@@ -3500,19 +3677,23 @@
 			                    	
 			                    
 			                   </form>
-		                    </div>
-		                </div>
-					</div>
-				</div>
-				<script>
-					$("#hojaform").submit(function(event) {
-
-						$("#hojaform").trigger('reset');
+						      </div>
+						      
+						    </div>
+						  </div>
+						</div>
 						
-						});
+						
+					</div>
+		  			
+		  			
+		  			
+		  			
+		  			
+		  			
 					
-					
-				</script>
+				</div>
+				
 		  </script>
 	<script type="text/ng-template" id="/weather.html">
 			<div class="home-wrap weather">
@@ -3550,7 +3731,16 @@
 					providerId: 'owm',
 					providerSequence: false,
 					showDetails: true,
-					location: 'costa rica, ' + decoded + ''
+					location: 'costa rica, ' + decoded + '',
+					todayLabel: 'Hoy',
+					detailLabels: {
+						humidity: 'Humedad: ',
+						precipitation: 'Precipitacion: ',
+						wind: 'Viento: ',
+						pressure: 'Presion: ',
+						visibility: 'Visibilidad: '
+					},
+					theme: 'ew-transparent'
 				});
 				
 			});
@@ -3593,7 +3783,17 @@
 						forecasts: true,
 						nbForecastDays: 10,
 						providerId: 'wug',
-						location: 'costa rica, ' + decoded + ''
+						location: 'costa rica, ' + decoded + '',
+						todayLabel: 'Hoy',
+						detailLabels: {
+							humidity: 'Humedad: ',
+							precipitation: 'Precipitacion: ',
+							wind: 'Viento: ',
+							pressure: 'Presion: ',
+							visibility: 'Visibilidad: '
+						},
+						theme: 'ew-transparent',
+						weekDays: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab']
 					});
 				});
 				
@@ -3608,7 +3808,7 @@
 				   	<div class="row">
 				   		<div class="col-md-6 col-md-offset-3">
 				   		 <div class="page-header">
-					        <h2>Astronomia</h2>
+					        <h2>Astronomía</h2>
 					      </div>
 	
 					      <div class="astro">
@@ -3633,11 +3833,18 @@
 						if(decoded == "San José") {
 							 decoded = "sanjose"
 						}
+						
+						if(decoded == "Provincia de San Jose") {
+							 decoded = "sanjose"
+						}
+						
+						console.log(country,decoded);
 										
 						  $.ajax({
 						    url: "http://api.wunderground.com/api/72df18b7f213607b/astronomy/lang:SP/q/" + country + "/" + decoded + ".json",
 				    dataType: "jsonp",
 				    success: function(parsed_json) {
+					  
 				      var moon_phase = parsed_json['moon_phase'];
 				      var moonData = {};
 				      moonData['Luna Iluminada'] = moon_phase['percentIlluminated'] + '%',
@@ -3709,6 +3916,9 @@
 								<div class="message-wrap">
 									<img class="userImage chat-image" ng-src="{{ loggedUser == message.sender ? UserImageBottom : adminImage }}" />&nbsp;<label class="chat-text" >{{ loggedUser == message.sender ?  UserName : adminName }}:</label>
 									<div class="message-body chat-Body">{{ message.bodyMsg }}</div>
+									<div ng-if="message.Msgattachement" class="album">
+										<img class="attachment-image" ng-src="{{ message.Msgattachement }}" />
+									</div>
 								</div>
 								
 							</div>
@@ -3719,12 +3929,18 @@
 				</div>
 			</div>
 		</div>
-		<form class="type-sink form-inline" ng-submit="sendMessage()" ng-controller="SupportCtrl">
-							<div class="form-group">
+		<form class="type-sink form-inline"  ng-submit="sendMessage(files)" ng-controller="SupportCtrl">
+							<div class="form-group relativepos">
 								<a ng-click="openImagePopup()"><img style="margin-top:0" class="userImage chat-image" ng-src="{{ UserImageBottom }}" /></a>
-								<label class="chat-text-bottom">{{ UserName }}</label>
+								<!--<label class="chat-text-bottom">{{ UserName }}</label>-->
 								<label class="sr-only" for="chatMsg">Chat message</label>
-							    <input type="text" class="form-control" name="chatMsg" id="chatMsg">
+								<!-- <div class="watschat"> -->
+							    	<input type="text" class="form-control" name="chatMsg" id="chatMsg">
+							    	<!--<i class="fa fa-paperclip fa-5 icattache" onclick="$('#filuploadattach').click();$('#filuploadattach').trigger('input')"></i>-->
+								    <!-- <input type="file" class="" ng-model="myFile" name="chatattchment" id="filuploadattach"> -->
+								    <i class="fa fa-paperclip fa-5 icattache" ngf-select ng-model="files" ngfDataUrl></i>
+
+							    <!-- </div> -->
 								<input type="hidden" name="fromId" value="{{ currentUser() }}">
 							    <input type="hidden" name="toId" value="admin">
 							  </div>

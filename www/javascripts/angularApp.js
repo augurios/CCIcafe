@@ -1,4 +1,4 @@
-var app = angular.module('coffeeScript', ['btford.socket-io','ui.router','snap','luegg.directives','LocalStorageModule','ngSanitize']);
+var app = angular.module('coffeeScript', ['btford.socket-io','ui.router','snap','luegg.directives','LocalStorageModule','ngSanitize','ngFileUpload','base64']);
 
 app.config(['localStorageServiceProvider', function(localStorageServiceProvider){
   localStorageServiceProvider.setPrefix('ls');
@@ -15,6 +15,7 @@ app.factory('socket', ['socketFactory',
         return socketFactory({
             prefix: '',
             ioSocket: io.connect('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000')
+           // ioSocket: io.connect('http://localhost:3000')
         });
     }
 ]);
@@ -45,10 +46,11 @@ app.factory('widget', ['$http', function($http){
 
 app.controller('PostsCtrl', [
 '$scope',
+'$window',
 'posts',
 'post',
 'auth',
-function($scope, posts, post, auth){
+function($scope, $window, posts, post, auth){
 		$scope.isLoggedIn = auth.isLoggedIn;
 		$scope.post = post;
 		$scope.addComment = function(){
@@ -71,7 +73,9 @@ app.controller('AuthCtrl', [
 '$scope',
 '$state',
 'auth',
-function($scope, $state, auth){
+'$window',
+'$timeout',
+function($scope, $state, auth,$window,$timeout){
   $scope.user = {};
   
   $scope.register = function(){
@@ -93,6 +97,147 @@ function($scope, $state, auth){
       $state.go('home');
     });
   };
+  // Tech - 12 jan
+  $scope.GenOtp = function(){
+    auth.GenOtp($scope.user).error(function(error){
+        $scope.error = error;
+    }).then(function(data){
+    	
+    	if(data.data.success == false){
+ 
+    		$scope.success = false
+    		$scope.error = {"message":"Usuario no encontrado"}
+    	}
+    	else if(data.data.success == true){
+    		$scope.error = false
+    		window.localStorage['otp-pasw-token'] = JSON.stringify(data.data.data);
+    		$state.go('authenticateotp');
+    		
+    		$scope.success = {"message":"Un Otp fue enviado a tu correo electrónico"}
+    	}      	
+    });
+  };
+  $scope.VerifyOTP = function(){
+  	if(!$scope.user.otp){
+  		
+  		return false;
+  	}
+  	var parseLoca = $window.localStorage['otp-pasw-token'] ? JSON.parse($window.localStorage['otp-pasw-token']) : null;
+  	if(parseLoca == null){
+  		
+  		$scope.success = false
+		$scope.error = true
+		$scope.error = {"message":"Inténtalo de nuevo solicitando nueva contraseña"}
+		$timeout(function(){
+			$state.go('forgotpassword');
+		}, 2000);
+  		return false;
+  	}
+  	var data =  { otp : $scope.user.otp, support :  parseLoca}
+  	auth.VerifyOtp(data).error(function(error){
+        $scope.error = error;
+    }).then(function(data){
+    	if(data.data == 1){
+    		//window.localStorage.removeItem('otp-pasw-token');
+    		$scope.success = true
+    		$scope.error = false
+    		sessionStorage.removeItem("count_verify");
+    		$scope.success = {"message":"Verificado. Por favor espera..."}
+    		$timeout(function(){
+			$state.go('changepassword');
+			}, 1000);
+    		
+    	}
+    	else{
+    		if(sessionStorage.getItem("count_verify") == null){
+				  counter= sessionStorage.setItem("count_verify", 1);
+				  counters = 1;
+				}else{
+				  counters= parseInt(sessionStorage.getItem("count_verify")); 
+				  counters++;
+				  counter=sessionStorage.setItem("count_verify", counters);
+				}
+    		//window.localStorage.removeItem('otp-pasw-token');
+    		//$state.go('changepassword');
+    		$scope.success = false
+    		$scope.error = true
+    		var chance = 3 - counters;
+    		$scope.error = {"message":"No válido o caducado. Faltan "+chance+" oportunidades"}
+    		if(chance == 0){
+    			sessionStorage.removeItem("count_verify");
+    			window.localStorage.removeItem('otp-pasw-token');
+    			$timeout(function(){
+					$state.go('login');
+				}, 2000)
+    		}
+    	}
+
+      	
+    });
+  }
+  $scope.ChangePassword = function(){
+  	if(!$scope.user.password || !$scope.user.cpassword ){
+  		return false;
+  	}
+  	if($scope.user.password !== $scope.user.cpassword ){
+  		$scope.error =  {"message":"La contraseña no coincide "} 
+  		return false;
+  	}
+  	else{
+  		var parseLoca = $window.localStorage['otp-pasw-token'] ? JSON.parse($window.localStorage['otp-pasw-token']) : null;
+  		if(parseLoca == null){
+  			$scope.error =  {"message":"No se puede identificar al usuario. Inténtalo de nuevo"} 
+  			return false
+  		}
+  		var info = {pasword :$scope.user,user: parseLoca }
+	  	auth.ChangePassword(info).error(function(error){
+	        $scope.error = error;
+	    }).then(function(data){
+
+	    	if(data.data.success){
+	    		$scope.success = true
+	    		$scope.error = false
+	    		window.localStorage.removeItem('otp-pasw-token');
+	    		$scope.success = {"message":"Hecho! Contraseña cambiada correctamente. Por favor espera... "}
+	    		sessionStorage.removeItem("countchpas");
+	    		$timeout(function(){
+					$state.go('login');
+				}, 3000);
+	    	}
+	    	else{
+	    		var counter = null;
+	    		
+	    		if(sessionStorage.getItem("countchpas") == null){
+				  counter= sessionStorage.setItem("countchpas", 1);
+				  counters = 1;
+				}else{
+				  counters= parseInt(sessionStorage.getItem("countchpas")); 
+				  counters++;
+				  counter=sessionStorage.setItem("countchpas", counters);
+				}
+	    		//window.localStorage.removeItem('otp-pasw-token');
+	    		//$state.go('changepassword');
+	    		$scope.success = false
+	    		$scope.error = true
+
+	    		var chance = 3 - counters;
+	    		$scope.error = {"message":"Inválido. Faltan "+chance+" oportunidades"}
+	    		if(chance == 0){
+	    			sessionStorage.removeItem("countchpas");
+	    			window.localStorage.removeItem('otp-pasw-token');
+	    			$timeout(function(){
+						$state.go('login');
+					}, 2000)
+	    		}
+
+	    	}
+
+	      	
+	    });
+  	}
+  	
+
+  }
 }]);
 
 //Units Controller
@@ -792,8 +937,8 @@ function($scope, $state, auth){
 }]);
 
 // Support Chat Controller 
-app.controller('SupportCtrl',['$scope','auth', 'socket', 'user',
-function ($scope, auth, socket, user) {
+app.controller('SupportCtrl',['$scope','auth', 'socket', 'user','Upload','$base64',
+function ($scope, auth, socket, user,Upload,$base64) {
 
 	$scope.isLoggedIn = auth.isLoggedIn;
 	$scope.currentUser = auth.currentUser;
@@ -881,20 +1026,53 @@ function ($scope, auth, socket, user) {
 	}
 
 	
-	$scope.sendMessage = function() {
-		var f = $('.type-sink');
-        var msg = f.find('[name=chatMsg]').val();
-        var from_id = f.find('[name=fromId]').val();
-		var data_server={
-            message:msg,
-            to_user:'admin',
-            from_id:from_id
-        };
-        socket.emit('get msg',data_server);
-        $('.type-sink .form-control').val("");
+	$scope.sendMessage = function(attachmentfile) {
+		var image;
+		console.log(attachmentfile)
+		if(attachmentfile){
+			console.log(attachmentfile)
+			//console.log(Upload.dataUrl(attachmentfile).then(('base64')))
+		 Upload.dataUrl(attachmentfile, true).then(function(dataUrl) {
+			image = dataUrl;
+			var f = $('.type-sink');
+	        var msg = f.find('[name=chatMsg]').val();
+	        var from_id = f.find('[name=fromId]').val();
+	        var from_chatattchment = image;
+	     
+	       
+			var data_server={
+	            message:msg,
+	            bodyattachement:from_chatattchment,
+	            to_user:'admin',
+	            from_id:from_id
+	        };
+
+	        socket.emit('get msg',data_server);
+	        $('.type-sink .form-control').val("");
+	        $scope.files = '';
+		 })
+		 } else {
+
+		 
+			var f = $('.type-sink');
+	        var msg = f.find('[name=chatMsg]').val();
+	        var from_id = f.find('[name=fromId]').val();
+	        var from_chatattchment = image;
+	     
+	       
+			var data_server={
+	            message:msg,
+	            bodyattachement:from_chatattchment,
+	            to_user:'admin',
+	            from_id:from_id
+	        };
+
+	        socket.emit('get msg',data_server);
+	        $('.type-sink .form-control').val("");
+        }
 	};
 	socket.on('set msg only',function(data){
-        data=JSON.parse(data);
+        data=JSON.parse(data);console.log("set msg only", data)
         var user = data.sender;
         if (user == $scope.loggedUser) {
             $scope.setCurrentUserImage(data.messages);
@@ -902,7 +1080,7 @@ function ($scope, auth, socket, user) {
 	    }
     });
 	socket.on('set msg',function(data){
-        data=JSON.parse(data);
+        data=JSON.parse(data);console.log("set msg", data);
         var usera = data.to_user;
         var userb = data.from_id;
         if (usera == $scope.loggedUser || userb == $scope.loggedUser) {
@@ -941,12 +1119,14 @@ function ($scope, auth, socket, user) {
 	    var userObj = auth.currentUserObject();
 	    if (userObj != null) {
 	        user.get(userObj._id).then(function (userObj) {
+	        	console.log($scope.UserImage)
 	            if ($scope.UserImage != null) {
 	                userObj.image = $scope.UserImage;
 	            }
 	            //if ($scope.UserName != null) {
 	            //    userObj.nickname = $scope.UserName;
 	            //}
+	            
 	            user.update(userObj).error(function (error) {
 	                $scope.error = error;
 	            }).then(function (data) {
@@ -1272,122 +1452,187 @@ function($http, $scope, auth, unit, user){
 
 }]);
 
+
+	
 app.controller('CampoCtrl', [
-	'$scope',
-	'auth',
-	'$location',
-	'campoService',
-	'$window',
-    'user',
-	function ($scope, auth, $location, campo,  $window, user) { 
-	    var currentTest = null;
-	  
-	    var loadAll = function () {
+'$scope',
+'$state',
+'auth',
+'localStorageService',
+'socket',
+'unit',
+'user',
+'methods',
+'gallo','campoService',
+function($scope, $state, auth, localStorageService, socket, unit, user, methods, roya, campoService){
+  $scope.currentUser = auth.currentUser;
+  var currentId = auth.currentUser();
+  var testInStore = localStorageService.get('localTestCampo');
+  
+  var plantEditorCampo = function(plant) {
+	  $scope.plantname = plant;
+	  $scope.leafList = $scope.test.plantas[plant - 1];
+	  //console.log($scope.leafList);
+	  $('#plantModal').modal('show');
+  };
+    $scope.affect = 1;
+    user.get(auth.userId()).then(function(user){
+		 $scope.units = user.units;
+    });
+    
+     $scope.test = testInStore || {
+	  	advMode : false,
+	  	bandolas : false,
+	  	resolved: false,
+	  	user : currentId,
+	  	plantas: [],
+	  	unidad: {},
+	  	incidencia: 0,
+	  	avgplnt : "",
+		avgplntDmgPct : 0,
+		incidencia : 0
+	  };
 
-	    	campo.get().then(function (campo) {
-		    	$scope.testsList = campo.data;
-	            $scope.currentPage = 1;
-	            $scope.pageSize = 9;
-	            $scope.noOfPages = Math.ceil($scope.testsList / $scope.pageSize);
-	            $scope.totalItems = $scope.testsList.length;
-		    })
+	methods.get().then(function(methods){
+		 var meth = methods.data[0];
+		 var date = new Date();
+		 var currentMonth = date.getMonth();
+		if(currentMonth < 6 ){
+		   var methodsAvail = {};
+		   methodsAvail.grade1 = meth.caseInidence10.abrilJunio;
+		   methodsAvail.grade2 = meth.caseInidence1120.abrilJunio;
+		   methodsAvail.grade3 = meth.caseInidence2150.abrilJunio;
+		   methodsAvail.grade4 = meth.caseInidence50.abrilJunio;
+		   $scope.methodsMonth = methodsAvail;
+		   
+		} else if(currentMonth > 5 && currentMonth < 9) {
+		   var methodsAvail = {};
+		   methodsAvail.grade1 = meth.caseInidence10.julioSetiembre;
+		   methodsAvail.grade2 = meth.caseInidence1120.julioSetiembre;
+		   methodsAvail.grade3 = meth.caseInidence2150.julioSetiembre;
+		   methodsAvail.grade4 = meth.caseInidence50.julioSetiembre;
+		   $scope.methodsMonth = methodsAvail;
+		} else if(currentMonth > 8) {
+		   var methodsAvail = {};
+		   methodsAvail.grade1 = meth.caseInidence10.octubreDiciembre;
+		   methodsAvail.grade2 = meth.caseInidence1120.octubreDiciembre;
+		   methodsAvail.grade3 = meth.caseInidence2150.octubreDiciembre;
+		   methodsAvail.grade4 = meth.caseInidence50.octubreDiciembre;
+		   $scope.methodsMonth = methodsAvail;
+		}
+    });
 
-		    $scope.saveTable = function () {
-		        campo.create($scope.campodata);
-		        
-		        alert("Informacion Enviada");
-		    };
-	        
-	    };
+  
+   $scope.$watch('test', function () {
+      localStorageService.set('localTestCampo', $scope.test);
+    }, true);
+ 
+  
+  if(testInStore && Object.keys(testInStore.unidad).length > 1) {
+	  $('.roya-wrap').addClass('initiated');
+  }
+  
+  if(testInStore && testInStore.resolved) {
+	  $('.test').hide();
+	  $('.results').show();
+  }
+	
+  $scope.startTest = function(selectedUnit) {
+	  $scope.test.unidad = selectedUnit;
+	  $('.roya-wrap').addClass('initiated');
+   }
+   $scope.bandolas = function() {
+	   if($scope.test.bandolas) {
+		  $scope.test.bandolas = false;
+	  } else {
+		  $scope.test.bandolas = true;
+	  }
+	}
+	$scope.addPlant = function() {
+		$scope.test.plantas.push([]);
+		var plantName = $scope.test.plantas.length;
+		plantEditorCampo(plantName);
+		setTimeout(function () { $('[name=amount]').val(''); }, 100);
+	};
+	
+	$scope.editPlant = function($index) {
+		plantEditorCampo($index + 1);
+		$scope.leafList = $scope.test.plantas[$index];
+	}
+	
+	$scope.initLeaf = function() {
+		$('.severity-list').addClass('active');
+	}
+	
+	$scope.closePlant = function() {
+		$('.plant-editor').removeClass('active');
+	}
+	
+	$scope.addLeaf = function(severity) {
+		var amount = $('[name=amount]').val();
+		var plantIndex = $scope.plantname - 1;
+		$scope.test.plantas[plantIndex].push([amount,severity]);
+		$scope.leafList = $scope.test.plantas[plantIndex];
+		$('[name=amount]').val('');
+		$scope.affect = 1;
+		$('.severity-list').removeClass('active');
+	};
 
-	    loadAll();
-	    $(".date-field").datepicker();
+    $scope.removePlant = function (index) {
+      $scope.test.plantas.splice(index, 1);
+    };
+    
+    $scope.removeLeaf = function (index) {
+	  var plantIndex = $scope.plantname - 1;
+      $scope.test.plantas[plantIndex].splice(index, 1);
+    }; 
 
-	    $scope.head = {
-	        createdAt: "Fecha",
-	        bandolas: "Bandolas",
-	        chasparria: "Chasparria",
-	        frutosnudo5: "Frutos nudo 5",
-	        frutosnudo6: "Frutos nudo 6",
-	    };
+    $scope.addPlantMutiple = function(data){
+    	var plantIndex = $scope.plantname - 1;
+    	$scope.test.plantas[plantIndex].push(data)
 
+    }
+    $scope.SaveTestRecord = function() {
+  			
+  			campoService.SaveCampoUnitTest(testInStore).then(function(success){
+  				//alert("The test has been saved.")
+  				alert("Se ha guardado la prueba.")
+  			},function(err){
+  				console.log(err)
+  				if(err.status == 404){
+  				  alert("Hubo un error. No se pudo completar la solicitud.")
+  				 // alert("There went an error. Request could not be completed.")
+  				}
+  				
+  			})
+    		
+    };
+    //AKhil
+    $scope.getHelp = function(currentUser) { 
+	    
+	    
+	    roya.create(testInStore).success(function(data){
+		    
+		    
+		    
+		     var msg = 'Calculo De Roya Enviado: ID: ' + data._id + '.' ;
+		  	 var data_server={
+	            message:msg,
+	            to_user:'admin',
+	            from_id:currentUser
+	        };
+	        socket.emit('get msg',data_server);
 
-	    $scope.sort = {
-	        column: 'createdAt',
-	        descending: false
-	    };
-
-	    $scope.selectedCls = function (column) {
-	        return column == $scope.sort.column && 'sort-' + $scope.sort.descending;
-	    };
-
-	    $scope.changeSorting = function (column) {
-	        var sort = $scope.sort;
-	        if (sort.column == column) {
-	            sort.descending = !sort.descending;
-	        } else {
-	            sort.column = column;
-	            sort.descending = false;
-	        }
-	    };
-
-	    $scope.loadTest = function (test) {
-	        currentTest = test;
-	        $scope.detail = currentTest;
-
-	        $('#detailModalCampo').modal('show');
-
-	    }
-
-	    $scope.removeTest = function (id) {
-
-	    }
-	    $scope.exportData = function () {
-	        var table = document.getElementById('exportable');
-	        var html = table.outerHTML;
-	        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
-	    };
-	    $scope.search = {};
-	    //$watch search to update pagination
-	    $scope.$watch('search', function (newVal, oldVal) {
-	        if ($scope.testsList != undefined) {
-	            $scope.filtered = $scope.testsList;
-	            var arrayToReturn = [];
-	            for (var i = 0; i < $scope.testsList.length; i++) {
-	                if (newVal._id != undefined && newVal._id != "") {
-	                    if ($scope.testsList[i] == newVal._id) {
-	                        arrayToReturn.push($scope.testsList[i]);
-	                    }
-	                }
-	                if (newVal.dateFrom != undefined && newVal.dateFrom != "" && newVal.dateTo != "" && newVal.dateTo != undefined) {
-	                    var startDate = parseDate(newVal.dateFrom);
-	                    var endDate = parseDate(newVal.dateTo);
-	                    var createDate = new Date($scope.testsList[i].createdAt);
-	                    
-	                    if (createDate >= startDate && createDate <= endDate) {
-	                        arrayToReturn.push($scope.testsList[i]);
-	                    }
-	                }
-	                if (newVal.dateFrom == undefined && newVal.dateTo == undefined && newVal._id == undefined) {
-	                    arrayToReturn.push($scope.testsList[i]);
-	                }
-	            }
-	            $scope.filtered = arrayToReturn;
-	            $scope.totalItems = $scope.filtered == undefined ? 0 : $scope.filtered.length;
-	            //$scope.pageSize = 9;
-	            $scope.noOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
-	            $scope.currentPage = 1;
-	        }
-	        else {
-	            var arrayToReturn = [];
-	            $scope.filtered = arrayToReturn;
-	            $scope.totalItems = 0;
-	            $scope.noOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
-	            $scope.currentPage = 1;
-
-	        }
-	    }, true);
-	}]);	
+		    
+	        localStorageService.remove('localTestCampo');
+        });
+	    
+	           
+        
+        
+    };
+    
+}]);
 
 app.factory('posts', ['$http', 'auth', function($http, auth){
 	  var o = {
@@ -1458,6 +1703,7 @@ app.factory('user', ['$http', 'auth', function($http, auth){
 		};
 		
 		o.update = function(user){
+			/*console.log(user)*/
 	  return $http.put('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/users/' + user._id, user, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
@@ -1530,6 +1776,38 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 	    auth.saveToken(data.token);
 	  });
 	};
+	// Tech 12 / 1
+	// Change Localhost to production url
+	// for GenOtp(), VerifyOtp(), ChangePassword()
+	
+	auth.GenOtp = function(user){
+		
+	  /*return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/requestpasswordchange', user).success(function(data){
+	    auth.saveToken(data.token);
+	  });*/
+	  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/requestpasswordchange', user).success(function(data){
+	     return data;
+	  });
+	};	
+	auth.VerifyOtp = function(user){
+		
+	  /*return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/changeauthenticate', user).success(function(data){
+	    auth.saveToken(data.token);
+	  });*/
+	  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/changeauthenticate', user).success(function(data){
+	     return data;
+	  });
+	};	
+	auth.ChangePassword = function(user){
+		
+	  /*return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/passwordchange', user).success(function(data){
+	    auth.saveToken(data.token);
+	  });*/
+	  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/passwordchange', user).success(function(data){
+	     return data;
+	  });
+	};
+
 	auth.logOut = function(){
 	  $window.localStorage.removeItem('flapper-news-token');
 	  window.location.href = '/';
@@ -1629,6 +1907,13 @@ app.factory('campoService', ['$http', 'auth', function ($http, auth) {
             return data;
         });
     };
+    o.SaveCampoUnitTest = function(data){
+    	return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/admin/campo/addtests',data, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).success(function (data) {
+            return data;
+        });
+    }
 
     return o;
 }]);
@@ -1752,6 +2037,21 @@ function($stateProvider, $urlRouterProvider) {
 	      $state.go('home');
 	    }
 	  }]
+	})
+	.state('forgotpassword', {
+	  url: '/forgotpassword',
+	  templateUrl: '/forgorpasswordscreen.html',
+	  controller: 'AuthCtrl'
+	})
+	.state('authenticateotp', {
+	  url: '/authenticate',
+	  templateUrl: '/otpscreen.html',
+	  controller: 'AuthCtrl'
+	})
+	.state('changepassword', {
+	  url: '/resetpassword',
+	  templateUrl: '/resetpassword.html',
+	  controller: 'AuthCtrl'
 	})
 	.state('register-profile', {
 	  url: '/register-profile',

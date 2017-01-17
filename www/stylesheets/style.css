@@ -208,6 +208,7 @@ a {
   text-align: center;
   display: block;
   font-weight: bold;
+  margin-bottom: 18px;
 }
 
 .signature {
@@ -486,11 +487,20 @@ a {
 
 
 .astro {
-    background: white;
+    background: rgba(255, 255, 255, 0.4);
     border-radius: 4px;
-    color: #333;
+    color: #fff;
     margin: 24px 40px;
     padding: 24px;
+
+
+    border-top: 1px solid rgba(255, 255, 255, 0.44) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.19);
+    background: rgba(255,255,255,0.3);
+    border-radius: 4px;
+    padding: 8px 24px 32px;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.05);
+    margin-bottom: 12px;
 }
 
 .astro span {
@@ -707,6 +717,8 @@ input:checked + label + #otherArea {
 
 .roya-wrap .modal-content {
   height: 96%;
+  overflow: scroll;
+  /* padding: 24px; */
 }
 
 .plant-editor {
@@ -1051,6 +1063,15 @@ input:checked + label + #otherArea {
   color: #fff;
 }
 
+.attachment-image {
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position: center top;
+  height: 150px;
+  width: 150px;
+  float:left;
+}
+
 .chat-image {
   background-repeat: no-repeat;
   background-size:cover;
@@ -1089,4 +1110,65 @@ input:checked + label + #otherArea {
 }
 .modal-open .snap-content {
 	transform : none !important;
+}
+
+/* Easy Weather Plugin modification */
+
+.ew-vertical {
+  width: auto;
+  padding: 24px;
+}
+
+.ew-transparent {
+  color: #fff;
+  text-shadow: none;
+}
+
+.ew-container .ew-wrap-cond {
+  float: none;
+}
+
+.ew-container .ew-cont-info {
+  width: auto;
+  max-width: none;
+  margin: 0 auto;
+}
+
+.ew-left {
+  float: none;
+}
+
+.ew-vertical .ew-wrap-cond {
+  border-top: 1px solid rgba(255, 255, 255, 0.44) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.19);
+  background: rgba(255,255,255,0.3);
+  border-radius: 4px;
+  padding: 8px 24px 32px;
+  box-shadow: 1px 1px 1px rgba(0,0,0,0.05);
+  margin-bottom: 12px;
+
+
+}
+
+.ew-container .ew-cont-details {
+  float: none;
+  font-size: 18px;
+  line-height: 30px;
+}
+
+
+.ew-header {
+  margin-bottom: 18px;
+}
+.watschat{
+  position: relative;
+}
+.relativepos{
+  position: relative;
+}
+.icattache {
+    position: absolute;
+    right: 94px;
+    font-size: 26px;
+    top: -8px;
 }
