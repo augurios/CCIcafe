@@ -1172,3 +1172,19 @@ input:checked + label + #otherArea {
     font-size: 26px;
     top: -8px;
 }
+.fullbutton button {
+    width: 100% !important;
+}
+.nopadd{
+  padding-right: 0;
+  padding-left: 0;
+
+}
+.testControls > .col-md-12 button {
+    margin: 11px 0;
+    background-color: #3ebfff !important;
+}
+.testControls > .col-md-12 button:hover {
+background-color: #3498db  !important;
+    border-color: #3498db;
+  }

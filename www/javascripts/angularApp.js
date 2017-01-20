@@ -20,6 +20,24 @@ app.factory('socket', ['socketFactory',
     }
 ]);
 
+app.directive('onlyNum', function() {
+    return function(scope, element, attrs) {
+
+        var keyCode = [8, 9, 37, 39, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 110];
+        element.bind("keydown", function(event) {
+            //console.log($.inArray(event.which,keyCode));
+            if ($.inArray(event.which, keyCode) === -1) {
+                scope.$apply(function() {
+                    scope.$eval(attrs.onlyNum);
+                    event.preventDefault();
+                });
+                event.preventDefault();
+            }
+
+        });
+    };
+});
+
 app.controller('MainCtrl',['$scope','posts', 'auth', 'widget',
 function($scope, posts, auth, widget){
 	$scope.isLoggedIn = auth.isLoggedIn;
@@ -374,6 +392,10 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
   $scope.currentUser = auth.currentUser;
   var currentId = auth.currentUser();
   var testInStore = localStorageService.get('localTest');
+  $scope.ClearTest = function(){
+  	localStorageService.remove('localTest');
+  	$state.go($state.current, {}, {reload: true})
+  }
   var plantEditor = function(plant) {
 	  $scope.plantname = plant;
 	  $scope.leafList = $scope.test.plantas[plant - 1];
@@ -627,6 +649,11 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
   $scope.currentUser = auth.currentUser;
   var currentId = auth.currentUser();
   var testInStore = localStorageService.get('localTestgallo');
+  
+  $scope.ClearTest = function(){
+  	localStorageService.remove('localTestgallo');
+  	$state.go($state.current, {}, {reload: true})
+  }
   var plantEditor = function(plant) {
 	  $scope.plantname = plant;
 	  $scope.leafList = $scope.test.plantas[plant - 1];
@@ -1466,8 +1493,13 @@ app.controller('CampoCtrl', [
 'gallo','campoService',
 function($scope, $state, auth, localStorageService, socket, unit, user, methods, roya, campoService){
   $scope.currentUser = auth.currentUser;
+  $scope.resultscampo = false;
   var currentId = auth.currentUser();
   var testInStore = localStorageService.get('localTestCampo');
+  $scope.ClearTest = function(){
+  	localStorageService.remove('localTestCampo');
+  	$state.go($state.current, {}, {reload: true})
+  }
   
   var plantEditorCampo = function(plant) {
 	  $scope.plantname = plant;
@@ -1593,10 +1625,26 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 
     }
     $scope.SaveTestRecord = function() {
-  			
+    	    testInStore = localStorageService.get('localTestCampo');
+
+  			if(testInStore == null) 
+  			{
+  				alert("Hubo un error. No se pudo completar la solicitud. Por favor rellene los detalles de las plantas.")
+  				return false;
+  			}
   			campoService.SaveCampoUnitTest(testInStore).then(function(success){
   				//alert("The test has been saved.")
-  				alert("Se ha guardado la prueba.")
+  				//alert("Se ha guardado la prueba.")
+  				if(success.data == 1){
+  				 localStorageService.remove('localTestCampo');
+  				 $scope.resultscampo = true;
+
+  				 $('.test').hide();
+				 $('.results').show();
+  				}
+  				else{
+  					  alert("Hubo un error. No se pudo completar la solicitud. Por favor rellene los detalles de las plantas.")
+  				}
   			},function(err){
   				console.log(err)
   				if(err.status == 404){

@@ -980,7 +980,12 @@
 										</div>
 									</div>
 								</div>
+
 								<div class="testControls">
+								<div class="col-md-12 fullbutton nopadd">
+									<button class="btn btn-primary" ng-click="ClearTest()">Cancelar</button>
+								</div>
+
 									<button class="btn btn-primary" ng-click="addPlant()" ng-hide="test.plantas.length > 29 && test.bandolas || test.plantas.length > 49 && !test.bandolas">Agregar Planta</button>
 									<button class="btn btn-primary" ng-click="calculateTest()" ng-disabled="test.plantas.length < 30 && test.bandolas || test.plantas.length < 50 && !test.bandolas">Calcular</button>
 								</div>
@@ -1035,18 +1040,45 @@
 									<p ng-show="test.advMode">Divida las hojas de cada planta en grupos por severidad.</p>
 									<p ng-hide="test.advMode">Agregue la cantidad total de hojas.</p>
 									<div class="leaf-list">
-										<div class="leaf-item" ng-repeat="leaf in leafList">
+											
+											<div ng-if="test.bandolas" class="leaf-item" ng-repeat="leaf in leafList">
 											<span>Hojas: {{leaf[0]}}</span>
 											<div class="leaf-control">
 												<span class="severity">{{leaf[1]}}</span>
 												<span class="remove" ng-click="removeLeaf($index)">X</span>
 												</div>
 											</div>
+										
+											<div ng-if="!test.bandolas" class="leaf-item" ng-repeat="leaf in leafList">
+											
+												<span>Hojas: {{leaf[0]}}</span>
+												<div class="leaf-control">
+													<span class="severity">{{leaf[1]}}</span>
+													<span class="remove" ng-click="removeLeaf($index)">X</span>
+													</div>
+											
+											</div>
+
 										</div>
-									<div class="plant-editor-control" ng-hide="leafList.length > 1 && !test.advMode">
-										<span>Hojas: <input type="number" name="amount" value="1"> </span>
+									<div ng-if="test.bandolas && !test.advMode" class="plant-editor-control" ng-hide="leafList.length > 1 && !test.advMode">
+										<span>Hojas: <input type="number" only-num ng-model="number" min="0" name="amount" value="1"> </span>
+										<button class="btn btn-primary" ng-click="initLeaf()">Agregar </button>
+									</div>
+									<div ng-if="!test.bandolas && !test.advMode" class="plant-editor-control" ng-hide="leafList.length >= 1 && !test.advMode">
+										<span>Hojas: <input type="number" only-num ng-model="number" min="0" name="amount" value="1"> </span>
+										<button class="btn btn-primary" ng-click="initLeaf()">Agregar </button>
+									</div>
+									 
+									<div ng-if="test.bandolas && test.advMode" class="plant-editor-control" ng-hide="leafList.length > 1">
+										<span>Hojas: <input type="number" only-num ng-model="number" min="0" name="amount" value="1"> </span>
 										<button class="btn btn-primary" ng-click="initLeaf()">Agregar</button>
 									</div>
+									<div ng-if="!test.bandolas && test.advMode" class="plant-editor-control" ng-hide="leafList.length >= 1">
+										<span>Hojas: <input type="number" only-num ng-model="number" min="0" name="amount" value="1"> </span>
+										<button class="btn btn-primary" ng-click="initLeaf()">Agregar </button>
+									</div>
+									
+
 									<ul class="severity-list" ng-show="test.advMode">
 										<li>Seleccione la severidad para el grupo de hojas:</li>
 										<li ng-click="addLeaf('0%')" style="color:lime"><img src="images/escala1.png" /> <span>0%</span></li>
@@ -1058,7 +1090,7 @@
 									</ul>
 									<ul class="severity-list" ng-hide="test.advMode">
 										<li>Indique el numero de hojas afectadas:</li>
-									    <li><span><input type="number" ng-model="affect" > </span>
+									    <li><span><input type="number" only-num min="0" ng-model="affect" > </span>
 										<button class="btn btn-primary" ng-click="addLeaf('afectadas: ' + affect)">Agregar</button></li>
 									</ul>
 								</div>
@@ -1123,6 +1155,9 @@
 									</div>
 								</div>
 								<div class="testControls">
+								<div class="col-md-12 fullbutton nopadd">
+									<button class="btn btn-primary"  ng-click="ClearTest()">Cancelar</button>
+								</div>
 									<button class="btn btn-primary" ng-click="addPlant()" ng-hide="test.plantas.length > 29 && test.bandolas || test.plantas.length > 49 && !test.bandolas">Agregar Planta</button>
 									<button class="btn btn-primary" ng-click="calculateTest()" ng-disabled="test.plantas.length < 30 && test.bandolas || test.plantas.length < 50 && !test.bandolas">Calcular</button>
 								</div>
@@ -1185,8 +1220,12 @@
 												</div>
 											</div>
 										</div>
-									<div class="plant-editor-control" ng-hide="leafList.length > 1 && !test.advMode">
-										<span>Hojas: <input type="number" name="amount" value="1"> </span>
+									<div ng-if="test.bandolas" class="plant-editor-control" ng-hide="leafList.length > 1 && !test.advMode">
+										<span>Hojas: <input type="number" only-num ng-model="number" name="amount" value="1"> </span>
+										<button class="btn btn-primary" ng-click="initLeaf()">Agregar</button>
+									</div>
+									<div ng-if="!test.bandolas" class="plant-editor-control" ng-hide="leafList.length >= 1 && !test.advMode">
+										<span>Hojas: <input type="number" only-num ng-model="number" name="amount" value="1"> </span>
 										<button class="btn btn-primary" ng-click="initLeaf()">Agregar</button>
 									</div>
 									<ul class="severity-list" ng-show="test.advMode">
@@ -1200,7 +1239,7 @@
 									</ul>
 									<ul class="severity-list" ng-hide="test.advMode">
 										<li>Indique el numero de hojas afectadas:</li>
-									    <li><span><input type="number" ng-model="affect" > </span>
+									    <li><span><input type="number" only-num  min="0"  ng-model="affect" > </span>
 										<button class="btn btn-primary" ng-click="addLeaf('afectadas: ' + affect)">Agregar</button></li>
 									</ul>
 								</div>
@@ -3496,15 +3535,18 @@
 										</div>
 									</div>
 									<div class="testControls">
+									<div class="col-md-12 fullbutton nopadd">
+									<button class="btn btn-primary"  ng-click="ClearTest()">Cancelar</button>
+								</div>
 										<button class="btn btn-primary" ng-click="addPlant()" >Agregar Planta</button>
 										<button class="btn btn-primary" ng-click="SaveTestRecord()" >Guardar</button>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="row results">
+						<div class="row results" >
 							<div class="col-lg-6 col-lg-offset-3">
-								<div ng-hide="test.advMode">
+								<div>
 									<h2>Formulario Enviado</h2>
 									
 									<a href="#/support" class="btn btn-primary" >Solicitar Asesoría Técnica</a>
