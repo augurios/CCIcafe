@@ -14,8 +14,8 @@ app.factory('socket', ['socketFactory',
     function(socketFactory) {
         return socketFactory({
             prefix: '',
-            ioSocket: io.connect('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000')
-           // ioSocket: io.connect('http://localhost:3000')
+            ioSocket: io.connect('https://icafe.centroclima.org')
+           // ioSocket: io.connect('https://icafe.centroclima.org:3000')
         });
     }
 ]);
@@ -55,7 +55,7 @@ app.factory('widget', ['$http', function($http){
 	var w = {};
 	w.getAll = function()
 	{
-		return $http.get('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/getWidgets').success(function(data){
+		return $http.get('https://icafe.centroclima.org/getWidgets').success(function(data){
 			return data;
 		});
 	};
@@ -402,7 +402,8 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 	  //console.log($scope.leafList);
 	  $('#plantModal').modal('show');
   };
-    $scope.affect = 1;
+    //$scope.affect = 1;
+		$scope.affect = "";
     user.get(auth.userId()).then(function(user){
 		 $scope.units = user.units;
     });
@@ -480,6 +481,11 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 		plantEditor(plantName);
 		setTimeout(function () { $('[name=amount]').val(''); }, 100);
 	};
+
+	$scope.CloseAndAddPlant=function()
+	{
+	  $scope.addPlant();
+	}
 	
 	$scope.editPlant = function($index) {
 		plantEditor($index + 1);
@@ -500,7 +506,8 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 		$scope.test.plantas[plantIndex].push([amount,severity]);
 		$scope.leafList = $scope.test.plantas[plantIndex];
 		$('[name=amount]').val('');
-		$scope.affect = 1;
+		$scope.affect ="";
+		//$scope.affect = 1;
 		$('.severity-list').removeClass('active');
 	};
 
@@ -1186,6 +1193,35 @@ function($http, $scope, auth, unit, user){
 	  fungicidasRoya: true,
 	  verificaAgua: true,
 	  recomendaciontecnica: '',
+	  nitrogeno: true,
+	  nitrorealiza: '',
+	  sacos: '',
+	  realizapoda: true,
+	  realizamonth: '',
+	  quetipo: '',
+	  enfermedades: true,
+	  cyprosol: true,
+	  cyprosoldate: '',
+	  atemi: true,
+	  atemidate: '',
+	  esfera: true,
+	  esferadate: '',
+	  opera: true,
+	  operadate: '',
+	  opus: true,
+	  opusdate: '',
+	  soprano: true,
+	  sopranodate: '',
+	  hexalon: true,
+	  hexalondate: '',
+	  propicon: true,
+	  propicondate: '',	 
+	  hexil: true,
+	  hexildate: '',	 
+	  otros: true,
+	  otrosdate: '',
+	  fungicidasmonth: '',
+	  produccionhectarea: '',
 	  variedad: {
 	  		caturra: false,
 			bourbon: false,
@@ -1201,13 +1237,15 @@ function($http, $scope, auth, unit, user){
 	  fungicidas: {
 		  contacto: true,
 	  	  bourbon: false,
-	  	  catuai: false
-		  
+	  	  catuai: false,
+		 biologico : false,
+		 sistemico : false
 	  },
 	  verificaAguaTipo: {
 		  ph: true,
 		  dureza: false
 	  },
+	  rendimiento : '',
 	  tipoCafe: {
 		  estrictamenteDuro: true,
 		  duro: false,
@@ -1221,8 +1259,12 @@ function($http, $scope, auth, unit, user){
 		 $scope.userO = user;
 		 $scope.units = $scope.userO.units;
     });
-    $( ".date-field" ).datepicker();
-     $scope.update = function(){
+	  var spanishDateTimePickerOption = {
+        closeText:"Cerrar",prevText:"&#x3C;Ant",nextText:"Sig&#x3E;",currentText:"Hoy",monthNames:["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],monthNamesShort:["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"],dayNames:["domingo","lunes","martes","miércoles","jueves","viernes","sábado"],dayNamesShort:["dom","lun","mar","mié","jue","vie","sáb"],dayNamesMin:["D","L","M","X","J","V","S"],weekHeader:"Sm",firstDay:1,isRTL:!1,showMonthAfterYear:!1,yearSuffix:""
+    }
+    $( ".date-field" ).datepicker(spanishDateTimePickerOption);
+    
+    $scope.update = function(){
     user.update($scope.userO).error(function(error){
 	      $scope.error = error;
 	    }).then(function(data){
@@ -1259,6 +1301,7 @@ function($http, $scope, auth, unit, user){
 	}
 	
 	$scope.saveUnit = function(){
+
 		if ($scope.newunitForm.$valid) {
 			
 		$scope.newUnit.departamento = $("#departamentos option:selected").text();
@@ -1280,6 +1323,36 @@ function($http, $scope, auth, unit, user){
 				  manejoTejido: true,
 				  fungicidasRoya: true,
 				  verificaAgua: true,
+				  recomendaciontecnica: '',
+				  nitrogeno: true,
+				  nitrorealiza: '',
+				  sacos: '',
+				  realizapoda: true,
+				  realizamonth: '',
+				  quetipo: '',
+				  enfermedades: true,
+				  cyprosol: true,
+				  cyprosoldate: '',
+				  atemi: true,
+				  atemidate: '',
+				  esfera: true,
+				  esferadate: '',
+				  opera: true,
+				  operadate: '',
+				  opus: true,
+				  opusdate: '',
+				  soprano: true,
+				  sopranodate: '',
+				  hexalon: true,
+				  hexalondate: '',
+				  propicon: true,
+				  propicondate: '',	 
+				  hexil: true,
+				  hexildate: '',	 
+				  otros: true,
+				  otrosdate: '',
+				  fungicidasmonth: '',
+				  produccionhectarea: '',
 				  variedad: {
 				  		caturra: false,
 						bourbon: false,
@@ -1294,13 +1367,16 @@ function($http, $scope, auth, unit, user){
 				  fungicidas: {
 					  contacto: true,
 				  	  bourbon: false,
-				  	  catuai: false
+				  	  catuai: false,
+				  	  biologico : false,
+		 			  sistemico : false
 					  
 				  },
 				  verificaAguaTipo: {
 					  ph: true,
 					  dureza: false
 				  },
+				  rendimiento : '',
 				  recomendaciontecnica: '',
 				  tipoCafe: {
 					  estrictamenteDuro: true,
@@ -1687,19 +1763,19 @@ app.factory('posts', ['$http', 'auth', function($http, auth){
 	  		posts : []
 	  };
 	  o.getAll = function() {
-	    return $http.get('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/posts').success(function(data){
+	    return $http.get('https://icafe.centroclima.org/posts').success(function(data){
 	      angular.copy(data, o.posts);
 	    });
 	  };
 	  o.create = function(post) {
-		  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/posts', post, {
+		  return $http.post('https://icafe.centroclima.org/posts', post, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    o.posts.push(data);
 		  });
 		};
 		o.upvote = function(post) {
-		  return $http.put('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/posts/' + post._id + '/upvote', null, {
+		  return $http.put('https://icafe.centroclima.org/posts/' + post._id + '/upvote', null, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   })
 		    .success(function(data){
@@ -1707,17 +1783,17 @@ app.factory('posts', ['$http', 'auth', function($http, auth){
 		    });
 		};
 		o.get = function(id) {
-		  return $http.get('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/posts/' + id).then(function(res){
+		  return $http.get('https://icafe.centroclima.org/posts/' + id).then(function(res){
 		    return res.data;
 		  });
 		};
 		o.addComment = function(id, comment) {
-		  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/posts/' + id + '/comments', comment, {
+		  return $http.post('https://icafe.centroclima.org/posts/' + id + '/comments', comment, {
 		    headers: {Authorization: 'Bearer '+auth.getToken()}
 		  });
 		};
 		o.upvoteComment = function(post, comment) {
-		  return $http.put('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/posts/' + post._id + '/comments/'+ comment._id + '/upvote', null, {
+		  return $http.put('https://icafe.centroclima.org/posts/' + post._id + '/comments/'+ comment._id + '/upvote', null, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   })
 		    .success(function(data){
@@ -1738,21 +1814,21 @@ app.factory('user', ['$http', 'auth', function($http, auth){
 		  });
 		};*/
 		o.getAll = function() {
-		  return $http.get('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/users', {
+		  return $http.get('https://icafe.centroclima.org/users', {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).then(function(res){
 		    return res.data;
 		  });
 		};
 		o.get = function(id) {
-		  return $http.get('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/users/' + id).then(function(res){
+		  return $http.get('https://icafe.centroclima.org/users/' + id).then(function(res){
 		    return res.data;
 		  });
 		};
 		
 		o.update = function(user){
 			/*console.log(user)*/
-	  return $http.put('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/users/' + user._id, user, {
+	  return $http.put('https://icafe.centroclima.org/users/' + user._id, user, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 	    return data
@@ -1814,13 +1890,13 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 	};
 
 	auth.register = function(user){
-	  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/register', user).success(function(data){
+	  return $http.post('https://icafe.centroclima.org/register', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });
 	};
 
 	auth.logIn = function(user){
-	  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/login', user).success(function(data){
+	  return $http.post('https://icafe.centroclima.org/login', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });
 	};
@@ -1830,28 +1906,28 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 	
 	auth.GenOtp = function(user){
 		
-	  /*return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/requestpasswordchange', user).success(function(data){
+	  /*return $http.post('https://icafe.centroclima.org/requestpasswordchange', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });*/
-	  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/requestpasswordchange', user).success(function(data){
+	  return $http.post('https://icafe.centroclima.org/requestpasswordchange', user).success(function(data){
 	     return data;
 	  });
 	};	
 	auth.VerifyOtp = function(user){
 		
-	  /*return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/changeauthenticate', user).success(function(data){
+	  /*return $http.post('https://icafe.centroclima.org/changeauthenticate', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });*/
-	  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/changeauthenticate', user).success(function(data){
+	  return $http.post('https://icafe.centroclima.org/changeauthenticate', user).success(function(data){
 	     return data;
 	  });
 	};	
 	auth.ChangePassword = function(user){
 		
-	  /*return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/passwordchange', user).success(function(data){
+	  /*return $http.post('https://icafe.centroclima.org/passwordchange', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });*/
-	  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/passwordchange', user).success(function(data){
+	  return $http.post('https://icafe.centroclima.org/passwordchange', user).success(function(data){
 	     return data;
 	  });
 	};
@@ -1867,18 +1943,20 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
    var o = {};
    o.getAll = function(id) {
-	    return $http.get('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/users/'+ id +'/units').success(function(data){
+	    return $http.get('https://icafe.centroclima.org/users/'+ id +'/units').success(function(data){
 	      return data;
 	    });
 	  };
    o.get = function(userId,id) {
-		  return $http.get('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/users/'+ userId +'/units/'+ id).then(function(res){
+		  return $http.get('https://icafe.centroclima.org/users/'+ userId +'/units/'+ id).then(function(res){
 		    return res.data;
 		  });
 		};
    
 	o.create = function(unit, id){
-	  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/users/'+ id +'/units', unit, {
+		//localhost unit
+	  
+	  return $http.post('https://icafe.centroclima.org/users/'+ id +'/units', unit, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;
@@ -1886,7 +1964,9 @@ app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
 	};
 	
 	o.update = function(unit, id, unitData){
-	  return $http.put('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/users/'+ id +'/units/'+ unit, unitData, {
+		//localhost unit
+	  
+	  return $http.put('https://icafe.centroclima.org/users/'+ id +'/units/'+ unit, unitData, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 	    return data
@@ -1894,7 +1974,7 @@ app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
 	};
 	
 	o.deleteUnit = function(unitId, userId){
-	  return $http.delete('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/users/'+ userId +'/units/'+ unitId, {
+	  return $http.delete('https://icafe.centroclima.org/users/'+ userId +'/units/'+ unitId, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return unitId;
@@ -1909,19 +1989,19 @@ app.factory('methods', ['$http', 'auth', function($http, auth){
 	  		chats : []
 	  };
 	  o.get = function() {
-	    return $http.get('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/admin/methods/').success(function(data){
+	    return $http.get('https://icafe.centroclima.org/admin/methods/').success(function(data){
 	      return data;
 	    });
 	  };
 	  o.create = function(method) {
-		  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/admin/methods', method, {
+		  return $http.post('https://icafe.centroclima.org/admin/methods', method, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;
 		  });
 		};
 		o.update = function(method) {
-		  return $http.put('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/admin/methods', method, {
+		  return $http.put('https://icafe.centroclima.org/admin/methods', method, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;
@@ -1937,26 +2017,26 @@ app.factory('campoService', ['$http', 'auth', function ($http, auth) {
         chats: []
     };
     o.get = function () {
-        return $http.get('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/admin/campo/').success(function (data) {
+        return $http.get('https://icafe.centroclima.org/admin/campo/').success(function (data) {
             return data;
         });
     };
     o.create = function (method) {
-        return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/admin/campo', method, {
+        return $http.post('https://icafe.centroclima.org/admin/campo', method, {
             headers: { Authorization: 'Bearer ' + auth.getToken() }
         }).success(function (data) {
             return data;
         });
     };
     o.update = function (method) {
-        return $http.put('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/admin/methods', method, {
+        return $http.put('https://icafe.centroclima.org/admin/methods', method, {
             headers: { Authorization: 'Bearer ' + auth.getToken() }
         }).success(function (data) {
             return data;
         });
     };
     o.SaveCampoUnitTest = function(data){
-    	return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/admin/campo/addtests',data, {
+    	return $http.post('https://icafe.centroclima.org/admin/campo/addtests',data, {
             headers: { Authorization: 'Bearer ' + auth.getToken() }
         }).success(function (data) {
             return data;
@@ -1971,12 +2051,12 @@ app.factory('roya', ['$http', 'auth', function($http, auth){
 	  		
 	  };
 	  o.getAll = function() {
-	    return $http.get('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/roya').success(function(data){
+	    return $http.get('https://icafe.centroclima.org/roya').success(function(data){
 	      return data;
 	    });
 	  };
 	  o.create = function(roya) {
-		 return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/roya', roya, {
+		 return $http.post('https://icafe.centroclima.org/roya', roya, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;	
@@ -1995,12 +2075,12 @@ app.factory('gallo', ['$http', 'auth', function($http, auth){
 	  		
 	  };
 	  o.getAll = function() {
-	    return $http.get('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/gallo').success(function(data){
+	    return $http.get('https://icafe.centroclima.org/gallo').success(function(data){
 	      return data;
 	    });
 	  };
 	  o.create = function(gallo) {
-		 return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/gallo', gallo, {
+		 return $http.post('https://icafe.centroclima.org/gallo', gallo, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;	

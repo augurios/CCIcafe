@@ -198,7 +198,7 @@ app.factory('socket', ['socketFactory',
 	function (socketFactory) {
 	    return socketFactory({
 	        prefix: '',
-	        ioSocket: io.connect('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000')
+	        ioSocket: io.connect('https://icafe.centroclima.org')
 	    });
 	}
 ]);
