@@ -745,6 +745,10 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 		plantEditor(plantName);
 		setTimeout(function () { $('[name=amount]').val(''); }, 100);
 	};
+	$scope.CloseAndAddPlant=function()
+	{
+	  $scope.addPlant();
+	}
 	
 	$scope.editPlant = function($index) {
 		plantEditor($index + 1);
