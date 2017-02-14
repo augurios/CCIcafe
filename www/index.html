@@ -267,7 +267,7 @@
 								      class="form-control"
 								      placeholder="Area total"
 								      ng-model="unit.areaTotal"></input>
-								      (Manzanas)
+								      (Hectareas)
 							</div>
 						</div>
 						<div class="col-xs-6">
@@ -276,19 +276,10 @@
 								      class="form-control"
 								      placeholder="Area con café"
 								      ng-model="unit.areaCafe"></input>
-								      (Manzanas)
+								      (Hectareas)
 							</div>
 						</div>
-						<div class="col-xs-6">
-							<div class="form-group">
-								<input type="text"
-								      class="form-control"
-								      placeholder="Tamaño del lote"
-								      ng-model="unit.lote"></input>
-								      (Manzanas)
-							</div>
-						</div>
-					<!--	<div class="col-xs-6">
+											<!--	<div class="col-xs-6">
 							<div class="form-group">
 								<input type="text"
 								      class="form-control"
@@ -353,7 +344,7 @@
 							<div class="form-group">
 								<input type="text"
 								      class="form-control"
-								      placeholder="Distanciamiento"
+								      placeholder="Distanciamiento Ej: 2x1"
 								      ng-model="unit.distanciamiento"></input>
 								      (Metros)
 							</div>
@@ -648,7 +639,7 @@
 								      class="form-control"
 								      placeholder="Producción"
 								      ng-model="unit.rendimiento"></input>
-								      (cereza/manzana)
+								      (Quintales de Cereza/manzana)
 							</div>
 						</div>
 						<div class="col-xs-12">
@@ -982,7 +973,7 @@
 									<button class="btn btn-primary" ng-click="ClearTest()">Cancelar</button>
 								</div>
 
-									<button class="btn btn-primary" ng-click="addPlant()" ng-hide="test.plantas.length > 29 && test.bandolas || test.plantas.length > 49 && !test.bandolas">Agregar Planta</button>
+									<button class="btn btn-primary" ng-click="addPlant()" ng-disable="IsTotalPlantaAdded" ng-hide="test.plantas.length > 29 && test.bandolas || test.plantas.length > 49 && !test.bandolas">Agregar Planta</button>
 									<button class="btn btn-primary" ng-click="calculateTest()" ng-disabled="test.plantas.length < 30 && test.bandolas || test.plantas.length < 50 && !test.bandolas">Calcular</button>
 								</div>
 							</div>
@@ -1056,44 +1047,68 @@
 											</div>
 
 										</div>
+										<div class="clearfix"></div>
+									<form name="frmRoyaAddPlanta">
 									<div ng-if="test.bandolas && !test.advMode" class="plant-editor-control" ng-hide="leafList.length > 1 && !test.advMode">
-										<span>Hojas: <input type="number" only-num ng-model="number" min="0" name="amount" value="1"> </span>
-										<button class="btn btn-primary" ng-click="initLeaf()">Agregar </button>
+										<span>Hojas: <input type="number" only-num ng-model="modal.number" min="1" minlength="1" maxlength="2" max="99" name="amount" value="1"> </span>
+										<button class="btn btn-primary" ng-click="initLeaf(modal.number)">Agregar </button>
 									</div>
 									<div ng-if="!test.bandolas && !test.advMode" class="plant-editor-control" ng-hide="leafList.length >= 1 && !test.advMode">
-										<span>Hojas: <input type="number" only-num ng-model="number" min="0" name="amount" value="1"> </span>
-										<button class="btn btn-primary" ng-click="initLeaf()">Agregar </button>
+										<span>Hojas: <input type="number" only-num ng-model="modal.number" min="1" minlength="1" maxlength="2" max="99" name="amount" value="1"> </span>
+										<button class="btn btn-primary" ng-click="initLeaf(modal.number)">Agregar </button>
 									</div>
 									 
 									<div ng-if="test.bandolas && test.advMode" class="plant-editor-control" ng-hide="leafList.length > 1">
-										<span>Hojas: <input type="number" only-num ng-model="number" min="0" name="amount" value="1"> </span>
-										<button class="btn btn-primary" ng-click="initLeaf()">Agregar</button>
+										<span>Hojas: <input type="number" only-num ng-model="modal.number" min="1" minlength="1" maxlength="2" max="99" name="amount" value="1"> </span>
+										<button class="btn btn-primary" ng-click="initLeaf(modal.number)">Agregar</button>
 									</div>
 									<div ng-if="!test.bandolas && test.advMode" class="plant-editor-control" ng-hide="leafList.length >= 1">
-										<span>Hojas: <input type="number" only-num ng-model="number" min="0" name="amount" value="1"> </span>
-										<button class="btn btn-primary" ng-click="initLeaf()">Agregar </button>
+										<span>Hojas: <input type="number" only-num ng-model="modal.number" min="1" minlength="1" maxlength="2" max="99" name="amount" value="1"> </span>
+										<button class="btn btn-primary" ng-click="initLeaf(modal.number)">Agregar </button>
 									</div>
-									
+										<br/>
+										<div class="clearfix"></div>
+										<div class="">
+											<div class="alert-danger" ng-show="IsErrorInfrmRoyaAddPlanta==true">
+												<span class="" >El número total de hojas debe ser> = 1 y <= 99</span>
+											</div>
+										</div>
+											<div class="clearfix"></div>
+										</form>
 
-									<ul class="severity-list" ng-show="test.advMode">
+									<ul class="severity-list" ng-show="test.advMode && modal.numberSubmitted">
 										<li>Seleccione la severidad para el grupo de hojas:</li>
-										<li ng-click="addLeaf('0%')" style="color:lime"><img src="images/escala1.png" /> <span>0%</span></li>
-										<li ng-click="addLeaf('10%')" style="color:green"><img src="images/escala2.png" /> 10%</span></li>
-										<li ng-click="addLeaf('20%')" style="color:yellow"><img src="images/escala3.png" /> <span>20%</span></li>
-										<li ng-click="addLeaf('30%')" style="color:rgba(192, 151, 29, 1)"><img src="images/escala4.png" /> <span>30%</span></li>
-										<li ng-click="addLeaf('40%')" style="color:orange"><img src="images/escala5.png" /> <span>40%</span></li>
-										<li ng-click="addLeaf('80%')" style="color:red"><img src="images/escala6.png" /> <span>80%</span></li>
+										<li ng-click="addLeaf('0%',false)" style="color:lime"><img src="images/escala1.png" /> <span>0%</span></li>
+										<li ng-click="addLeaf('10%',false)" style="color:green"><img src="images/escala2.png" /> 10%</span></li>
+										<li ng-click="addLeaf('20%',false)" style="color:yellow"><img src="images/escala3.png" /> <span>20%</span></li>
+										<li ng-click="addLeaf('30%',false)" style="color:rgba(192, 151, 29, 1)"><img src="images/escala4.png" /> <span>30%</span></li>
+										<li ng-click="addLeaf('40%',false)" style="color:orange"><img src="images/escala5.png" /> <span>40%</span></li>
+										<li ng-click="addLeaf('80%',false)" style="color:red"><img src="images/escala6.png" /> <span>80%</span></li>
 									</ul>
-									<ul class="severity-list" ng-hide="test.advMode">
+
+									<div ng-hide="test.advMode" class="severity-list">
+									<form name="frmRoyaAddPlantaAffectedLeaf">
+									<ul>
 										<li>Indique el numero de hojas afectadas:</li>
-									    <li><span><input type="number" only-num min="0" ng-model="affect" > </span>
-										<button class="btn btn-primary" ng-click="addLeaf('afectadas: ' + affect)">Agregar</button></li>
+									    <li><span><input type="number" only-num ng-model="affect" min="0" minlength="1" maxlength="2" max="99" required > </span>
+											<button class="btn btn-primary" ng-click="addLeaf(affect,true)">Agregar</button></li>
 									</ul>
+									<div class="clearfix"></div>
+										<div class="">
+											<div class="alert-danger" ng-show="IsErrorInfrmRoyaAddPlantaLeaf==true">
+												<span  class="" >El número total de hojas debe ser> = 0 y <= 99</span>
+											</div>
+											<div class="alert-danger" ng-show="IsErrorInfrmRoyaAddPlantaLeafAffectedLeaf==true">
+													<span  class="" >Las hojas afectadas no pueden ser más que el total de hojas</span>
+											</div>
+										</div>
+									</form>
+									</div>
 								</div>
 					      </div>
 					      	<div class="clearfix"></div>
-								<div class="modal-footer">
-											<button type="button" class="btn btn-default" ng-click="CloseAndAddPlant()" ><span class="glyphicon glyphicon-arrow-right"></span></button>
+								<div class="modal-footer" ng-disable="IsTotalPlantaAdded" ng-hide="IsTotalPlantaAdded">
+											<button type="button" ng-hide="IsHideCloseAndAddPlantaButtonInPopup " class="btn btn-default" ng-click="CloseAndAddPlant()" ><span class="glyphicon glyphicon-arrow-right"></span> Siguiente Planta</button>
 									</div>
 								<div class="clearfix"></div>
 					    </div>
@@ -1115,10 +1130,7 @@
 						<div class="col-lg-6 col-lg-offset-3">
 							<h2>BIENVENIDO <span>{{ currentUser() }}</span></h2>
 							<p>Para llevar a cabo el Cálculo de Roya es necesario que elija 30 plantas (2 Bandolas) o 60 plantas (1 Bandola) al azar</p>
-							
-							
 							<h4 class="clearfix">Seleccione la Unidad para la prueba</h4>
-							
 							<div class="unidades-wrap">
 					   			<div class="unidad" ng-repeat="unit in units" id="{{unit._id}}" ng-click="startTest(unit)">
 					
@@ -1199,6 +1211,7 @@
 					
 					
 					<div class="modal fade" id="plantModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				
 					  <div class="modal-dialog" role="document">
 					    <div class="modal-content">
 					      <div class="modal-header">
@@ -1220,40 +1233,61 @@
 												</div>
 											</div>
 										</div>
+									<form name="frmGalloAddPlanta">
 									<div ng-if="test.bandolas" class="plant-editor-control" ng-hide="leafList.length > 1 && !test.advMode">
-										<span>Hojas: <input type="number" only-num ng-model="number" name="amount" value="1"> </span>
-										<button class="btn btn-primary" ng-click="initLeaf()">Agregar</button>
+										<span>Hojas: <input type="number" only-num ng-model="modal.number" name="amount" min="1" minlength="1" maxlength="2" max="99" value="1"> </span>
+										<button class="btn btn-primary" ng-click="initLeaf(modal.number)">Agregar</button>
 									</div>
 									<div ng-if="!test.bandolas" class="plant-editor-control" ng-hide="leafList.length >= 1 && !test.advMode">
-										<span>Hojas: <input type="number" only-num ng-model="number" name="amount" value="1"> </span>
-										<button class="btn btn-primary" ng-click="initLeaf()">Agregar</button>
+										<span>Hojas: <input type="number" only-num ng-model="modal.number" name="amount" min="1" minlength="1" maxlength="2" max="99" value="1"> </span>
+										<button class="btn btn-primary" ng-click="initLeaf(modal.number)">Agregar</button>
 									</div>
+									<br/>
+										<div class="clearfix"></div>
+										<div class="">
+											<div class="alert-danger" ng-show="IsErrorInfrmGalloAddPlanta==true">
+												<span class="" >El número total de hojas debe ser> = 1 y <= 99</span>
+											</div>
+										</div>
+											<div class="clearfix"></div>
+									</form>
 									<ul class="severity-list" ng-show="test.advMode">
 										<li>Seleccione la severidad para el grupo de hojas:</li>
-										<li ng-click="addLeaf('0%')" style="color:lime"><img src="/images/escala1.png" /> <span>0%</span></li>
-										<li ng-click="addLeaf('10%')" style="color:green"><img src="/images/escala2.png" /> 10%</span></li>
-										<li ng-click="addLeaf('20%')" style="color:yellow"><img src="/images/escala3.png" /> <span>20%</span></li>
-										<li ng-click="addLeaf('30%')" style="color:rgba(192, 151, 29, 1)"><img src="/images/escala4.png" /> <span>30%</span></li>
-										<li ng-click="addLeaf('40%')" style="color:orange"><img src="/images/escala5.png" /> <span>40%</span></li>
-										<li ng-click="addLeaf('80%')" style="color:red"><img src="/images/escala6.png" /> <span>80%</span></li>
+										<li ng-click="addLeaf('0%',false)" style="color:lime"><img src="/images/escala1.png" /> <span>0%</span></li>
+										<li ng-click="addLeaf('10%',false)" style="color:green"><img src="/images/escala2.png" /> 10%</span></li>
+										<li ng-click="addLeaf('20%',false)" style="color:yellow"><img src="/images/escala3.png" /> <span>20%</span></li>
+										<li ng-click="addLeaf('30%',false)" style="color:rgba(192, 151, 29, 1)"><img src="/images/escala4.png" /> <span>30%</span></li>
+										<li ng-click="addLeaf('40%',false)" style="color:orange"><img src="/images/escala5.png" /> <span>40%</span></li>
+										<li ng-click="addLeaf('80%',false)" style="color:red"><img src="/images/escala6.png" /> <span>80%</span></li>
 									</ul>
-									<ul class="severity-list" ng-hide="test.advMode">
+									<div ng-hide="test.advMode" class="severity-list">
+									<form name="frmGalloAddPlantaAffectedLeaf">
+									<ul>
 										<li>Indique el numero de hojas afectadas:</li>
-									    <li><span><input type="number" only-num  min="0"  ng-model="affect" > </span>
-										<button class="btn btn-primary" ng-click="addLeaf('afectadas: ' + affect)">Agregar</button></li>
+									    <li><span><input type="number" only-num min="0" minlength="1" maxlength="2" max="99" required  ng-model="affect" > </span>
+										<button class="btn btn-primary" ng-click="addLeaf(affect,true)">Agregar</button></li>
 									</ul>
+									<div class="clearfix"></div>
+										<div class="">
+											<div class="alert-danger" ng-show="IsErrorInfrmGalloAddPlantaLeaf==true">
+												<span  class="" >El número total de hojas debe ser> = 0 y <= 99</span>
+											</div>
+											<div class="alert-danger" ng-show="IsErrorInfrmGalloAddPlantaLeafAffectedLeaf==true">
+													<span  class="" >Las hojas afectadas no pueden ser más que el total de hojas</span>
+											</div>
+										</div>
+									</form>
+									</div>
 								</div>
 					      </div>
 					      	<div class="clearfix"></div>
-								<div class="modal-footer">
-											<button type="button" class="btn btn-default" ng-click="CloseAndAddPlant()" ><span class="glyphicon glyphicon-arrow-right"></span></button>
+								<div class="modal-footer"  ng-disable="IsTotalPlantaAdded" ng-hide="IsTotalPlantaAdded">
+											<button type="button" ng-hide="IsHideCloseAndAddPlantaButtonInPopup"  class="btn btn-default" ng-click="CloseAndAddPlant()" ><span class="glyphicon glyphicon-arrow-right"></span> Siguiente Planta</button>
 									</div>
 								<div class="clearfix"></div>
 					    </div>
 					  </div>
 					</div>
-					
-					
 				</div>
 			</div>
 			
@@ -4056,7 +4090,9 @@
 					
 						   			<span>{{unit.nombre}}</span>
 						   			<button class="btn btn-danger" ng-click="deleteUnit($event, unit._id, $index)">X</button>
-						   			<button class="btn btn-default" ng-click="updateUnit($event, unit._id, $index)" data-toggle="modal" data-target="#myModal">editar</button>
+						   			<button class="btn btn-default" style="margin-left: 12px;" ng-click="updateUnit($event, unit._id, $index)" data-toggle="modal" data-target="#myModal">editar</button>
+						   			
+						   			<button class="btn btn-default" ng-click="updateUnit($event, unit._id, $index)" data-toggle="modal" data-target="#myModal3">Lote</button>
 						   			
 						   		</div>
 						    </div>
@@ -4128,7 +4164,7 @@
 														<input type="text"
 														      class="form-control"
 														      placeholder="Area total"
-														      ng-model="editUnit.areaTotal" ></input>
+														      ng-model="editUnit.areaTotal"></input>
 														      (Hectareas)
 													</div>
 												</div>
@@ -4173,68 +4209,81 @@
 														<label class="col-xs-12">Variedad</label>
 															<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="editUnit.variedad.caturra"> Caturra
+													            <input type="checkbox" ng-model="editUnit.variedad.Catimor5175"> Caturrra
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="editUnit.variedad.bourbon"> Bourbon
+													            <input type="checkbox" ng-model="editUnit.variedad.Sarchimor"> Catuai
 													          </label>
 													        </div>									
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="editUnit.variedad.catuai"> Catuai
+													            <input type="checkbox" ng-model="editUnit.variedad.Anacafe14"> Typica
 													          </label>
 													        </div>
-															<div class="col-xs-6">
+															 <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="editUnit.variedad.maragogype"> Sarchimores
+													            <input type="checkbox" ng-model="editUnit.variedad.Anacafe90"> Costa Rica 95
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="editUnit.variedad.typica"> Typica
+													            <input type="checkbox" ng-model="editUnit.variedad.CostaRica95"> Mundo Novo
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="editUnit.variedad.pacamara"> Pacamara
+													            <input type="checkbox" ng-model="editUnit.variedad.Lempira"> Lerdo 
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="editUnit.variedad.pacheComun"> Costa Rica 95 
+													            <input type="checkbox" ng-model="editUnit.variedad.Obata"> Bourbon 
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="editUnit.variedad.pacheColis"> Obata
+													            <input type="checkbox" ng-model="editUnit.variedad.Catucai"> Sarchimores
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="editUnit.variedad.mundoNovo"> Mundo Novo
+													            <input type="checkbox" ng-model="editUnit.variedad.HibridoH1"> Pacamara
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.hirbidosf1"> Híbridos F1
+													            <input type="checkbox" ng-model="editUnit.variedad.Marsellesa"> Obata 
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.lerdo"> Lerdo
+													            <input type="checkbox" ng-model="editUnit.variedad.Tupi"> Híbridos F1
 													          </label>
 													        </div>
-													        
+																
+													        <div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" ng-model="editUnit.variedad.Otra"> Otra
+													          </label>
+													        </div>
 														</div>
+													</div>
+												</div>
+													<div class="col-xs-12">
+													<div class="form-group">
+														<label for="selCoffeProducessOptions">Tipo de café que produce options?</label>
+														<select class="form-control" id="selCoffeProducessOptions" multiple="true" ng-model="editUnit.typeOfCoffeProducessOptionSelected">
+															<option ng-repeat="option in typesOfCoffeSelectionOptions" value="{{option.name}}">{{option.displayValue}}</option>
+														</select>
 													</div>
 												</div>
 												<div class="col-xs-12">
 													<div class="form-group">
 														<input type="text"
 														      class="form-control"
-														      placeholder="Distanciamiento"
+														      placeholder="Distanciamiento Ej: 2x1"
 														      ng-model="editUnit.distanciamiento"></input>
 														      (Metros)
 													</div>
@@ -4420,6 +4469,7 @@
 														</div>
 													</div>
 												</div>
+												
 												<div class="col-xs-12">
 													<div class="form-group">
 														<label>¿Cuando los aplica?</label>
@@ -4429,304 +4479,7 @@
 														      ng-model="editUnit.fungicidasFechas"></textarea>
 													</div>
 												</div> -->
-												<div class="col-xs-12">
-													<div class="form-group">
-														<div class="row">
-														<label class="col-xs-12">¿Que tipo de fungicidas aplica?</label>
-															
-															<div class="col-xs-6" ng-class="editUnit.cyprosol ? 'col-xs-6' : 'col-xs-12'">
-															<br><br>
-													          <label>
-													            <input type="checkbox" value="Cyprosol" ng-model="editUnit.cyprosol"> Cyprosol
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="editUnit.cyprosol">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="editUnit.cyprosoldate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>									
-													       
-													       <div class="clearfix"></div>
-													       	<div class="col-xs-6" ng-class="editUnit.atemi ? 'col-xs-6' : 'col-xs-12'">
-															<br><br>
-													          <label>
-													            <input type="checkbox" value="Atemi" ng-model="editUnit.atemi"> Atemi
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="editUnit.atemi">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="editUnit.atemidate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>
-
-													       	<div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="editUnit.esfera ? 'col-xs-6' : 'col-xs-12'">
-													       <br><br>
-													          <label>
-													            <input type="checkbox" value="Esfera" ng-model="editUnit.esfera"> Esfera
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="editUnit.esfera">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="editUnit.esferadate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>	
-
-													         		<div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="editUnit.opera ? 'col-xs-6' : 'col-xs-12'">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Opera" ng-model="editUnit.opera"> Opera
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="editUnit.opera">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="editUnit.operadate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>	
-
-													         <div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="editUnit.opus ? 'col-xs-6' : 'col-xs-12'">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Opus" ng-model="editUnit.opus"> Opus
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group"  ng-if="editUnit.opus">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="editUnit.opusdate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>	
-
-													        <div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="editUnit.soprano ? 'col-xs-6' : 'col-xs-12'">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Soprano" ng-model="editUnit.soprano"> Soprano
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group"  ng-if="editUnit.soprano">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="editUnit.sopranodate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>
-
-
-													         <div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="editUnit.hexalon ? 'col-xs-6' : 'col-xs-12'">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Hexalon" ng-model="editUnit.hexalon"> Hexalon
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group"  ng-if="editUnit.hexalon">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="editUnit.hexalondate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>	
-
-													        <div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="editUnit.propicon ? 'col-xs-6' : 'col-xs-12'">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Propicon" ng-model="editUnit.propicon"> Propicon
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group"  ng-if="editUnit.propicon">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="editUnit.propicondate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>									
-													       
-													          <div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="editUnit.hexil ? 'col-xs-6' : 'col-xs-12'">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Hexil" ng-model="editUnit.hexil"> Hexil
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group"  ng-if="editUnit.hexil">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="editUnit.hexildate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>
-
-													       <div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="editUnit.otros ? 'col-xs-6' : 'col-xs-12'">
-													        
-													          <label>
-													            <input type="checkbox" value="Otros" ng-model="editUnit.otros"> Otros (Cuál) 
-													            <input type="text"
-														      class="form-control"
-														      placeholder="Enter Your Answer."
-														      ng-model="editUnit.otros" ng-show="editUnit.otros"></input>
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="editUnit.otrosdate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>									
-																							
-													       
-														</div>
-													</div>
-												</div>
-
-	
-
-
-
+												
 												<div class="col-xs-12">
 													<div class="form-group">
 														<p>¿Verifica la calidad del Agua?</p>
@@ -4769,7 +4522,7 @@
 													      class="form-control"
 													      placeholder="Producción"
 													      ng-model="editUnit.rendimiento"></input>
-													      (cereza/Hectareas)
+													      (Quintales de Cereza/manzana)
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -4911,39 +4664,241 @@
 														</div>
 													</div>
 												</div>
-												<div class="col-xs-12">
+												
+												<div class="col-xs-12" ng-show="editUnit.enfermedades">
 													<div class="form-group">
-													
-														<!-- <input type="text"
-														      class="form-control"
-														      placeholder="¿Qué tipo de fungicidas aplica?"
-														      ng-model="editUnit.fungicidas"></input> -->
-														      <div class="col-xs-6">
+																<div class="row">
+														<label class="col-xs-12">Fungicidas</label>
+															<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="editUnit.fungicidas.contacto"> Contacto
+													            <input type="checkbox" value="Opus" ng-model="editUnit.fungicidas.sistemicoOptions.opus"> Cyprosol
 													          </label>
+													           <div class="form-group" ng-if="editUnit.fungicidas.sistemicoOptions.opus">
+																<label>¿Cuando los aplica?</label>
+																	<select class="form-control" ng-model="editUnit.esferadate">
+																	  <option>Enero</option>
+																	  <option>Febrero</option>
+																	  <option>Marzo</option>
+																	  <option>Abril</option>
+																	  <option>Mayo</option>
+																	  <option>Junio</option>
+																	  <option>Julio</option>
+																	  <option>Agosto</option>
+																	  <option>Septiembre</option>
+																	  <option>Octubre</option>
+																	  <option>Noviembre</option>
+																	  <option>Diciembre</option>
+																	</select>
+																</div>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-value="true" ng-model="editUnit.fungicidas.biologico"> Biológico
+													            <input type="checkbox" value="Opera" ng-model="editUnit.fungicidas.sistemicoOptions.opera">Atemi 
 													          </label>
+													           <div class="form-group" ng-if="editUnit.fungicidas.sistemicoOptions.opera">
+																<label>¿Cuando los aplica?</label>
+																	<select class="form-control" ng-model="editUnit.operadate">
+																	  <option>Enero</option>
+																	  <option>Febrero</option>
+																	  <option>Marzo</option>
+																	  <option>Abril</option>
+																	  <option>Mayo</option>
+																	  <option>Junio</option>
+																	  <option>Julio</option>
+																	  <option>Agosto</option>
+																	  <option>Septiembre</option>
+																	  <option>Octubre</option>
+																	  <option>Noviembre</option>
+																	  <option>Diciembre</option>
+																	</select>
+																</div>
+													        </div>
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Esfera Max" ng-model="editUnit.fungicidas.sistemicoOptions.esferamax">Esfera
+													          </label>
+													          <div class="form-group"  ng-if="editUnit.fungicidas.sistemicoOptions.esferamax">
+																<label>¿Cuando los aplica?</label>
+																	<select class="form-control" ng-model="editUnit.opusdate">
+																	  <option>Enero</option>
+																	  <option>Febrero</option>
+																	  <option>Marzo</option>
+																	  <option>Abril</option>
+																	  <option>Mayo</option>
+																	  <option>Junio</option>
+																	  <option>Julio</option>
+																	  <option>Agosto</option>
+																	  <option>Septiembre</option>
+																	  <option>Octubre</option>
+																	  <option>Noviembre</option>
+																	  <option>Diciembre</option>
+																	</select>
+																</div>
+													        </div>
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Amistar Xtra" ng-model="editUnit.fungicidas.sistemicoOptions.amistarxtra">Opera
+													          </label>
+													          
+													          <div class="form-group"  ng-if="editUnit.fungicidas.sistemicoOptions.amistarxtra">
+																<label>¿Cuando los aplica?</label>
+																	<select class="form-control" ng-model="editUnit.sopranodate">
+																	  <option>Enero</option>
+																	  <option>Febrero</option>
+																	  <option>Marzo</option>
+																	  <option>Abril</option>
+																	  <option>Mayo</option>
+																	  <option>Junio</option>
+																	  <option>Julio</option>
+																	  <option>Agosto</option>
+																	  <option>Septiembre</option>
+																	  <option>Octubre</option>
+																	  <option>Noviembre</option>
+																	  <option>Diciembre</option>
+																	</select>
+																</div>
+													        </div>
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Alto 10" ng-model="editUnit.fungicidas.sistemicoOptions.alto10">Opus
+													          </label>
+													          <div class="form-group"  ng-if="editUnit.fungicidas.sistemicoOptions.alto10">
+																<label>¿Cuando los aplica?</label>
+																	<select class="form-control" ng-model="editUnit.hexalondate">
+																	  <option>Enero</option>
+																	  <option>Febrero</option>
+																	  <option>Marzo</option>
+																	  <option>Abril</option>
+																	  <option>Mayo</option>
+																	  <option>Junio</option>
+																	  <option>Julio</option>
+																	  <option>Agosto</option>
+																	  <option>Septiembre</option>
+																	  <option>Octubre</option>
+																	  <option>Noviembre</option>
+																	  <option>Diciembre</option>
+																	</select>
+																</div>
+													        </div>
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Silvacur" ng-model="editUnit.fungicidas.sistemicoOptions.silvacur">Soprano
+													          </label>
+													          <div class="form-group"  ng-if="editUnit.fungicidas.sistemicoOptions.silvacur">
+																<label>¿Cuando los aplica?</label>
+																	<select class="form-control" ng-model="editUnit.propicondate">
+																	  <option>Enero</option>
+																	  <option>Febrero</option>
+																	  <option>Marzo</option>
+																	  <option>Abril</option>
+																	  <option>Mayo</option>
+																	  <option>Junio</option>
+																	  <option>Julio</option>
+																	  <option>Agosto</option>
+																	  <option>Septiembre</option>
+																	  <option>Octubre</option>
+																	  <option>Noviembre</option>
+																	  <option>Diciembre</option>
+																	</select>
+																</div>
+													        </div>
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Verdadero" ng-model="editUnit.fungicidas.sistemicoOptions.verdadero">Hexalon
+													          </label>
+													          <div class="form-group"  ng-if="editUnit.fungicidas.sistemicoOptions.verdadero">
+																<label>¿Cuando los aplica?</label>
+																	<select class="form-control" ng-model="editUnit.hexildate">
+																	  <option>Enero</option>
+																	  <option>Febrero</option>
+																	  <option>Marzo</option>
+																	  <option>Abril</option>
+																	  <option>Mayo</option>
+																	  <option>Junio</option>
+																	  <option>Julio</option>
+																	  <option>Agosto</option>
+																	  <option>Septiembre</option>
+																	  <option>Octubre</option>
+																	  <option>Noviembre</option>
+																	  <option>Diciembre</option>
+																	</select>
+																</div>
 													        </div>									
-													        <div class="col-xs-6">
+													       
+
+																	<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="editUnit.fungicidas.sistemico"> Sistémico
+													            <input type="checkbox" value="Mancuerna" ng-model="editUnit.fungicidas.sistemicoOptions.mancuerna"> Propicon 
 													          </label>
+													          <div class="form-group"  ng-if="editUnit.fungicidas.sistemicoOptions.mancuerna">
+																<label>¿Cuando los aplica?</label>
+																	<select class="form-control" ng-model="editUnit.otrosdate">
+																	  <option>Enero</option>
+																	  <option>Febrero</option>
+																	  <option>Marzo</option>
+																	  <option>Abril</option>
+																	  <option>Mayo</option>
+																	  <option>Junio</option>
+																	  <option>Julio</option>
+																	  <option>Agosto</option>
+																	  <option>Septiembre</option>
+																	  <option>Octubre</option>
+																	  <option>Noviembre</option>
+																	  <option>Diciembre</option>
+																	</select>
+																</div>
 													        </div>
-																										
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Caporal" ng-model="editUnit.fungicidas.sistemicoOptions.caporal"> Hexil
+													          </label>
+													          <div class="form-group"  ng-if="editUnit.fungicidas.sistemicoOptions.caporal">
+																<label>¿Cuando los aplica?</label>
+																	<select class="form-control" ng-model="">
+																	  <option>Enero</option>
+																	  <option>Febrero</option>
+																	  <option>Marzo</option>
+																	  <option>Abril</option>
+																	  <option>Mayo</option>
+																	  <option>Junio</option>
+																	  <option>Julio</option>
+																	  <option>Agosto</option>
+																	  <option>Septiembre</option>
+																	  <option>Octubre</option>
+																	  <option>Noviembre</option>
+																	  <option>Diciembre</option>
+																	</select>
+																</div>
+													        </div>
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Halt" ng-model="editUnit.fungicidas.sistemicoOptions.halt"> Otros
+													          </label>
+													          <div class="form-group"  ng-if="editUnit.fungicidas.sistemicoOptions.halt">
+																<label>¿Cuando los aplica?</label>
+																	<select class="form-control" ng-model="">
+																	  <option>Enero</option>
+																	  <option>Febrero</option>
+																	  <option>Marzo</option>
+																	  <option>Abril</option>
+																	  <option>Mayo</option>
+																	  <option>Junio</option>
+																	  <option>Julio</option>
+																	  <option>Agosto</option>
+																	  <option>Septiembre</option>
+																	  <option>Octubre</option>
+																	  <option>Noviembre</option>
+																	  <option>Diciembre</option>
+																	</select>
+																</div>
+													        </div>
+																	
+
+														</div>
+														</div>
 													</div>
-												</div>
-												<div class="col-xs-12">
-													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="¿En que mes lo realiza?"
-														      ng-model="editUnit.fungicidasmonth"></input>
-													</div>
-												</div>
+											 
+												
 												<div class="col-xs-12">
 													<div class="form-group">
 														<input type="text"
@@ -5044,15 +4999,7 @@
 														      (Hectareas)
 													</div>
 												</div>
-												<div class="col-xs-6"  style="margin-top:10px;">
-													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="Tamaño del lote"
-														      ng-model="newUnit.lote"></input>
-														      (Hectareas)
-													</div>
-												</div>
+												
 											<!--<div class="col-xs-6">
 													<div class="form-group">
 														<input type="text"
@@ -5068,62 +5015,79 @@
 														<label class="col-xs-12">Variedad</label>
 															<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.caturra"> Caturra
+													            <input type="checkbox" ng-model="newUnit.variedad.Catimor5175"> Caturrra
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.bourbon"> Bourbon
+													            <input type="checkbox" ng-model="newUnit.variedad.Sarchimor"> Catuai
 													          </label>
 													        </div>									
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.catuai"> Catuai
+													            <input type="checkbox" ng-model="newUnit.variedad.Anacafe14"> Typica
 													          </label>
 													        </div>
 															 <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.maragogype"> Sarchimores
+													            <input type="checkbox" ng-model="newUnit.variedad.Anacafe90"> Costa Rica 95
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.typica"> Typica
+													            <input type="checkbox" ng-model="newUnit.variedad.CostaRica95"> Mundo Novo
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.pacamara"> Pacamara
+													            <input type="checkbox" ng-model="newUnit.variedad.Lempira"> Lerdo 
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.pacheComun"> Costa Rica 95 
+													            <input type="checkbox" ng-model="newUnit.variedad.Obata"> Bourbon 
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.pacheColis"> Obata
+													            <input type="checkbox" ng-model="newUnit.variedad.Catucai"> Sarchimores
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.mundoNovo"> Mundo Novo
+													            <input type="checkbox" ng-model="newUnit.variedad.HibridoH1"> Pacamara
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.hirbidosf1"> Híbridos F1
+													            <input type="checkbox" ng-model="newUnit.variedad.Marsellesa"> Obata 
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.lerdo"> Lerdo
+													            <input type="checkbox" ng-model="newUnit.variedad.Tupi"> Híbridos F1
+													          </label>
+													        </div>
+																
+													        <div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" ng-model="newUnit.variedad.Otra"> Otra
 													          </label>
 													        </div>
 														</div>
 													</div>
 												</div>
+
+
+												<div class="col-xs-12">
+													<div class="form-group">
+														<label for="selCoffeProducessOptions">Tipo de café que produce options?</label>
+														<select class="form-control" id="selCoffeProducessOptions" multiple="true" ng-model="newUnit.typeOfCoffeProducessOptionSelected">
+															<option ng-repeat="option in typesOfCoffeSelectionOptions" value="{{option.name}}">{{option.displayValue}}</option>
+														</select>
+													</div>
+												</div>
+
 												<div class="col-xs-12">
 													<div class="form-group">
 														<input type="text"
@@ -5155,19 +5119,19 @@
 														<p>¿Realiza muestreo de suelos?</p>
 														  <div class="radio">
 															  <label>
-															    <input type="radio" name="muestreo" ng-value="true" ng-model="newUnit.muestreo" checked>
+															    <input type="radio" ng-change=yesNomuestreoChange('newUnit') name="muestreo" ng-value="true" ng-model="newUnit.muestreo" >
 															    Si
 															  </label>
 															</div>
 															<div class="radio">
 															  <label>
-															    <input type="radio" name="muestreo" ng-value="false" ng-model="newUnit.muestreo">
+															    <input type="radio" ng-change=yesNomuestreoChange('newUnit') name="muestreo" ng-value="false" ng-model="newUnit.muestreo" checked>
 															    No
 															  </label>
 														</div>
 													</div>
 												</div>
-												<div class="col-xs-12">
+												<div class="col-xs-12" ng-show="newUnit.muestreo">
 													<div class="form-group">
 														<label>¿En que mes lo realiza?</label>
 															<select multiple class="form-control" ng-model="newUnit.muestreoMes">
@@ -5191,19 +5155,19 @@
 														<p>¿Fertiliza el suelo?</p>
 														  <div class="radio">
 															  <label>
-															    <input type="radio" name="fertilizaSuelo" ng-value="true" ng-model="newUnit.fertilizaSuelo" checked>
+															    <input type="radio" ng-change=yesNofertilizaSueloChange('newUnit') name="fertilizaSuelo" ng-value="true" ng-model="newUnit.fertilizaSuelo" >
 															    Si
 															  </label>
 															</div>
 															<div class="radio">
 															  <label>
-															    <input type="radio" name="fertilizaSuelo" ng-value="false" ng-model="newUnit.fertilizaSuelo">
+															    <input type="radio" ng-change=yesNofertilizaSueloChange('newUnit') name="fertilizaSuelo" ng-value="false" ng-model="newUnit.fertilizaSuelo" checked>
 															    No
 															  </label>
 														</div>
 													</div>
 												</div>
-												<div class="col-xs-12">
+												<div class="col-xs-12" ng-show="newUnit.fertilizaSuelo">
 													<div class="form-group">
 														<label>¿En que mes lo realiza?</label>
 															<select multiple class="form-control" ng-model="newUnit.fertilizaSueloMes">
@@ -5220,27 +5184,26 @@
 															  <option>Noviembre</option>
 															  <option>Diciembre</option>
 															</select>
-														
 													</div>
 												</div>
 												<div class="col-xs-12">
 													<div class="form-group">
-														<p>¿Fertiliza el follaje?</p>
+														<p>¿Realiza aplicaciones Foliares?</p>
 														  <div class="radio">
 															  <label>
-															    <input type="radio" name="fertilizaFollaje" ng-value="true" ng-model="newUnit.fertilizaFollaje" checked>
+															    <input type="radio"  ng-change=yesNofertilizaFollajeChange('newUnit') name="fertilizaFollaje" ng-value="true" ng-model="newUnit.fertilizaFollaje" >
 															    Si
 															  </label>
 															</div>
 															<div class="radio">
 															  <label>
-															    <input type="radio" name="fertilizaFollaje" ng-value="false" ng-model="newUnit.fertilizaFollaje">
+															    <input type="radio" ng-change=yesNofertilizaFollajeChange('newUnit')  name="fertilizaFollaje" ng-value="false" ng-model="newUnit.fertilizaFollaje" checked>
 															    No
 															  </label>
 														</div>
 													</div>
 												</div>
-												<div class="col-xs-12">
+												<div class="col-xs-12" ng-show="newUnit.fertilizaFollaje">
 													<div class="form-group">
 														<label>¿En que mes lo realiza?</label>
 															<select multiple class="form-control" ng-model="newUnit.fertilizaFollajeMes">
@@ -5257,7 +5220,6 @@
 															  <option>Noviembre</option>
 															  <option>Diciembre</option>
 															</select>
-														
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -5265,19 +5227,19 @@
 														<p>¿Realiza enmiendas de suelo?</p>
 														  <div class="radio">
 															  <label>
-															    <input type="radio" name="enmiendasSuelo" ng-value="true" ng-model="newUnit.enmiendasSuelo" checked>
+															    <input type="radio" ng-change=yesNoenmiendasSueloChange('newUnit') name="enmiendasSuelo" ng-value="true" ng-model="newUnit.enmiendasSuelo" >
 															    Si
 															  </label>
 															</div>
 															<div class="radio">
 															  <label>
-															    <input type="radio" name="enmiendasSuelo" ng-value="false" ng-model="newUnit.enmiendasSuelo">
+															    <input type="radio" ng-change=yesNoenmiendasSueloChange('newUnit') ng-value="false" ng-model="newUnit.enmiendasSuelo" checked>
 															    No
 															  </label>
 														</div>
 													</div>
 												</div>
-												<div class="col-xs-12">
+												<div class="col-xs-12" ng-show="newUnit.enmiendasSuelo">
 													<div class="form-group">
 														<label>¿En que mes lo realiza?</label>
 															<select multiple class="form-control" ng-model="newUnit.enmiendasSueloMes">
@@ -5301,19 +5263,19 @@
 														<p>¿Realiza manejo de tejido?</p>
 														  <div class="radio">
 															  <label>
-															    <input type="radio" name="manejoTejido" ng-value="true" ng-model="newUnit.manejoTejido" checked>
+															    <input type="radio" ng-change=yesNomanejoTejidoChange('newUnit') name="manejoTejido" ng-value="true" ng-model="newUnit.manejoTejido" >
 															    Si
 															  </label>
 															</div>
 															<div class="radio">
 															  <label>
-															    <input type="radio" name="manejoTejido" ng-value="false" ng-model="newUnit.manejoTejido">
+															    <input type="radio" ng-change=yesNomanejoTejidoChange('newUnit') name="manejoTejido" ng-value="false" ng-model="newUnit.manejoTejido" checked>
 															    No
 															  </label>
 														</div>
 													</div>
 												</div>
-												<div class="col-xs-12">
+												<div class="col-xs-12" ng-show="newUnit.manejoTejido">
 													<div class="form-group">
 														<label>¿En que mes lo realiza?</label>
 															<select multiple class="form-control" ng-model="newUnit.manejoTejidoMes">
@@ -5371,298 +5333,7 @@
 														</div>
 													</div>
 												</div> -->
-												<div class="col-xs-12">
-													<div class="form-group">
-														<div class="row">
-														<label class="col-xs-12">¿Que tipo de fungicidas aplica?</label>
-															
-															<div class="col-xs-6" ng-class="newUnit.cyprosol ? 'col-xs-6' : 'col-xs-12'">
-															<br><br>
-													          <label>
-													            <input type="checkbox" value="Cyprosol" ng-model="newUnit.cyprosol"> Cyprosol
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="newUnit.cyprosol">
-																<label>¿Cuando los aplica? 1</label>
-																	<select class="form-control" ng-model="newUnit.cyprosoldate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>									
-													       <div class="clearfix"></div>
-													       	<div class="col-xs-6" ng-class="newUnit.atemi ? 'col-xs-6' : 'col-xs-12'">
-															<br><br>
-													          <label>
-													            <input type="checkbox" value="Atemi" ng-model="newUnit.atemi"> Atemi
-													          </label>
-													        </div>
-													    
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="newUnit.atemi">
-																<label>¿Cuando los aplica? 2</label>
-																	<select class="form-control" ng-model="newUnit.atemidate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>
-																<div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="newUnit.esfera ? 'col-xs-6' : 'col-xs-12'">
-													       <br><br>
-													          <label>
-													            <input type="checkbox" value="Esfera" ng-model="newUnit.esfera"> Esfera
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="newUnit.esfera">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="newUnit.esferadate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>	
-
-													       		<div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="newUnit.opera ? 'col-xs-6' : 'col-xs-12'">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Opera" ng-model="newUnit.opera"> Opera
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="newUnit.opera">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="newUnit.operadate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>	
-
-													        <div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="newUnit.opus ? 'col-xs-6' : 'col-xs-12'">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Opus" ng-model="newUnit.opus"> Opus
-													          </label>
-													        </div>
-													       
-													    
-													       <div class="col-xs-6">
-													          <div class="form-group" ng-if="newUnit.opus">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="newUnit.opusdate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>	
-
-													       <div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="newUnit.soprano ? 'col-xs-6' : 'col-xs-12'">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Soprano" ng-model="newUnit.soprano"> Soprano
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="newUnit.soprano">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="newUnit.sopranodate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>
-
-
-													        <div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="newUnit.hexalon ? 'col-xs-6' : 'col-xs-12'">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Hexalon" ng-model="newUnit.hexalon"> Hexalon
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="newUnit.hexalon">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="newUnit.hexalondate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>	
-
-													        <div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="newUnit.propicon ? 'col-xs-6' : 'col-xs-12'">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Propicon" ng-model="newUnit.propicon"> Propicon
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="newUnit.propicon">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="newUnit.propicondate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>									
-													       
-													        <div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="newUnit.hexil ? 'col-xs-6' : 'col-xs-12'">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Hexil" ng-model="newUnit.hexil"> Hexil
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="newUnit.hexil">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="newUnit.hexildate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>
-
-													        <div class="clearfix"></div>
-													       <div class="col-xs-6" ng-class="newUnit.otros ? 'col-xs-6' : 'col-xs-12'">
-													        
-													          <label>
-													            <input type="checkbox" value="Otros" ng-model="newUnit.otros"> Otros (Cuál) 
-													            <input type="text"
-														      class="form-control"
-														      placeholder="Enter Your Answer."
-														      ng-model="newUnit.otros" ng-show="newUnit.otros"></input>
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group" ng-if="newUnit.otros">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="newUnit.otrosdate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>									
-																							
-													       
-														</div>
-													</div>
-												</div>
+												
 												<!-- <div class="col-xs-12">
 													<div class="form-group">
 														<label>¿Cuando los aplica?</label>
@@ -5677,25 +5348,25 @@
 														<p>¿Verifica la calidad del Agua?</p>
 														  <div class="radio">
 															  <label>
-															    <input type="radio" name="verificaAgua" ng-value="true" ng-model="newUnit.verificaAgua" checked>
+															    <input type="radio" ng-change=yesNoVerificiaAcquaChange('newUnit')  name="verificaAgua" ng-value="true" ng-model="newUnit.verificaAgua" >
 															    Si
 															  </label>
 															</div>
 															<div class="radio">
 															  <label>
-															    <input type="radio" name="verificaAgua" ng-value="false" ng-model="newUnit.verificaAgua">
+															    <input type="radio" ng-change=yesNoVerificiaAcquaChange('newUnit')  name="verificaAgua" ng-value="false" ng-model="newUnit.verificaAgua" checked>
 															    No
 															  </label>
 														</div>
 													</div>
 												</div>
-												<div class="col-xs-12">
+												<div class="col-xs-12" ng-show="newUnit.verificaAgua">
 													<div class="form-group">
 														<div class="row">
 														<label class="col-xs-12">¿Que tipo de verificación?</label>
 															<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.verificaAguaTipo.ph"> Ph
+													            <input type="checkbox"  ng-model="newUnit.verificaAguaTipo.ph"> Ph
 													          </label>
 													        </div>
 													        <div class="col-xs-6">
@@ -5714,7 +5385,7 @@
 														      class="form-control"
 														      placeholder="Producción"
 														      ng-model="newUnit.rendimiento"></input>
-														      (cereza/Hectareas)
+														      (Quintales de Cereza/manzana)
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -5758,17 +5429,6 @@
 														      ng-model="newUnit.FinEpocalluviosa"></input>
 													</div>
 												</div>
-												<div class="col-xs-12">
-													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="Recomendación Técnica"
-														      ng-model="newUnit.recomendaciontecnica"></input>
-														      
-													</div>
-												</div>
-												
-																						
 											</div>
 											
 											<!-- new questions --> 
@@ -5777,19 +5437,19 @@
 														<p>¿Utiliza la extra de nitrógeno?</p>
 														  <div class="radio">
 															  <label>
-															    <input type="radio" name="nitrogeno" ng-value="true" ng-model="newUnit.nitrogeno" checked>
+															    <input type="radio" name="nitrogeno" ng-change="yesNoNitrogenoChange('newUnit')" ng-value="true" ng-model="newUnit.nitrogeno" >
 															    Si
 															  </label>
 															</div>
 															<div class="radio">
 															  <label>
-															    <input type="radio" name="nitrogeno" ng-value="false" ng-model="newUnit.nitrogeno">
+															    <input type="radio" name="nitrogeno"  ng-value="false" ng-model="newUnit.nitrogeno" checked>
 															    No
 															  </label>
 														</div>
 													</div>
 												</div>
-												<div class="col-xs-12">
+												<div class="col-xs-12" ng-show="newUnit.nitrogeno">
 													<div class="form-group">
 														<label>¿En que mes lo realiza?</label>
 															<select multiple class="form-control" ng-model="newUnit.nitrorealiza">
@@ -5856,7 +5516,7 @@
 													</div>
 												</div>
 												
-												<div class="col-xs-12">
+												<div class="col-xs-12" ng-show="newUnit.nitrogeno" >
 													<div class="form-group">
 														<input type="text"
 														      class="form-control"
@@ -5869,108 +5529,27 @@
 														<p>¿Aplica fungicidas para control de enfermedades?</p>
 														  <div class="radio">
 															  <label>
-															    <input type="radio" name="enfermedades" ng-value="true" ng-model="newUnit.enfermedades" checked>
+															    <input type="radio" name="enfermedades" ng-change="yesNoSelectionChange('newUnit')" ng-value="true" ng-model="newUnit.enfermedades" >
 															    Si
 															  </label>
 															</div>
 															<div class="radio">
 															  <label>
-															    <input type="radio" name="enfermedades" ng-value="false" ng-model="newUnit.enfermedades">
+															    <input type="radio" name="enfermedades" ng-change="yesNoSelectionChange('newUnit')" ng-value="false" ng-model="newUnit.enfermedades" checked>
 															    No
 															  </label>
 														</div>
 													</div>
 												</div>
-													<div class="col-xs-12">
+													<div class="col-xs-12" ng-show="newUnit.enfermedades">
 													<div class="form-group">
-														<div class="row">
-														<label class="col-xs-12">¿Que tipo de fungicidas aplica?</label>
+																<div class="row">
+														<label class="col-xs-12">Fungicidas</label>
 															<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" value="Contacto" ng-model="newUnit.fungicidas.contacto"> Contacto
+													            <input type="checkbox" value="Opus" ng-model="newUnit.fungicidas.sistemicoOptions.opus"> Cyprosol
 													          </label>
-													        </div>
-													        <div class="col-xs-6">
-													          <label>
-													            <input type="checkbox" value="Biológico" ng-model="newUnit.fungicidas.biologico"> Biológico
-													          </label>
-													        </div>									
-													        <div class="col-xs-6">
-													          <label>
-													            <input type="checkbox" value="Sistémico" ng-model="newUnit.fungicidas.sistemico"> Sistémico
-													          </label>
-													        </div>
-														</div>
-													</div>
-												</div>
-												<!-- <div class="col-xs-12">
-													<div class="form-group">
-														<div class="row">
-														<label class="col-xs-12">¿Que tipo de fungicidas aplica?</label>
-															
-															<div class="col-xs-6">
-															<br><br>
-													          <label>
-													            <input type="checkbox" value="Cyprosol" ng-model="newUnit.cyprosol"> Cyprosol
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="newUnit.cyprosoldate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>									
-													       
-													       	<div class="col-xs-6">
-															<br><br>
-													          <label>
-													            <input type="checkbox" value="Atemi" ng-model="newUnit.atemi"> Atemi
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group">
-																<label>¿Cuando los aplica?</label>
-																	<select class="form-control" ng-model="newUnit.atemidate">
-																	  <option>Enero</option>
-																	  <option>Febrero</option>
-																	  <option>Marzo</option>
-																	  <option>Abril</option>
-																	  <option>Mayo</option>
-																	  <option>Junio</option>
-																	  <option>Julio</option>
-																	  <option>Agosto</option>
-																	  <option>Septiembre</option>
-																	  <option>Octubre</option>
-																	  <option>Noviembre</option>
-																	  <option>Diciembre</option>
-																	</select>
-																</div>
-													        </div>
-
-													       <div class="col-xs-6">
-													       <br><br>
-													          <label>
-													            <input type="checkbox" value="Esfera" ng-model="newUnit.esfera"> Esfera
-													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group">
+													           <div class="form-group" ng-if="newUnit.fungicidas.sistemicoOptions.opus">
 																<label>¿Cuando los aplica?</label>
 																	<select class="form-control" ng-model="newUnit.esferadate">
 																	  <option>Enero</option>
@@ -5987,17 +5566,12 @@
 																	  <option>Diciembre</option>
 																	</select>
 																</div>
-													        </div>	
-
-													        <div class="col-xs-6">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Opera" ng-model="newUnit.opera"> Opera
-													          </label>
 													        </div>
-													       
 													        <div class="col-xs-6">
-													          <div class="form-group">
+													          <label>
+													            <input type="checkbox" value="Opera" ng-model="newUnit.fungicidas.sistemicoOptions.opera">Atemi 
+													          </label>
+													           <div class="form-group" ng-if="newUnit.fungicidas.sistemicoOptions.opera">
 																<label>¿Cuando los aplica?</label>
 																	<select class="form-control" ng-model="newUnit.operadate">
 																	  <option>Enero</option>
@@ -6014,17 +5588,12 @@
 																	  <option>Diciembre</option>
 																	</select>
 																</div>
-													        </div>	
-
-													        <div class="col-xs-6">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Opus" ng-model="newUnit.opus"> Opus
-													          </label>
 													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group">
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Esfera Max" ng-model="newUnit.fungicidas.sistemicoOptions.esferamax">Esfera
+													          </label>
+													          <div class="form-group"  ng-if="newUnit.fungicidas.sistemicoOptions.esferamax">
 																<label>¿Cuando los aplica?</label>
 																	<select class="form-control" ng-model="newUnit.opusdate">
 																	  <option>Enero</option>
@@ -6041,17 +5610,13 @@
 																	  <option>Diciembre</option>
 																	</select>
 																</div>
-													        </div>	
-
-													        <div class="col-xs-6">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Soprano" ng-model="newUnit.soprano"> Soprano
-													          </label>
 													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group">
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Amistar Xtra" ng-model="newUnit.fungicidas.sistemicoOptions.amistarxtra">Opera
+													          </label>
+													          
+													          <div class="form-group"  ng-if="newUnit.fungicidas.sistemicoOptions.amistarxtra">
 																<label>¿Cuando los aplica?</label>
 																	<select class="form-control" ng-model="newUnit.sopranodate">
 																	  <option>Enero</option>
@@ -6069,17 +5634,11 @@
 																	</select>
 																</div>
 													        </div>
-
-
-													        <div class="col-xs-6">
-													        <br><br>
+																	<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" value="Hexalon" ng-model="newUnit.hexalon"> Hexalon
+													            <input type="checkbox" value="Alto 10" ng-model="newUnit.fungicidas.sistemicoOptions.alto10">Opus
 													          </label>
-													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group">
+													          <div class="form-group"  ng-if="newUnit.fungicidas.sistemicoOptions.alto10">
 																<label>¿Cuando los aplica?</label>
 																	<select class="form-control" ng-model="newUnit.hexalondate">
 																	  <option>Enero</option>
@@ -6096,17 +5655,12 @@
 																	  <option>Diciembre</option>
 																	</select>
 																</div>
-													        </div>	
-
-													        <div class="col-xs-6">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Propicon" ng-model="newUnit.propicon"> Propicon
-													          </label>
 													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group">
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Silvacur" ng-model="newUnit.fungicidas.sistemicoOptions.silvacur">Soprano
+													          </label>
+													          <div class="form-group"  ng-if="newUnit.fungicidas.sistemicoOptions.silvacur">
 																<label>¿Cuando los aplica?</label>
 																	<select class="form-control" ng-model="newUnit.propicondate">
 																	  <option>Enero</option>
@@ -6123,17 +5677,12 @@
 																	  <option>Diciembre</option>
 																	</select>
 																</div>
-													        </div>									
-													       
-													        <div class="col-xs-6">
-													        <br><br>
-													          <label>
-													            <input type="checkbox" value="Hexil" ng-model="newUnit.hexil"> Hexil
-													          </label>
 													        </div>
-													       
-													        <div class="col-xs-6">
-													          <div class="form-group">
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Verdadero" ng-model="newUnit.fungicidas.sistemicoOptions.verdadero">Hexalon
+													          </label>
+													          <div class="form-group"  ng-if="newUnit.fungicidas.sistemicoOptions.verdadero">
 																<label>¿Cuando los aplica?</label>
 																	<select class="form-control" ng-model="newUnit.hexildate">
 																	  <option>Enero</option>
@@ -6150,21 +5699,14 @@
 																	  <option>Diciembre</option>
 																	</select>
 																</div>
-													        </div>
-
-													        <div class="col-xs-6">
-													        
-													          <label>
-													            <input type="checkbox" value="Otros" ng-model="newUnit.otros"> Otros (Cuál) 
-													            <input type="text"
-														      class="form-control"
-														      placeholder="Enter Your Answer."
-														      ng-model="newUnit.otros" ng-show="newUnit.otros"></input>
-													          </label>
-													        </div>
+													        </div>									
 													       
-													        <div class="col-xs-6">
-													          <div class="form-group">
+
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Mancuerna" ng-model="newUnit.fungicidas.sistemicoOptions.mancuerna"> Propicon 
+													          </label>
+													          <div class="form-group"  ng-if="newUnit.fungicidas.sistemicoOptions.mancuerna">
 																<label>¿Cuando los aplica?</label>
 																	<select class="form-control" ng-model="newUnit.otrosdate">
 																	  <option>Enero</option>
@@ -6181,31 +5723,58 @@
 																	  <option>Diciembre</option>
 																	</select>
 																</div>
-													        </div>									
-																							
-													       
+													        </div>
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Caporal" ng-model="newUnit.fungicidas.sistemicoOptions.caporal"> Hexil
+													          </label>
+													          <div class="form-group"  ng-if="newUnit.fungicidas.sistemicoOptions.caporal">
+																<label>¿Cuando los aplica?</label>
+																	<select class="form-control" ng-model="">
+																	  <option>Enero</option>
+																	  <option>Febrero</option>
+																	  <option>Marzo</option>
+																	  <option>Abril</option>
+																	  <option>Mayo</option>
+																	  <option>Junio</option>
+																	  <option>Julio</option>
+																	  <option>Agosto</option>
+																	  <option>Septiembre</option>
+																	  <option>Octubre</option>
+																	  <option>Noviembre</option>
+																	  <option>Diciembre</option>
+																	</select>
+																</div>
+													        </div>
+																	<div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" value="Halt" ng-model="newUnit.fungicidas.sistemicoOptions.halt"> Otros
+													          </label>
+													          <div class="form-group"  ng-if="newUnit.fungicidas.sistemicoOptions.halt">
+																<label>¿Cuando los aplica?</label>
+																	<select class="form-control" ng-model="">
+																	  <option>Enero</option>
+																	  <option>Febrero</option>
+																	  <option>Marzo</option>
+																	  <option>Abril</option>
+																	  <option>Mayo</option>
+																	  <option>Junio</option>
+																	  <option>Julio</option>
+																	  <option>Agosto</option>
+																	  <option>Septiembre</option>
+																	  <option>Octubre</option>
+																	  <option>Noviembre</option>
+																	  <option>Diciembre</option>
+																	</select>
+																</div>
+													        </div>
+																	
+
+														</div>
 														</div>
 													</div>
-												</div> -->
-												<div class="col-xs-12">
-													<div class="form-group">
-														<label>¿En que mes lo realiza?</label>
-															<select multiple class="form-control" ng-model="newUnit.fungicidasmonth">
-															  <option>Enero</option>
-															  <option>Febrero</option>
-															  <option>Marzo</option>
-															  <option>Abril</option>
-															  <option>Mayo</option>
-															  <option>Junio</option>
-															  <option>Julio</option>
-															  <option>Agosto</option>
-															  <option>Septiembre</option>
-															  <option>Octubre</option>
-															  <option>Noviembre</option>
-															  <option>Diciembre</option>
-															</select>
-													</div>
-												</div>
+
+										
 												<div class="col-xs-12">
 													<div class="form-group">
 														<input type="text"
@@ -6222,6 +5791,112 @@
 							      <div class="modal-footer">
 							        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
 							        <button type="button" class="btn btn-primary" form="newunitForm" ng-disabled="newunitForm.$invalid" ng-click="saveUnit()" >Guardar nueva</button>
+							        <div ng-show="sucMsg" class="bg-success row">
+									    <span>{{ sucMsg }}</span>
+									  </div>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							
+							<div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+							  <div class="modal-dialog" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							        <h4 class="modal-title" id="myModalLabel">Editar Lote: {{ editUnit.nombre }}</h4>
+							      </div>
+							      <div class="modal-body">
+										  <form name="updateunitFormlote" ng-submit="updateUnitForm($event,editUnit._id)" id="updateunitFormlote" >
+						
+										    <div class="row">
+												<div class="col-xs-12">
+													<div class="form-group">
+														<input type="text"
+														      class="form-control"
+														      placeholder="Georeferenciación"
+														      ng-model="editUnit.lote.georeferenciacion"	
+														      ></input>
+													</div>
+												</div>
+												<div class="col-xs-12">
+													<div class="form-group">
+														<input type="text"
+														      class="form-control"
+														      placeholder="Altitud"
+														      ng-model="editUnit.lote.altitud"	
+														      ></input>
+													</div>
+												</div>
+												<div class="col-xs-12">
+													<div class="form-group">
+														<input type="text"
+														      class="form-control"
+														      placeholder="Tamaño del lote (Hectareas)"
+														      ng-model="editUnit.lote.tamano"	
+														      ></input>
+													</div>
+												</div>
+												<div class="col-xs-12">
+													<div class="form-group">
+														<input type="text"
+														      class="form-control"
+														      placeholder="Edad del lote"
+														      ng-model="editUnit.lote.edad"	
+														      ></input>
+													</div>
+												</div>
+												<div class="col-xs-12">
+													<div class="form-group">
+														<input type="text"
+														      class="form-control"
+														      placeholder="Variedad"
+														      ng-model="editUnit.lote.variedad"	
+														      ></input>
+													</div>
+												</div>
+												<div class="col-xs-12">
+													<div class="form-group">
+														<p>¿Tiene sombra?</p>
+														<div class="radio">
+														  <label>
+														    <input type="radio" id="optionsRadios1" ng-value="true" ng-model="editUnit.lote.sombra">
+														    Si
+														  </label>
+														</div>
+														<div class="radio">
+														  <label>
+														    <input type="radio" id="optionsRadios2" ng-value="false" ng-model="editUnit.lote.sombra">
+														    No
+														  </label>
+														</div>
+													</div>
+												</div>
+												<div class="col-xs-12">
+													<div class="form-group">
+														<p>¿Tiene cobertura de suelo?</p>
+														<div class="radio">
+														  <label>
+														    <input type="radio" id="optionsRadios1" ng-value="true" ng-model="editUnit.lote.cobertura">
+														    Si
+														  </label>
+														</div>
+														<div class="radio">
+														  <label>
+														    <input type="radio" id="optionsRadios2" ng-value="false" ng-model="editUnit.lote.cobertura">
+														    No
+														  </label>
+														</div>
+													</div>
+												</div>
+												
+											</div>
+										    
+										  </form>
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+							        <button type="button" class="btn btn-primary" form="updateunitFormlote" ng-click="updateUnitForm($event,editUnit._id)">Salvar Cambios</button>
 							        <div ng-show="sucMsg" class="bg-success row">
 									    <span>{{ sucMsg }}</span>
 									  </div>
