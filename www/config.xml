@@ -45,6 +45,8 @@
 
     <!-- Plugins -->
 	<plugin spec="https://github.com/jrstarke/webview-debug.git" source="git" />
+
+	<gap:plugin name="org.apache.cordova.geolocation" source="npm" />
     <!-- Core plugins -->
 
 
