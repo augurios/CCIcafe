@@ -399,8 +399,8 @@ app.controller('CampoCtrl', [
 	'$location',
 	'campoService',
 	'$window',
-    'user',
-	function ($scope, auth, $location, campo,  $window, user) { 
+    'user', 'Excel', '$timeout',
+	function ($scope, auth, $location, campo, $window, user, Excel, $timeout) {
 	    var currentTest = null;
 	  
 	    var loadAll = function () {
@@ -464,7 +464,9 @@ app.controller('CampoCtrl', [
 	    $scope.exportData = function () {
 	        var table = document.getElementById('exportable');
 	        var html = table.outerHTML;
-	        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
+	        //window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
+	        var exportHref = Excel.tableToExcel("#exportable", 'Reportes de Campo');
+	        $timeout(function () { location.href = exportHref; }, 100);
 	    };
 	    $scope.search = {};
 	    //$watch search to update pagination
@@ -575,8 +577,8 @@ app.controller('RoyaCtrl', [
 	'$location',
 	'roya',
     '$window',
-    'user',
-	function ($scope, auth, $location, roya, $window, user) {
+    'user','Excel','$timeout',
+	function ($scope, auth, $location, roya, $window, user, Excel, $timeout) {
 	    var currentTest = null;
 	    var loadAll = function () {
 	        roya.getAll().then(function (tests) {
@@ -679,7 +681,9 @@ app.controller('RoyaCtrl', [
 	    $scope.exportData = function () {
 	        var table = document.getElementById('exportable');
 	        var html = table.outerHTML;
-	        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
+	        //window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
+	        var exportHref = Excel.tableToExcel("#exportable", 'Reportes de Roya');
+	        $timeout(function () { location.href = exportHref; }, 100);
 	    };
 	    $scope.search = {};
 	    //$watch search to update pagination
@@ -722,6 +726,56 @@ app.controller('RoyaCtrl', [
 	    }, true);
 	}]);
 
+	
+//Variety controller
+app.controller('VarietyCtrl', [
+	'$scope',
+	'auth',
+	'$location',
+	'varieties',
+    '$window',
+    'user',
+	function ($scope, auth, $location, varieties, $window, user) {
+	    var currentvarieties = [];
+	    
+	    var loadAll = function () {
+	        varieties.getAll().then(function (varieties) {
+	            currentvarieties = varieties.data;
+	            console.log(currentvarieties);
+	            $scope.varieties = currentvarieties;
+                
+
+	        });
+	    };
+
+	    loadAll();
+	    
+	    $scope.addNew = function() {
+			
+			newVariety = {}
+			newVariety["name"] = $scope.newVariety;
+			
+			varieties.create(newVariety).then(function (newVar) {
+			    currentvarieties.push(newVar.data);
+			    $scope.varieties = currentvarieties;
+			    $scope.newVariety = "";
+			});	 
+	    };
+	    
+	    
+	    $scope.deleteVariety = function(varId,index) {
+			
+			varIdObj = {}
+			varIdObj["varId"] = varId;
+			
+			varieties.deleteVariety(varIdObj).then(function (newVar) {
+			    currentvarieties.splice(index, 1);
+			    $scope.varieties = currentvarieties;
+			});	 
+	    };
+	}]);
+
+
 //TechRecCtrl controller
 app.controller('TechRecCtrl', [
 	'$scope',
@@ -730,8 +784,8 @@ app.controller('TechRecCtrl', [
 	'techRecService',
 	'socket',
     '$window',
-    'user',
-	function ($scope, auth, $location, techRecService, socket, $window, user) {
+    'user','Excel','$timeout',
+	function ($scope, auth, $location, techRecService, socket, $window, user, Excel, $timeout) {
 	    var currentTest = null;
 	    var loadAll = function () {
 	        techRecService.getAll().then(function (tests) {
@@ -816,7 +870,9 @@ app.controller('TechRecCtrl', [
 	    $scope.exportData = function () {
 	        var table = document.getElementById('exportable');
 	        var html = table.outerHTML;
-	        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
+	        //window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
+	        var exportHref = Excel.tableToExcel("#exportable", 'Recomendación Técnica');
+	        $timeout(function () { location.href = exportHref; }, 100);
 	    };
 	    $scope.search = {};
 	    //$watch search to update pagination
@@ -1188,6 +1244,32 @@ app.factory('campoService', ['$http', 'auth', function ($http, auth) {
     return o;
 }]);
 
+app.factory('varieties', ['$http', 'auth','$window', function($http, auth, $window){
+   var o = {};
+   o.getAll = function(id) {
+	    return $http.get('/varieties').success(function(data){
+	      return data;
+	    });
+	  };
+	o.create = function(varieties){
+		//localhost unit
+	  return $http.post('/varieties', varieties, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    return data;
+		  });
+	};
+	
+	o.deleteVariety = function(Ided){
+		console.log(Ided);
+	  return $http.delete('/varieties', { headers: {Authorization: 'Bearer '+auth.getToken(), variid: Ided.varId}
+	  }).success(function(data){
+			    return Ided;
+			  });
+	};
+  return o;
+}]);
+
 
 app.factory('roya', ['$http', 'auth', function ($http, auth) {
     var o = {
@@ -1196,6 +1278,47 @@ app.factory('roya', ['$http', 'auth', function ($http, auth) {
     o.getAll = function () {
         return $http.get('/roya').success(function (data) {
             return data;
+        });
+    };
+    o.create = function (roya) {
+        return $http.post('/roya', roya, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).success(function (data) {
+            return data;
+        });
+    };
+    o.delete = function (test) {
+        return $http.delete('/roya/' + test, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).success(function (data) {
+            return data
+        });
+    };
+
+    return o;
+}]);
+app.factory('Excel', function ($window) {
+    var uri = 'data:application/vnd.ms-excel;base64,',
+        template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
+        base64 = function (s) { return $window.btoa(unescape(encodeURIComponent(s))); },
+        format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) };
+    return {
+        tableToExcel: function (tableId, worksheetName) {
+            var table = $(tableId),
+                ctx = { worksheet: worksheetName, table: table.html() },
+                href = uri + base64(format(template, ctx));
+            return href;
+        }
+    };
+})
+//TechRecCtrl
+app.factory('techRecService', ['$http', 'auth', function ($http, auth) {
+    var o = {
+
+    };
+    o.getAll = function () {
+        return $http.get('/technico/units').success(function (data) {
+           return data;
         });
     };
     o.create = function (roya) {
@@ -1416,6 +1539,20 @@ app.config([
 			            $state.go('login');
 			        }
 			        else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista' && curUserRole != 'Tecnico') {
+			            window.location.href = '/';
+			        }
+			    }]
+			})
+			.state('varieties', {
+			    url: '/varieties',
+			    templateUrl: '/varieties.html',
+			    controller: 'VarietyCtrl',
+			    onEnter: ['$state', 'auth', function ($state, auth) {
+			        var curUserRole = auth.currentUserRole();
+			        if (!auth.isLoggedIn()) {
+			            $state.go('login');
+			        }
+			        else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista') {
 			            window.location.href = '/';
 			        }
 			    }]

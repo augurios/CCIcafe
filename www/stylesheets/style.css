@@ -68,6 +68,15 @@ a {
   margin: 0 auto;
 }
 
+.textloader {
+  color: #9c9c9c;
+}
+
+.profile-wrap .textloader {
+  color: #bce9ff;
+  margin: 48px 0 0;
+}
+
 /* nav menu */
 
 .nav-switch {
@@ -95,17 +104,29 @@ a {
   padding-top: 60px;
 }
 
+.navbar-default.pull-left  .navbar-nav:before {
+  content:"Coffee Cloud";
+  font-family: 'Roboto', sans-serif;
+  position:absolute;
+  top: 16px;
+  left: 24px;
+  text-transform: uppercase;
+  font-size: 21px;
+  color: #d0d0d0;
+}
+
 .navbar-default.pull-left  .navbar-nav li {
   width:100%;
 }
 
-.navbar-default.pull-left .navbar-nav li:first-child {
-  background-color:#fe8515;
+.navbar-default.pull-left .navbar-nav li.active {
+  
   width: 100%;
 }
 
-.navbar-default.pull-left .navbar-nav li:first-child a {
+.navbar-default.pull-left .navbar-nav li.active a {
   color:#fff;
+  background-color:#fe8515;
 }
 
 .navbar-default.pull-left .navbar-nav li a {
@@ -295,9 +316,9 @@ a {
 }
 
 .register-profile-wrap .form-control {
-  border-color: #fff;
-  box-shadow: 0 0;
-  text-align: center;
+  /* border-color: #fff; */
+  /* box-shadow: 0 0; */
+  /* text-align: center; */
 }
 
 .munis {
@@ -418,6 +439,50 @@ a {
   width: 100%;
 }
 
+.profile-wrap {
+  padding-bottom: 32px;
+}
+
+.profile-wrap .modal-footer {
+  position: relative;
+}
+
+.profile-wrap .map .fa-spinner {
+  position: absolute;
+  top: 27%;
+}
+
+
+.profile-wrap .map .offline {
+  background-color: #f4d2d2;
+  position: relative;
+  text-align: center;
+}
+
+.profile-wrap .map .offline:before {
+  content: "Fuera de alcanze, intente de nuevo";
+  color: red;
+  line-height: 64px
+}
+
+#latlongid,
+#latlongid1 {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  width: calc(100% - 33px);
+}
+
+.profile-wrap .input-group-btn {
+  position: absolute;
+  right: 46px;
+  top: 0;
+}
+
+.profile-wrap .input-group-btn .btn {
+  /* line-height: 36px; */
+  font-size: 20px;
+}
+
 .home-wrap .modal {
   color: #333;
   z-index: 99999;
@@ -443,6 +508,15 @@ a {
 .home-wrap .page-header p {
   font-size: 19px;
   font-family: 'Roboto', sans-serif;
+}
+
+.profile-wrap .modal-body {
+    max-height: calc(100vh - 142px);
+    overflow-y: auto;
+}
+
+#myModal2 .modal-body {
+    max-height: calc(100vh - 76px);
 }
 
 .degree {
@@ -503,6 +577,14 @@ a {
     margin-bottom: 12px;
 }
 
+
+.astro .btn {
+  background: transparent;
+  margin-top: 12px;
+  border-color: #fff;
+}
+
+
 .astro span {
     font-size: 14px;
     font-weight: bolder;
@@ -559,7 +641,11 @@ a {
   font-weight: 700;
 }
 
-.roya-wrap .intro h4 {
+.roya-wrap .intro {
+  margin-bottom: 24px;
+}
+
+.roya-wrap .intro h4.clearfix {
   clear: both;
   padding: 24px 0 8px;
   font-size: 16px;
@@ -578,6 +664,10 @@ a {
   font-size: 18px;
 }
 
+.roya-wrap .modal-body p {
+  font-size: 14px;
+}
+
 .roya-wrap .radio {
   float: left;
   width: 49%;
@@ -588,7 +678,7 @@ a {
   padding: 12px 0;
   min-height: 55px;
   font-size: 12px;
-  background-color: #21AAF7;
+  background-color: #a7cade;
   color: #fff;
   width: 100%;
 }
@@ -939,6 +1029,10 @@ input:checked + label + #otherArea {
     padding: 8px 0;
     margin: 6px 0;
     color: green;
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    top: -38px;
 }
 
 .profile-wrap .page-header {
@@ -976,6 +1070,17 @@ input:checked + label + #otherArea {
     background-color: rgba(255, 255, 255, 0.13);
     clear: both;
 }
+.unidad-wrap {
+
+}
+
+.unidad-wrap h3 {
+    background-color: #21aaf7;
+    margin:0;
+    padding: 6px 0;
+    color: #fff;
+    font-size: 14px;
+}
 
 .unidad {
   background-color: #E9E9E9;
@@ -983,6 +1088,8 @@ input:checked + label + #otherArea {
   color: #333;
   text-align: left;
 }
+
+
 
 .unidad:nth-child(even) {
     background: #D0D0D0;
@@ -995,6 +1102,12 @@ input:checked + label + #otherArea {
   background-color: #FE8515;
   border-color: #FE8515;
   color: #fff;
+}
+
+a.unidad {
+  display:block;
+  background: #E9E9E9 !important;
+  color: #00abff;
 }
 
 .unidad .btn.btn-danger {
@@ -1187,4 +1300,11 @@ input:checked + label + #otherArea {
 .testControls > .col-md-12 button:hover {
 background-color: #3498db  !important;
     border-color: #3498db;
+
   }
+
+.panel-group .panel-title a {
+    color: #666;
+    display: block;
+    width: 100%;
+}

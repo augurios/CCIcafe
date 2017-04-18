@@ -1,8 +1,2134 @@
-/*------------------------------------------------------------------------ 
-	- EasyWeather v1.3.1 by Max Guglielmi 
-	- build date: Sun Oct 25 2015 19:08:52 
-	- http://mguglielmi.free.fr/scripts/easyweather 
-	- License required for use 
-------------------------------------------------------------------------*/ 
-!function(a,b){function c(){return{Settings:{Providers:{Weather:[{id:"yhw",name:"Yahoo! Weather",description:"Yahoo! Weather content provider",get_link:function(){return'<a href="http://weather.yahoo.com" title="'+this.name+": "+this.description+'" target="_blank">'+this.name+"</a>"},key:null,query:'SELECT * FROM weather.forecast WHERE u="{unit}" AND woeid in (select woeid from geo.places where text="{query}" limit 1)',query2:'SELECT * FROM weather.forecast WHERE u="{unit}" AND woeid="{query}" limit 1',url:function(){return d.Helpers.protocol()+"//query.yahooapis.com/v1/public/yql?q={q}&format=json&_nocache={}&diagnostics=true&env=store://datatables.org/alltableswithkeys"},search_query:'SELECT * from geo.places where text="{query}" limit {nbres}',max_nb_forecast_days:4,nb_forecast_days:3,nb_search_results:8,get_url:function(){var a=this.locationId()?this.locationId():this.location,b=this.config().tempUnit.toLowerCase(),c=this.locationId()?this.provider().query2:this.provider().query,d=this.provider().url();return c=c.replace("{query}",a).replace("{unit}",b),d=d.replace("{q}",c)},get_search_url:function(){var a=this.provider().search_query;return a=a.replace("{query}",encodeURIComponent(this.getLocation())).replace("{nbres}",encodeURIComponent(this.config().nbSearchResults)),this.provider().url().replace("{q}",a)},sanity_check:function(a){return a&&a.query&&0!==a.query.count&&"city not found"!==a.query.results.channel.item.title.toLowerCase()?!0:!1},search_sanity_check:function(a){return a&&a.query&&0!==a.query.count?!0:!1},convert_data:function(b){var c=a.extend({},d.Settings.Data.Model.Weather),e=b.query.results.channel,f=e.item,g=f.condition,h=e.location,i=e.atmosphere,j=e.link,k=e.units,l=e.wind,m=f.forecast,n=d.Helpers.protocol()+"//l.yimg.com/a/i/us/we/52/{code}.gif";c.Location.city=h.city,c.Location.country=h.country,c.Location.region=h.region,c.Location.latitude=f.lat,c.Location.longitude=f.long,c.Condition.code=g.code,c.Condition.date=g.date,c.Condition.description=g.text,c.Condition.humidity=i.humidity+"%",c.Condition.icon_url=n.replace("{code}",g.code),c.Condition.max_temp_c=m[0].high,c.Condition.max_temp_f=m[0].high,c.Condition.min_temp_c=m[0].low,c.Condition.min_temp_f=m[0].low,c.Condition.precipitation=null,c.Condition.pressure=i.pressure+" "+k.pressure,c.Condition.provider_link=j,c.Condition.temp_c=g.temp,c.Condition.temp_f=g.temp,c.Condition.visibility=i.visibility+" "+k.distance,c.Condition.wind_k=l.speed+" "+k.speed,c.Condition.wind_m=l.speed+" "+k.speed,c.Forecasts=[];for(var o=0;o<m.length;o++)if(m[o]){var p=a.extend({},d.Settings.Data.Model.Weather.Condition),q=m[o];p.code=q.code,p.date=q.date,p.description=q.text,p.icon_url=n.replace("{code}",q.code),p.max_temp_c=q.high,p.max_temp_f=q.high,p.min_temp_c=q.low,p.min_temp_f=q.low,c.Forecasts.push(p)}return c},convert_search_data:function(b){var c,e=[],f=b.query.results.place;if(a.isPlainObject(f))return c=a.extend({},d.Settings.Data.Model.Search),c.city=f.name,c.region=f.admin1?f.admin1.content:null,c.country=f.country?f.country.content:null,c.location_id=f.woeid,c.longitude=f.centroid?f.centroid.longitude:null,c.latitude=f.centroid?f.centroid.latitude:null,e.push(c),e;if(a.isArray(f)){for(var g=0;g<f.length;g++)c=a.extend({},d.Settings.Data.Model.Search),c.city=f[g].name,c.region=f[g].admin1?f[g].admin1.content:null,c.country=f[g].country?f[g].country.content:null,c.location_id=f[g].woeid,c.longitude=f[g].centroid?f[g].centroid.longitude:null,c.latitude=f[g].centroid?f[g].centroid.latitude:null,e.push(c);return e}return c=a.extend({},d.Settings.Data.Model.Search),e.push(c),e}},{id:"wwo",name:"World Weather Online",description:"Free local weather content provider",get_link:function(){return'<a href="http://www.worldweatheronline.com/" title="'+this.name+": "+this.description+'" target="_blank">'+this.name+"</a>"},key:b.Keys.wwo?b.Keys.wwo.key():null,url:function(){return d.Helpers.protocol()+"//api.worldweatheronline.com/free/v1/weather.ashx?q={query}&format=json&num_of_days={nbdays}&includelocation=yes&key={key}"},search_url:function(){return d.Helpers.protocol()+"//api.worldweatheronline.com/free/v1/search.ashx?q={query}&num_of_results={nbres}&timezone=yes&format=json&key={key}"},max_nb_forecast_days:5,nb_forecast_days:3,nb_search_results:8,get_url:function(){return this.provider().url().replace("{query}",encodeURIComponent(this.location)).replace("{nbdays}",encodeURIComponent(this.config().nbForecastDays)).replace("{key}",encodeURIComponent(this.provider().key))},get_search_url:function(){return this.provider().search_url().replace("{query}",encodeURIComponent(this.getLocation())).replace("{nbres}",encodeURIComponent(this.config().nbSearchResults)).replace("{key}",encodeURIComponent(this.provider().key))},sanity_check:function(a){if(!a||!a.data)return!1;if(a.data.error){var b=this,c=window.setTimeout(function(){b.showError.call(b,a.data.error[0].msg),window.clearTimeout(c)},10);return!1}return!0},search_sanity_check:function(a){return a&&a.search_api&&a.search_api.result?!0:!1},convert_data:function(b){var c=a.extend({},d.Settings.Data.Model.Weather),e=b.data,f=e.current_condition[0],g=e.nearest_area[0],h=e.weather;c.Location.city=g.areaName?g.areaName[0].value:null,c.Location.country=g.country?g.country[0].value:null,c.Location.region=g.region?g.region[0].value:null,c.Location.latitude=g.latitude,c.Location.longitude=g.longitude,c.Condition.code=f.weatherCode,c.Condition.date=h[0].date,c.Condition.description=f.weatherDesc[0].value,c.Condition.humidity=f.humidity+"%",c.Condition.icon_url=f.weatherIconUrl[0].value,c.Condition.max_temp_c=h[0].tempMaxC,c.Condition.max_temp_f=h[0].tempMaxF,c.Condition.min_temp_c=h[0].tempMinC,c.Condition.min_temp_f=h[0].tempMinF,c.Condition.precipitation=f.precipMM+" mm",c.Condition.pressure=f.pressure+" hPa",c.Condition.provider_link=g.weatherUrl[0].value,c.Condition.temp_c=f.temp_C,c.Condition.temp_f=f.temp_F,c.Condition.visibility=f.visibility+" Km",c.Condition.wind_k=f.winddir16Point+", "+f.windspeedKmph+" Km/h",c.Condition.wind_m=f.winddir16Point+", "+f.windspeedMiles+" Mph",c.Forecasts=[];for(var i=0;i<h.length;i++)if(h[i]){var j=a.extend({},d.Settings.Data.Model.Weather.Condition),k=h[i];j.code=k.weatherCode,j.date=k.date,j.description=k.weatherDesc[0].value,j.icon_url=k.weatherIconUrl[0].value,j.max_temp_c=k.tempMaxC,j.max_temp_f=k.tempMaxF,j.min_temp_c=k.tempMinC,j.min_temp_f=k.tempMinF,c.Forecasts.push(j)}return c},convert_search_data:function(b){var c,e=[],f=b.search_api.result;if(0===f.length)return c=a.extend({},d.Settings.Data.Model.Search),e.push(c),e;for(var g=0;g<f.length;g++)c=a.extend({},d.Settings.Data.Model.Search),c.city=f[g].areaName?f[g].areaName[0].value:null,c.region=f[g].region?f[g].region[0].value:null,c.country=f[g].country?f[g].country[0].value:null,c.location_id=null,c.longitude=f[g].longitude,c.latitude=f[g].latitude,e.push(c);return e}},{id:"owm",name:"Open Weather Map",description:"Open Weather Map - free weather data and forecast API",get_link:function(){return'<a href="http://openweathermap.org" title="'+this.name+": "+this.description+'" target="_blank">'+this.name+"</a>"},key:b.Keys.owm?b.Keys.owm.key():null,url:function(){return"http://api.openweathermap.org/data/2.5/weather?q={query}&id={locid}&lat={lat}&lon={lon}&mode=json&units={unit}&lang={lang}&APPID={key}"},search_url:function(){return"http://api.openweathermap.org/data/2.5/find?q={query}&units={unit}&lang={lang}&mode=json&APPID={key}"},forecasts_url:function(){return"http://api.openweathermap.org/data/2.5/forecast/daily?q={query}&id={locid}&lat={lat}&lon={lon}&mode=json&units={unit}&lang={lang}&cnt={cnt}&APPID={key}"},max_nb_forecast_days:7,nb_forecast_days:3,nb_search_results:8,get_url:function(){var a="c"===this.config().tempUnit.toLowerCase()?"metric":"imperial";return this.locationId()?this.provider().url().replace("q={query}&","").replace("&lat={lat}","").replace("&lon={lon}","").replace("{locid}",this.locationId()).replace("{unit}",encodeURIComponent(a)).replace("{lang}",encodeURIComponent(this.config().language)).replace("{key}",encodeURIComponent(this.provider().key)):this.provider().url().replace("{query}",encodeURIComponent(this.location)).replace("&id={locid}","").replace("&lat={lat}","").replace("&lon={lon}","").replace("{unit}",encodeURIComponent(a)).replace("{lang}",encodeURIComponent(this.config().language)).replace("{key}",encodeURIComponent(this.provider().key))},get_search_url:function(){var a="c"===this.config().tempUnit.toLowerCase()?"metric":"imperial";return this.provider().search_url().replace("{query}",encodeURIComponent(this.getLocation())).replace("{unit}",encodeURIComponent(a)).replace("{lang}",encodeURIComponent(this.config().language)).replace("{key}",encodeURIComponent(this.provider().key))},get_forecasts_url:function(){var a="c"===this.config().tempUnit.toLowerCase()?"metric":"imperial";return this.locationId()?this.provider().forecasts_url().replace("q={query}&","").replace("&lat={lat}","").replace("&lon={lon}","").replace("{locid}",this.locationId()).replace("{unit}",encodeURIComponent(a)).replace("{lang}",encodeURIComponent(this.config().language)).replace("{cnt}",encodeURIComponent(this.config().nbForecastDays+1)).replace("{key}",encodeURIComponent(this.provider().key)):this.provider().forecasts_url().replace("{query}",encodeURIComponent(this.location)).replace("&id={locid}","").replace("&lat={lat}","").replace("&lon={lon}","").replace("{unit}",encodeURIComponent(a)).replace("{lang}",encodeURIComponent(this.config().language)).replace("{cnt}",encodeURIComponent(this.config().nbForecastDays+1)).replace("{key}",encodeURIComponent(this.provider().key))},sanity_check:function(a){return a&&a.weather?!0:!1},search_sanity_check:function(a){return a&&a.list&&0!==a.count?!0:!1},forecasts_sanity_check:function(a){return a&&a.list&&0!==a.cnt?!0:!1},convert_data:function(b,c){var e=a.extend({},d.Settings.Data.Model.Weather),f=b.main,g=b.weather,h=b.sys,i=b.coord;if(e.Location.city=b.name,e.Location.country=h.country,e.Location.region=null,e.Location.latitude=i.lat,e.Location.longitude=i.lon,e.Condition.code=g[0]?g[0].id:null,e.Condition.date=new Date(1e3*b.dt),e.Condition.description=g[0]?g[0].description:null,e.Condition.humidity=f.humidity+"%",e.Condition.icon_url="http://openweathermap.org/img/w/"+g[0].icon+".png",e.Condition.max_temp_c=Math.round(f.temp_max),e.Condition.max_temp_f=Math.round(f.temp_max),e.Condition.min_temp_c=Math.round(f.temp_min),e.Condition.min_temp_f=Math.round(f.temp_min),e.Condition.precipitation=null,e.Condition.pressure=f.pressure+" hPa",e.Condition.provider_link="http://openweathermap.org/Maps",e.Condition.temp_c=Math.round(f.temp),e.Condition.temp_f=Math.round(f.temp),e.Condition.visibility=null,e.Condition.wind_k=Math.round(b.wind.deg)+"&deg;, "+b.wind.speed+" Km/h",e.Condition.wind_m=Math.round(b.wind.deg)+"&deg;, "+b.wind.speed+" Mph",!c||!a.isPlainObject(c))return e;e.Forecasts=[];for(var j=c.list||[],k=0;k<j.length;k++)if(j[k]){var l=a.extend({},d.Settings.Data.Model.Weather.Condition),m=j[k],n=m.weather,o=m.temp;l.code=n[0]?n[0].id:null,l.date=new Date(1e3*m.dt),l.description=n[0]?n[0].description:null,l.icon_url="http://openweathermap.org/img/w/"+n[0].icon+".png",l.max_temp_c=o&&o.max?Math.round(o.max):null,l.max_temp_f=o&&o.max?Math.round(o.max):null,l.min_temp_c=o&&o.min?Math.round(o.min):null,l.min_temp_f=o&&o.min?Math.round(o.min):null,e.Forecasts.push(l)}return e},convert_search_data:function(b){var c,e=[],f=b.list;if(0===b.count)return c=a.extend({},d.Settings.Data.Model.Search),e.push(c),e;for(var g=0;g<f.length;g++)c=a.extend({},d.Settings.Data.Model.Search),c.city=f[g].name?f[g].name:null,c.region=null,c.country=f[g].sys.country?f[g].sys.country:null,c.location_id=f[g].id,c.longitude=f[g].coord.lon,c.latitude=f[g].coord.lat,e.push(c);return e}},{id:"wug",name:"Wunderground.com",description:"Weather Forecast &amp; Reports - Long Range &amp; Local | Wunderground | Weather Underground",get_link:function(){return'<a href="http://www.wunderground.com/" title="'+this.name+": "+this.description+'" target="_blank">'+this.name+"</a>"},key:b.Keys.wug?b.Keys.wug.key():null,url:function(){return d.Helpers.protocol()+"//api.wunderground.com/api/{key}/conditions/q/{query}.json"},search_url:function(){return d.Helpers.protocol()+"//autocomplete.wunderground.com/aq?query={query}&cb=?"},forecasts_url:function(){return d.Helpers.protocol()+"//api.wunderground.com/api/{key}/forecast10day/q/{query}.json"},max_nb_forecast_days:10,nb_forecast_days:3,nb_search_results:8,get_url:function(){if(this.locationId())return this.provider().url().replace("{query}",encodeURIComponent(this.locationId())).replace("{key}",encodeURIComponent(this.provider().key));var a=this.locationObj?this.locationObj.latitude+","+this.locationObj.longitude:this.location;return this.provider().url().replace("{query}",a).replace("{key}",encodeURIComponent(this.provider().key))},get_search_url:function(){return this.provider().search_url().replace("{query}",encodeURIComponent(this.getLocation()))},get_forecasts_url:function(){if(this.locationId())return this.provider().forecasts_url().replace("{query}",encodeURIComponent(this.locationId())).replace("{key}",encodeURIComponent(this.provider().key));var a=this.locationObj?this.locationObj.latitude+","+this.locationObj.longitude:this.location;return this.provider().forecasts_url().replace("{query}",a).replace("{key}",encodeURIComponent(this.provider().key))},sanity_check:function(a){return a&&!a.error&&a.current_observation?!0:!1},search_sanity_check:function(a){return a&&a.RESULTS?!0:!1},forecasts_sanity_check:function(a){return a&&!a.error&&a.forecast&&a.forecast.simpleforecast?!0:!1},convert_data:function(b,c){var e=a.extend({},d.Settings.Data.Model.Weather),f=b.current_observation,g=f.display_location;if(e.Location.city=g.city,e.Location.country=g.country,e.Location.region=g.state,e.Location.latitude=g.latitude,e.Location.longitude=g.longitude,e.Condition.code=f.station_id,e.Condition.date=new Date(1e3*f.observation_epoch),e.Condition.description=f.weather,e.Condition.humidity=f.relative_humidity,e.Condition.icon_url=f.icon_url,e.Condition.max_temp_c=null,e.Condition.max_temp_f=null,e.Condition.min_temp_c=null,e.Condition.min_temp_f=null,e.Condition.precipitation=f.precip_today_metric,e.Condition.pressure=f.pressure_mb?f.pressure_mb+" hPa":null,e.Condition.provider_link=f.forecast_url,e.Condition.temp_c=Math.round(f.temp_c),e.Condition.temp_f=Math.round(f.temp_f),e.Condition.visibility=f.visibility_km&&"N/A"!==f.visibility_km?f.visibility_km+" Km":null,e.Condition.wind_k=f.wind_dir+", "+f.wind_kph+" Km/h",e.Condition.wind_m=f.wind_dir+", "+f.wind_mph+" Mph",!c||!a.isPlainObject(c)||!c.forecast)return e;e.Forecasts=[];for(var h=c.forecast.simpleforecast.forecastday||[],i=0;i<h.length;i++)if(h[i]){var j=a.extend({},d.Settings.Data.Model.Weather.Condition),k=h[i],l=k.date;j.code=null,j.date=new Date(1e3*l.epoch),j.description=k.conditions,j.icon_url=k.icon_url,j.max_temp_c=k.high.celsius,j.max_temp_f=k.high.fahrenheit,j.min_temp_c=k.low.celsius,j.min_temp_f=k.low.fahrenheit,e.Forecasts.push(j)}return e},convert_search_data:function(b){var c,e=[],f=b.RESULTS;if(0===f.length)return c=a.extend({},d.Settings.Data.Model.Search),e.push(c),e;for(var g=0;g<f.length;g++)c=a.extend({},d.Settings.Data.Model.Search),c.city=f[g].name?f[g].name:null,c.region=null,c.country=f[g].c?f[g].c:null,c.location_id=f[g].l?f[g].l.replace("/q/",""):null,c.longitude=null,c.latitude=null,e.push(c);return e}},{id:"ham",name:"HAMweather",description:"AERIS, a streamlined and flexible weather API",get_link:function(){return'<a href="http://www.hamweather.com/" title="'+this.name+": "+this.description+'" target="_blank">'+this.name+"</a>"},key:b.Keys.ham?b.Keys.ham.key():null,secret_key:b.Keys.ham?b.Keys.ham.secret_key():null,url:function(){return d.Helpers.protocol()+"//api.aerisapi.com/observations/{query}?client_id={key}&client_secret={secret}"},search_url:function(){return d.Helpers.protocol()+"//api.aerisapi.com/places/search?query=name:{query}&limit={limit}&client_id={key}&client_secret={secret}"},forecasts_url:function(){return d.Helpers.protocol()+"//api.aerisapi.com/forecasts/{query}?limit={limit}&client_id={key}&client_secret={secret}"},max_nb_forecast_days:10,nb_forecast_days:3,nb_search_results:8,get_url:function(){return this.locationId()?this.provider().url().replace("{query}",this.locationId()).replace("{key}",encodeURIComponent(this.provider().key)).replace("{secret}",encodeURIComponent(this.provider().secret_key)):this.provider().url().replace("{query}",this.getLocation()).replace("{key}",encodeURIComponent(this.provider().key)).replace("{secret}",encodeURIComponent(this.provider().secret_key))},get_search_url:function(){return this.provider().search_url().replace("{query}",encodeURIComponent(this.getLocation())).replace("{limit}",encodeURIComponent(this.config().nbSearchResults)).replace("{key}",encodeURIComponent(this.provider().key)).replace("{secret}",encodeURIComponent(this.provider().secret_key))},get_forecasts_url:function(){return this.locationId()?this.provider().forecasts_url().replace("{query}",encodeURIComponent(this.locationId())).replace("{limit}",encodeURIComponent(this.config().nbForecastDays+1)).replace("{key}",encodeURIComponent(this.provider().key)).replace("{secret}",encodeURIComponent(this.provider().secret_key)):this.provider().forecasts_url().replace("{query}",this.location).replace("{limit}",encodeURIComponent(this.config().nbForecastDays+1)).replace("{key}",encodeURIComponent(this.provider().key)).replace("{secret}",encodeURIComponent(this.provider().secret_key))},sanity_check:function(a){return!a||a.error?!1:!0},search_sanity_check:function(a){return!a||a.error?!1:!0},forecasts_sanity_check:function(a){return!a||a.error?!1:!0},convert_data:function(b,c){var e=a.extend({},d.Settings.Data.Model.Weather),f=b.response,g=f.ob,h=f.place,i=f.loc;if(e.Location.city=h.name,e.Location.country=h.country,e.Location.region=h.state,e.Location.latitude=i.lat,e.Location.longitude=i["long"],e.Condition.code=f.id,e.Condition.date=new Date(1e3*g.timestamp),e.Condition.description=g.weather,e.Condition.humidity=g.humidity+"%",e.Condition.icon_url=d.Helpers.protocol()+"//js.aerisapi.com/img/"+g.icon,e.Condition.max_temp_c=null,e.Condition.max_temp_f=null,e.Condition.min_temp_c=null,e.Condition.min_temp_f=null,e.Condition.precipitation=null,e.Condition.pressure=g.pressureMB+" MB",e.Condition.provider_link="http://www.hamweather.com/",e.Condition.temp_c=Math.round(g.tempC),e.Condition.temp_f=Math.round(g.tempF),e.Condition.visibility=g.visibilityKM?g.visibilityKM.toFixed(2)+" Km":null,e.Condition.wind_k=g.windDir+", "+g.windSpeedKPH+" Km/h",e.Condition.wind_m=g.windDir+", "+g.windSpeedMPH+" Mph",!c||0===c.response.length)return e;e.Forecasts=[];for(var j=c.response[0].periods||[],k=0;k<j.length;k++)if(j[k]){var l=a.extend({},d.Settings.Data.Model.Weather.Condition),m=j[k];l.code=null,l.date=new Date(1e3*m.timestamp),l.description=m.weather,l.icon_url=d.Helpers.protocol()+"//js.aerisapi.com/img/"+m.icon,l.max_temp_c=m.maxTempC,l.max_temp_f=m.maxTempF,l.min_temp_c=m.minTempC,l.min_temp_f=m.minTempF,e.Forecasts.push(l)}return e},convert_search_data:function(b){var c,e=[],f=b.response;if(0===f.length)return c=a.extend({},d.Settings.Data.Model.Search),e.push(c),e;for(var g=0;g<f.length;g++){var h=f[g].loc,i=f[g].place;c=a.extend({},d.Settings.Data.Model.Search),c.city=i.name?i.name:null,c.region=i.region?i.region:null,c.country=i.countryFull?i.countryFull:null,c.longitude=h["long"]?h.long:null,c.latitude=h.lat?h.lat:null,c.location_id=c.latitude+","+c.longitude,e.push(c)}return e}},{id:"fio",name:"Forecast.io",description:"The easiest, most advanced, weather API on the web",get_link:function(){return'<a href="http://forecast.io/" title="'+this.name+": "+this.description+'" target="_blank">'+this.name+"</a>"},key:b.Keys.fio?b.Keys.fio.key():null,url:function(){return"https://api.forecast.io/forecast/{key}/{lat},{lon}?units={unit}"},search_api:!1,search_url:function(){return d.Helpers.protocol()+"//query.yahooapis.com/v1/public/yql?q={q}&format=json&_nocache={}&diagnostics=true&env=store://datatables.org/alltableswithkeys"},search_query:'SELECT * from geo.places where text="{query}" limit {nbres}',max_nb_forecast_days:7,nb_forecast_days:3,nb_search_results:8,get_url:function(){var a=this.locationObj?this.locationObj:this.location;return this.provider().url().replace("{key}",encodeURIComponent(this.provider().key)).replace("{lat}",a.latitude).replace("{lon}",a.longitude).replace("{unit}","c"===this.config().tempUnit.toLowerCase()?"si":"us")},get_search_url:function(){var a=this.provider().search_query;return a=a.replace("{query}",encodeURIComponent(this.getLocation())).replace("{nbres}",encodeURIComponent(this.config().nbSearchResults)),this.provider().search_url().replace("{q}",a)},sanity_check:function(a){return!a||a.error?!1:!0},search_sanity_check:function(a){return a&&a.query&&0!==a.query.count?!0:!1},convert_data:function(b){var c=a.extend({},d.Settings.Data.Model.Weather),e=b.currently;c.Location.city=this.locationObj.city,c.Location.country=this.locationObj.country_name,c.Location.region=this.locationObj.region_name,c.Location.latitude=b.latitude,c.Location.longitude=b.longitude,c.Condition.code=null,c.Condition.date=new Date(1e3*e.time),c.Condition.description=e.summary,c.Condition.humidity=parseInt(100*e.humidity,10)+"%",c.Condition.icon_url=this.config().basePath+"img/forecast.io/"+e.icon+".png",c.Condition.max_temp_c=null,c.Condition.max_temp_f=null,c.Condition.min_temp_c=null,c.Condition.min_temp_f=null,c.Condition.precipitation=null,c.Condition.pressure=e.pressure+" MB",c.Condition.provider_link="http://forecast.io/",c.Condition.temp_c=Math.round(e.temperature),c.Condition.temp_f=Math.round(e.tempF),c.Condition.visibility=e.visibility?e.visibility.toFixed(2)+" Km":null,c.Condition.wind_k=e.windBearing+"°, "+e.windSpeed+" Km/h",c.Condition.wind_m=e.windBearing+"°, "+e.windSpeed+" Mph",c.Forecasts=[];for(var f=b.daily.data||[],g=0;g<f.length;g++)if(f[g]){var h=a.extend({},d.Settings.Data.Model.Weather.Condition),i=f[g];h.code=null,h.date=new Date(1e3*i.time),h.description=i.summary,h.icon_url=this.config().basePath+"img/forecast.io/"+i.icon+".png",h.max_temp_c=Math.round(i.temperatureMax),h.max_temp_f=Math.round(i.temperatureMax),h.min_temp_c=Math.round(i.temperatureMin),h.min_temp_f=Math.round(i.temperatureMin),c.Forecasts.push(h)}return c},convert_search_data:function(b){var c,e=[],f=b.query.results.place;if(0===f.length)return c=a.extend({},d.Settings.Data.Model.Search),e.push(c),e;for(var g=0;g<f.length;g++)c=a.extend({},d.Settings.Data.Model.Search),c.city=f[g].name,c.region=f[g].admin1?f[g].admin1.content:null,c.country=f[g].country?f[g].country.content:null,c.location_id=null,c.longitude=f[g].centroid?f[g].centroid.longitude:null,c.latitude=f[g].centroid?f[g].centroid.latitude:null,e.push(c);return e}}],Geolocation:[{id:"fgip",name:"freegeoip.net",description:"A public web service for searching geolocation of IP addresses and host names",key:null,data_type:"jsonp",get_link:function(){return'<a href="http://freegeoip.net" target="_blank">'+this.name+"</a>"},url:function(){return d.Helpers.protocol()+"//freegeoip.net/json/"},sanity_check:function(a){return a&&a.city?!0:!1},convert_data:function(b){var c=a.extend({},d.Settings.Data.Model.Geolocation,b);return c}},{id:"geopl",name:"geoPlugin",description:"Plugin to geo-targeting and unleash your site's potential",key:null,data_type:"jsonp",get_link:function(){return'<a href="http://www.geoplugin.com/" target="_blank">'+this.name+"</a>"},url:function(){return d.Helpers.protocol()+"//www.geoplugin.net/json.gp?jsoncallback=?"},sanity_check:function(a){return a&&a.geoplugin_status&&200===a.geoplugin_status?!0:!1},convert_data:function(b){var c=a.extend({},d.Settings.Data.Model.Geolocation);return c.city=b.geoplugin_city,c.country_name=b.geoplugin_countryName,c.region_name=b.geoplugin_regionName,c.longitude=b.geoplugin_longitude,c.latitude=b.geoplugin_latitude,c.ip=b.geoplugin_request,c.metrocode=null,c.region_code=b.geoplugin_regionCode,c.country_code=b.geoplugin_countryCode,c.areacode=b.geoplugin_areaCode,c.zipcode=null,c}},{id:"tlz",name:"Telize GeoIP",description:"Get IP address location in JSON format",key:null,get_link:function(){return'<a href="http://www.telize.com/" target="_blank">Telize GeoIP</a>'},url:function(){return d.Helpers.protocol()+"//www.telize.com/geoip?callback=?"},sanity_check:function(a){return a&&a.city&&a.country?!0:!1},convert_data:function(b){var c=a.extend({},d.Settings.Data.Model.Geolocation);return c.city=b.city,c.country_name=b.country,c.region_name=b.region,c.longitude=b.longitude,c.latitude=b.latitude,c.ip=b.ip,c.metrocode=null,c.region_code=b.region_code,c.country_code=b.country_code,c.areacode=b.area_code,c.zipcode=null,c}}]},Data:{Model:{Weather:{Location:{city:null,country:null,region:null,latitude:null,longitude:null},Condition:{date:null,provider_link:null,temp_c:null,temp_f:null,min_temp_c:null,max_temp_c:null,min_temp_f:null,max_temp_f:null,icon_url:null,description:null,code:null,humidity:null,precipitation:null,wind_k:null,wind_m:null,visibility:null,pressure:null},Forecasts:[]},Geolocation:{city:null,region_code:null,region_name:null,areacode:null,ip:null,zipcode:null,longitude:null,country_name:null,country_code:null,metrocode:null,latitude:null},Search:{city:null,region:null,country:null,location_id:null,longitude:null,latitude:null}}},Template:{current:'<div class="{cssprfx}wrap-cond"><div class="{cssprfx}left"><img src="{icn}" alt="{desc}" title="{desc}" /><div class="{cssprfx}date">{date}<a href="{Condition.provider_link}" target="_blank" title="More info">+</a></div><div class="{cssprfx}lnkforecasts">{lnkforecasts}</div></div><div class="{cssprfx}cont-info"><div class="{cssprfx}temp">{temp}</div><div class="{cssprfx}min-max">{minmax}</div><div class="{cssprfx}desc">{Condition.description}</div></div></div><div class="{cssprfx}cont-details"><div class="{cssprfx}humidity">{Condition.humidity}</div><div class="{cssprfx}precipitation">{Condition.precipitation}</div><div class="{cssprfx}wind">{Condition.wind}</div><div class="{cssprfx}pressure">{Condition.pressure}</div><div class="{cssprfx}visibility">{Condition.visibility}</div></div><div class="{cssprfx}forecasts" style="display:{forecastsdisplay};">{forecasts}</div>',forecast:'<div class="{cssprfx}wrap-cond"><div class="{cssprfx}left"><img src="{icn}" alt="{icndesc}" title="{icndesc}" /><div class="{cssprfx}date">{date}</div></div><div class="{cssprfx}cont-info"><div class="{cssprfx}min-max">{minmax}</div><div class="{cssprfx}desc">{desc}</div></div><div class="{cssprfx}clear"></div></div>',get:function(a){return this[a]}},cacheDuration:36e5},Helpers:{protocol:function(){return-1!=location.protocol.indexOf("file")?"http:":location.protocol},language:function(){return window.navigator.userLanguage||window.navigator.language}}}}var d=c();a.fn.EasyWeather=function(b){function c(a,b){a&&b&&(Y.key||(Y.key=a.key),Y.cacheDuration||(Y.cacheDuration=d.Settings.cacheDuration),Y.enableSearch&&!Y.searchBox&&(Y.searchBox=!0),Y.language||(Y.language=d.Helpers.language()),Y.nbForecastDays?Y.nbForecastDays>a.max_nb_forecast_days&&(Y.nbForecastDays=a.max_nb_forecast_days):Y.nbForecastDays=a.nb_forecast_days,Y.nbSearchResults||(Y.nbSearchResults=a.nb_search_results),Y.template.current||(Y.template.current=d.Settings.Template.get("current")),Y.template.forecast||(Y.template.forecast=d.Settings.Template.get("forecast")))}function e(){var a=Y.providerSequenceIds.split("|");if(Y.providerId!==a[0]){for(var b=0;b<a.length;b++)if(a[b]===Y.providerId){a.splice(b,1);break}a.unshift(Y.providerId)}return a}function f(){var a=Y.geoProviderSequenceIds.split("|");if(Y.geoProviderId!==a[0]){for(var b=0;b<a.length;b++)if(a[b]===Y.geoProviderId){a.splice(b,1);break}a.unshift(Y.geoProviderId)}return a}function g(a){var b=a||Y.providerId;return k(d.Settings.Providers.Weather,b)}function h(a){Y.providerId=a,Z=g()}function i(a){var b=a||Y.geoProviderId;return k(d.Settings.Providers.Geolocation,b)}function j(a){Y.geoProviderId=a,$=i()}function k(b,c){var d={};return a.map(b,function(a){a.id===c&&(d=a)}),d}function l(a){return eb[a]}function m(){if(a.isFunction(Y.fnSearch))return Y.fnSearch.call(this),void 0;var b="Searching "+g().name;W.call(this,b);var c=B.call(this);return a.ajax({url:c,dataType:"jsonp",context:this,timeout:cb}).done(O).fail(function(){eb.search<db?m.call(this):V.call(this,b.error_occurred),eb.search++}),!1}function n(b){var c="Retrieving forecasts from "+g().name;W.call(this,c);var d=(new Date).getTime(),e=F.call(this,null,!0),f=H(e,d),h=!0;if(f&&(h=!1,N.call(this,b,f)),h){var i=C.call(this),j=this;a.ajax({url:i,dataType:"jsonp",context:this,timeout:cb}).done(function(a){Q.call(j,a,b)}).fail(function(){V.call(this,this.msg.error_occurred),this.config().forecasts=!1,M.call(this,b)})}}function o(){if(bb&&(this.location=r.call(this)),this.location&&""!==this.location){if(s.call(this,this.location),U.call(this),a.isFunction(Y.fnLoad))return Y.fnLoad.call(this),void 0;var b=(new Date).getTime(),c=F.call(this),d=H(c,b),e=!0;if(d&&(e=!1,M.call(this,d)),e){var f="Contacting "+g().name+"...";W.call(this,f);var h=z.call(this);a.ajax({url:h,dataType:"jsonp",context:this,timeout:cb}).done(M).fail(function(){var a=p.call(this);a||V.call(this,this.msg.error_occurred)})}}}function p(){var a=!0;if(Y.providerSequence)if(jb=null,eb.load<db){var b=e()[eb.load+1];b?(h(b),o.call(this)):a=!1}else a=!1;else eb.load<db?o.call(this):a=!1;return eb.load++,a}function q(a){var b=F.call(this),c=F.call(this,null,!0);J(b),J(c),a&&h.call(this,this.originalProviderId),"auto"===this.location?u.call(this):this.load()}function r(){var a=this.inp?this.inp.val():this.location;return a!==Y.location?a:Y.location?Y.location:null}function s(a){Y.searchBox?(this.inp.val("auto"!=a?a:""),this.inp.attr("title",a)):Y.header&&this.header.html(a)}function t(a,b){this.location=a,b&&this.load()}function u(){Y.enableGeolocation?w.call(this):v.call(this)}function v(){if(a.isFunction(Y.fnLocate))return Y.fnLocate.call(this),void 0;var b=(new Date).getTime(),c=F.call(this),d=H(c,b),e=!0;if(d)return e=!1,this.locationObj=d,this.location=d.city+(Y.showRegion?" "+d.region_name:"")+(Y.showCountry?" "+d.country_name:""),a(this).trigger("ew.locate",[d]),a.isFunction(Y.locate)&&Y.locate.call(this,d),o.call(this),void 0;if(e){var g="Resolving location with "+i().name;W.call(this,g);var h=A.call(this);a.ajax({url:h,dataType:this.geoProvider().data_type||"jsonp",context:this,timeout:cb}).done(function(b){if(!this.geoProvider().sanity_check.call(this,b))return w.call(this),void 0;if(b=this.geoProvider().convert_data.call(this,b)){this.locationObj=b;var c=F.call(this);I.call(this,c,b),this.location=b.city+(Y.showRegion?" "+b.region_name:"")+(Y.showCountry?" "+b.country_name:""),a(this).trigger("ew.locate",[b]),a.isFunction(Y.locate)&&Y.locate.call(this,b),o.call(this)}}).fail(function(){var a=!1;if(Y.geoProviderSequence)if(eb.locate<db){var b=f()[eb.locate+1];b?(j(b),v.call(this)):a=!0}else a=!0;else eb.locate<db?v.call(this):w.call(this);eb.locate++,a&&V.call(this,this.msg.error_occurred)})}}function w(){if(navigator.geolocation){var a=this;return navigator.geolocation.getCurrentPosition(function(b){x.call(a,b)},function(){y.call(a)},{timeout:cb})}V.call(this,ab.geolocation_not_supported)}function x(b){this.location=b.coords.latitude+","+b.coords.longitude,a.isFunction(Y.locate)&&Y.locate.call(this,b),o.call(this)}function y(){V.call(this,ab.geolocation_error)}function z(){return this.provider().get_url.call(this)}function A(){return this.geoProvider().url.call(this)}function B(){return this.provider().get_search_url.call(this)}function C(){return this.provider().get_forecasts_url.call(this)}function D(){return Y.localStorage&&"localStorage"in window&&null!==window.localStorage
-}function E(a){return a?parseInt(a[0],10):0}function F(a,b){var c=b?"_forecasts":"";return _.app+this.provider().id+c+"_"+(a||this.location)}function G(a){return a?a[1]:{}}function H(a,b){var c,d;if(D()){if(!localStorage[a])return null;c=JSON.parse(localStorage[a]),d=E(c)}else{if(!lb.get(a))return null;try{c=JSON.parse(lb.get(a)),d=E(c)}catch(e){return null}}return b-d<=Y.cacheDuration?G(c):null}function I(a,b,c){var d=c||(new Date).getTime();if(D())try{localStorage.setItem(a,JSON.stringify([d,b]))}catch(e){e===QUOTA_EXCEEDED_ERR&&V.call(this,ab.quota_exceeded)}else{var f=new RegExp(";","gi");lb.set(a,JSON.stringify([d,b]).replace(f,""),Y.cacheDuration)}}function J(a){D()?localStorage.removeItem(a):lb.remove(a)}function K(){if(D())for(var a,b=localStorage.length-1;b>=0;b--)a=localStorage.key(b),-1!==a.indexOf(_.app)&&J(a);else lb.removeAll(_.app)}function L(){var a=F.call(this);J.call(this,a)}function M(b){if(!this.provider().sanity_check.call(this,b))return this.showError.call(this,this.msg.location_not_found),Y.providerSequence&&p.call(this),bb=!0,void 0;var c=F.call(this);I.call(this,c,b),a.isFunction(this.provider().get_forecasts_url)&&this.config().forecasts?n.call(this,b):N.call(this,b)}function N(b,c){var d;if(d=this.config().forecasts&&c?this.provider().convert_data.call(this,b,c):this.provider().convert_data.call(this,b),ib=d,this.cont.html(S(d)),this.config().forecastsLink){var e=this.cont.find("."+_.css+"forecasts");this.cont.find("."+_.css+"lnk-forecasts").unbind("click"),this.cont.find("."+_.css+"lnk-forecasts").bind("click",function(a){a.preventDefault(),e.toggle()})}this.cont.find("img").bind("error",function(){a(this).attr("src",Y.basePath+"img/icn_na.png"),a(this).unbind("error")});var f=d.Location.city+(Y.showRegion&&null!==d.Location.region&&""!==d.Location.region?", "+d.Location.region:"")+(Y.showCountry?", "+d.Location.country:"");s.call(this,f),bb=!0,a(this).trigger("ew.load",[b]),a.isFunction(Y.load)&&Y.load.call(this)}function O(b){return this.provider().search_sanity_check.call(this,b)?(P.call(this,b),a(this).trigger("ew.search",[b]),a.isFunction(Y.search)&&Y.search.call(this,b),void 0):(V.call(this,ab.location_not_found),void 0)}function P(b){var c=this.provider().convert_search_data.call(this,b);if(0===c.length)return V.call(this,ab.no_results),void 0;for(var d,e,f,g,h,i,j=this,k=a('<ul class="'+_.css+'results"></ul>'),l=0;l<c.length;l++){d=c[l],e=d.city?d.city+" ":"",f=d.country?d.country:"",g=d.region?d.region+" ":"",h=d.location_id?d.location_id:"",i=_.css+"data-locid";var m=a("<li "+i+'="'+h+'" >'+e+g+f+"</li>");!function(b){m.on("click",function(){""!==a(this).attr(i)?jb=a(this).attr(i):(jb=null,j.provider().search_api===!1&&(j.locationObj.longitude=b.longitude,j.locationObj.latitude=b.latitude,j.locationObj.city=b.city,j.locationObj.country_name=b.country,j.locationObj.region_name=b.region,j.locationObj.country_code=null,j.locationObj.areacode=null,j.locationObj.region_code=null)),j.inp.val(a(this).html()),o.call(j)})}(d),k.append(m)}this.cont.contents().replaceWith(k)}function Q(a,b){if(this.provider().forecasts_sanity_check.call(this,a)){var c=F.call(this,null,!0);I.call(this,c,a)}else V.call(this,this.msg.location_not_found);N.call(this,b,a)}function R(a){return Y.template[a||"current"].replace(new RegExp("{cssprfx}","g"),_.css)}function S(b){var c=b.Condition,d=a.isFunction(Y.fnSetIconUrl)?Y.fnSetIconUrl.call(this,c):c.icon_url,e=Y.showUnit?Y.tempUnit.toLowerCase():"",f=c["temp_"+Y.tempUnit.toLowerCase()]+"&#176;"+e,g=c["min_temp_"+Y.tempUnit.toLowerCase()]?c["min_temp_"+Y.tempUnit.toLowerCase()]+"&#176;"+e:"",h=c["max_temp_"+Y.tempUnit.toLowerCase()]?c["max_temp_"+Y.tempUnit.toLowerCase()]+"&#176;"+e:"",i=R().replace("{icn}",d).replace("{temp}",f).replace(new RegExp("{desc}","g"),c.description).replace("{date}",'<span title="'+c.date+'">'+Y.todayLabel+"</span>");if(Y.showDescription||(i=i.replace("{Condition.description}","")),i=Y.showMinMax&&""!==h&&""!==g?i.replace("{minmax}",'<span class="'+_.css+'min" title="min temperature">'+g+'</span> - <span class="'+_.css+'max" title="max temperature">'+h+"</span>"):i.replace("{minmax}",""),Y.showDetails){var j=c["wind_"+Y.windSpeedUnit.charAt(0).toLowerCase()],k="n/a";i=i.replace("{Condition.humidity}",-1!==Y.details.indexOf("humidity")?Y.detailLabels.humidity+(c.humidity||k):"").replace("{Condition.precipitation}",-1!==Y.details.indexOf("precipitation")?Y.detailLabels.precipitation+(c.precipitation||k):"").replace("{Condition.wind}",-1!==Y.details.indexOf("wind")?Y.detailLabels.wind+(j||k):"").replace("{Condition.pressure}",-1!==Y.details.indexOf("pressure")?Y.detailLabels.pressure+(c.pressure||k):"").replace("{Condition.visibility}",-1!==Y.details.indexOf("visibility")?Y.detailLabels.visibility+(c.visibility||k):"")}else i=i.replace("{Condition.humidity}","").replace("{Condition.precipitation}","").replace("{Condition.wind}","").replace("{Condition.pressure}","").replace("{Condition.visibility}","");if(Y.forecasts){var l=b.Forecasts,m="";i=Y.forecastsLink?i.replace("{lnkforecasts}",'<a href="javascript:void(0);" class="'+_.css+'lnk-forecasts" '+'title="'+Y.nbForecastDays+' days forecast">'+Y.nbForecastDays+" days</a>").replace("{forecastsdisplay}","none"):i.replace("{lnkforecasts}","").replace("{forecastsdisplay}","horizontal"===Y.orientation?"inline-block":"block");for(var n=1;n<=Y.nbForecastDays;n++)if(l[n]){var o=l[n],p=o.date,q=T(p),r=o["min_temp_"+Y.tempUnit.toLowerCase()]?o["min_temp_"+Y.tempUnit.toLowerCase()]+"&#176;"+e:"",s=o["max_temp_"+Y.tempUnit.toLowerCase()]?o["max_temp_"+Y.tempUnit.toLowerCase()]+"&#176;"+e:"",t=(o.code,o.description),u=a.isFunction(Y.fnSetIconUrl)?Y.fnSetIconUrl.call(this,o):o.icon_url;m+=R("forecast").replace("{icn}",u).replace(new RegExp("{icndesc}","g"),t).replace("{minmax}",'<span class="'+_.css+'min" title="min temperature">'+r+"</span> - "+'<span class="'+_.css+'max" title="max temperature">'+s+"</span>").replace("{date}",'<span title="'+p+'">'+q+"</span>"),m=Y.showDescription?m.replace("{desc}",t):m.replace("{desc}","")}i=i.replace("{forecasts}",m)}else i=i.replace("{forecasts}","").replace("{lnkforecasts}","").replace("{forecastsdisplay}","");return i.replace(/\{([\w\.]*)\}/g,function(a,c){var d,e=c.split("."),f=b[e.shift()];for(n=0,d=e.length;d>n;n++)f=f[e[n]];return"undefined"!=typeof f&&null!==f?f:""})}function T(a){if(!a)return null;var b=new Date(a);return Y.weekDays[b.getDay()]}function U(){var b=a(this).find("."+_.css+"providers-list");b.html("Data providers: <ul><li>"+this.provider().get_link()+"</li>"+"<li>"+this.geoProvider().get_link()+"</li></ul>"+'<p>Powered by <a href="http://mguglielmi.free.fr/scripts/easyweather">EasyWeather</a></p>')}function V(b){this.cont.html('<div class="'+_.css+'error">'+b+"</div>"),a(this).trigger("ew.error",[b]),a.isFunction(Y.error)&&Y.error.call(this)}function W(b,c){var d=c||this.cont;d.html(kb.shared.spinner+(b?'<span class="'+_.css+'spinner-msg">'+b+"</span>":"")),a(this).trigger("ew.spinner")}var X={providerId:"yhw",providerSequence:!0,providerSequenceIds:"yhw|wwo|owm|ham|wug|fio",geoProviderId:"geopl",geoProviderSequence:!0,geoProviderSequenceIds:"geopl|fgip|tlz",language:null,location:"auto",locationId:null,enableGeolocation:!1,localStorage:!0,cacheDuration:null,weekDays:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],todayLabel:"Today",orientation:"vertical",template:{current:null,forecast:null},header:!0,searchBox:!1,refreshLink:!0,enableSearch:!1,nbSearchResults:null,forecasts:!1,forecastsLink:!1,nbForecastDays:null,tempUnit:"C",showUnit:!0,windSpeedUnit:"Kmph",showRegion:!1,showCountry:!0,showMinMax:!0,showDescription:!0,showDetails:!1,details:"humidity|precipitation|wind|pressure|visibility",detailLabels:{humidity:"Humidity: ",precipitation:"Precipitation: ",wind:"Wind: ",pressure:"Pressure: ",visibility:"Visibility: "},width:null,height:null,basePath:"EasyWeather/",theme:"ew-light-blue",cssContainer:"ew-container",cssForm:"ew-form",cssInput:"ew-input",cssHeader:"ew-header",cssContent:"ew-content",create:null,load:null,locate:null,search:null,error:null,fnLocate:null,fnLoad:null,fnSearch:null,fnSetIconUrl:null},Y=a.extend({},X,b),Z=g(),$=i();c(Z,$);var _={app:"ew_",css:"ew-"},ab={error_occurred:"An error occurred. Please try again.",key_error:"Please use another key, the one supplied is for demo purposes only.",location_not_found:"Location not found.",quota_exceeded:"Local storage quota exceeded error. Current item could not be saved.",geolocation_error:"We were unable to detect your current location.",geolocation_not_supported:"Geolocation not supported by your browser.",no_results:"No results."},bb=!1,cb=8e3,db=e().length,eb={search:0,load:0,locate:0},fb=!1,gb=1300,hb=null,ib=null,jb=Y.locationId,kb={shared:{form:'<form class="'+Y.cssForm+'">'+'<input class="'+Y.cssInput+'" />'+"</form>",container:'<div class="'+Y.cssContent+'"></div>',header:'<div class="'+Y.cssHeader+'"></div>',refresh:'<div class="'+_.css+'refresh">'+'<a href="javascript:void(0);" title="Refresh"></a></div>',provider:'<div class="'+_.css+'provider"><a href="javascript:void(0);" '+'title="Weather and geolocation providers">?</a>'+'<div class="'+_.css+'providers-list"></div></div>'+'<hr class="'+_.css+'hr-sep" />',spinner:'<div class="'+_.css+'spinner"></div>'}},lb={set:function(a,b,c){var d,e="";c&&(d=new Date,d.setTime(d.getTime()+c),e="; expires="+d.toGMTString()),document.cookie=a+"="+b+e+"; path=/"},remove:function(a){this.set(a,"",-1)},removeAll:function(a){for(var b=document.cookie.split(";"),c=0;c<b.length;c++){for(var d=b[c];" "==d.charAt(0);)d=d.substring(1,d.length);0===d.indexOf(a)&&this.remove(d.split["="][0])}},get:function(a){for(var b=a+"=",c=document.cookie.split(";"),d=0;d<c.length;d++){for(var e=c[d];" "==e.charAt(0);)e=e.substring(1,e.length);if(0===e.indexOf(b))return e.substring(b.length,e.length)}return null}};return this.each(function(){if(a(this).addClass(Y.theme+" "+Y.cssContainer+" "+_.css+Y.orientation),Y.width&&a(this).css({width:Y.width}),Y.height&&a(this).css({height:Y.height}),a(this).prepend((Y.searchBox?kb.shared.form:Y.header?kb.shared.header:"")+kb.shared.container+(Y.refreshLink?kb.shared.refresh:"")+kb.shared.provider),this.cont=a(this).children("div."+Y.cssContent),this.header=null,this.location=Y.location,this.locationObj=null,this.config=function(){return Y},this.originalProviderId=Y.providerId,this.provider=function(){return Z},this.geoProvider=function(){return $},this.getWeatherData=function(){return ib},this.prfx=_,this.locationId=function(){return jb},this.msg=ab,this.load=o,this.locate=v,this.refresh=q,this.getWeatherProviderIds=e,this.getGeoProviderIds=f,this.setWeatherProvider=h,this.setGeoProvider=j,this.getLocation=r,this.setLocation=t,this.displayLocation=s,this.getRetriesCounter=l,this.getValidStoredItem=H,this.getStoredItemName=F,this.storeItem=I,this.clearAllCache=K,this.clearCache=L,this.getTemplate=R,this.getWeekDay=T,this.showError=V,this.showSpinner=W,Y.searchBox){var b=this;this.form=a(this).children("form."+Y.cssForm),this.inp=this.form.children("input."+Y.cssInput),this.form.on("submit",function(){return bb&&Y.enableSearch?m.call(b):o.call(b),!1}),this.inp.on("keydown",function(){fb=!0,hb&&(window.clearTimeout(hb),hb=null)}),this.inp.on("keyup",function(a){if(13===a.keyCode)return window.clearTimeout(hb),hb=null,!1;var c=this;fb=!1,hb||(hb=window.setTimeout(function(){return""===c.value||fb?!1:(bb&&Y.enableSearch?m.call(b):o.call(b),!1)},gb))}),this.inp.on("focus",function(){var a=this;window.setTimeout(function(){a.select()},0)}),this.inp.on("blur",function(){return""===this.value?(b.displayLocation(b.location),!1):void 0})}else Y.header&&(this.header=a(this).children("div."+Y.cssHeader));"auto"===Y.location.toLowerCase()?u.call(this):Y.searchBox?this.form.submit():o.call(this),U.call(this),a(this).find("."+_.css+"provider").on("click",function(){var b=a(this).find("."+_.css+"providers-list");b.is(":visible")?b.hide("fast"):b.show("fast")}),a(this).find("."+_.css+"refresh").on("click",a.proxy(this.refresh,this,!0)),a(this).trigger("ew.create"),a.isFunction(Y.create)&&Y.create.call(this)}),this}}(jQuery,window.EasyWeather||{Keys:{}}),window.JSON||(window.JSON={parse:function(sJSON){return eval("("+sJSON+")")},stringify:function(a){if(a instanceof Object){var b="";if(a.constructor===Array){for(var c=0;c<a.length;b+=this.stringify(a[c])+",",c++);return"["+b.substr(0,b.length-1)+"]"}if(a.toString!==Object.prototype.toString)return'"'+a.toString().replace(/"/g,"\\$&")+'"';for(var d in a)b+='"'+d.replace(/"/g,"\\$&")+'":'+this.stringify(a[d])+",";return"{"+b.substr(0,b.length-1)+"}"}return"string"==typeof a?'"'+a.replace(/"/g,"\\$&")+'"':String(a)}});
+/*------------------------------------------------------------------------
+	- EasyWeather v1.3.1 by Max Guglielmi
+	- http://mguglielmi.free.fr/scripts/easyweather
+	- License required for use
+------------------------------------------------------------------------*/
+
+(function ($, EasyWeather) {
+
+    var EW = ewSettings();
+
+    $.fn.EasyWeather = function (opts) {
+
+        var version = '1.3',
+
+        // Default settings
+        settings = {
+            providerId: 'yhw',                          // weather provider by default ('yhw')
+            providerSequence: true,                     // enable providers retries sequence
+            providerSequenceIds: 'yhw|wwo|owm|ham|wug|fio', // retries sequence (if yhw fails -> wwo and so on)
+            geoProviderId: 'geopl',                     // geolocation provider by default
+            geoProviderSequence: true,                  // enable geo-provider retries sequence
+            geoProviderSequenceIds: 'geopl|fgip|tlz',	// retries sequence (if geopl fails -> fgip -> tlz)
+            language: null,                             // user language
+            location: 'auto',                           // location 'auto' = auto-detection
+            locationId: null,
+            enableGeolocation: false,                   // HTML 5 geolocation feature (browser prompt)
+            localStorage: true,                         // enable HTML 5 localStorage or fallback to cookie
+            cacheDuration: null,                        // data cache duration (1 hour by default),
+            weekDays: [                                 // days of week (Sunday is 0 in javascript, must be first)
+                'Sun', 'Mon', 'Tue',
+                'Wed', 'Thu', 'Fri', 'Sat'
+            ],
+            todayLabel: 'Today',                        // 'Today' label under weather icon
+
+            orientation: 'vertical',                    // widget type: 'vertical' or 'horizontal'
+            template: {
+                current: null,                          // custom template for current weather
+                forecast: null                          // custom template for forecasts
+            },
+            header: true,                               // show/hide header
+            searchBox: false,                           // enable/disable search box
+
+            refreshLink: true,                          // show refresh icon
+            enableSearch: false,                        // enable location search
+            nbSearchResults: null,                      // nb of search results
+            forecasts: false,                           // show forecasts
+            forecastsLink: false,                       // show/hide link expanding forecasts
+            nbForecastDays: null,                       // nb of forecast
+            tempUnit: 'C',                              // C (Celcius) or F (Fahrenheit)
+            showUnit: true,                             // show unit next to temperature
+            windSpeedUnit: 'Kmph',                      // Kmph or Miles
+            showRegion: false,							// show region/state next to city
+            showCountry: true,                          // show country next to city
+            showMinMax: true,                           // show min/max temperatures
+            showDescription: true,                      // show description
+            showDetails: false,                         // show weather details
+            details: 'humidity|precipitation|wind|pressure|visibility',
+            detailLabels: {								// labels for details
+				humidity: 'Humidity: ',
+				precipitation: 'Precipitation: ',
+				wind: 'Wind: ',
+				pressure: 'Pressure: ',
+				visibility: 'Visibility: '
+			},
+
+            width: null,                                // widget width (ex: '100px', 'auto')
+            height: null,                               // widget height (ex: '100px', 'auto')
+
+            basePath: 'EasyWeather/',                   // script's folder path
+
+            theme: 'ew-light-blue',                     // widget theme
+            cssContainer: 'ew-container',               // custom css for widget container
+            cssForm: 'ew-form',                         // custom css for search box form
+            cssInput: 'ew-input',                       // custom css for search box
+            cssHeader: 'ew-header',                     // custom css for header (search box off)
+            cssContent: 'ew-content',                   // custom css for weather data container
+
+            create: null,                               // triggered when widget is created
+            load: null,                                 // triggered when weather is loaded
+            locate: null,                               // triggered when location/position is resolved
+            search: null,                               // triggered after a search is performed
+            error: null,                                // triggered after an error message is displayed
+
+            fnLocate: null,                             // delegate for locate method
+			fnLoad: null,								// delegate for load method
+			fnSearch: null,								// delegate for search method
+			fnSetIconUrl: null							// delegate for setting weather icon
+        },
+
+        // Merge supplied and default settings
+		config = $.extend({}, settings, opts);
+
+        // Weather content providers
+        var provider = getWeatherProvider(),
+			geoProvider = getGeoProvider();
+
+        // Global settings applied if not supplied by configuration object
+        setGlobalSettings(provider, geoProvider);
+
+        // Private fields
+		var prfx = { app: 'ew_', css: 'ew-' },
+			msg = {
+				error_occurred: 'An error occurred. Please try again.',
+				key_error: 'Please use another key, the one supplied is for demo purposes only.',
+				location_not_found: 'Location not found.',
+				quota_exceeded: 'Local storage quota exceeded error. Current item could not be saved.',
+				geolocation_error: 'We were unable to detect your current location.',
+				geolocation_not_supported: 'Geolocation not supported by your browser.',
+				no_results: 'No results.'
+			},
+			isLoaded = false,
+			xhrTimeout = 8000,									// jsonp timeout
+			xhrRetries = getWeatherProviderIds().length,		// providers retries nb until error is displayed
+			xhrCounter = { search: 0, load: 0, locate: 0 },
+			isTyping = false,
+			submitTimeout = 1300,
+			submitInterval = null,
+			weatherObj = null,
+			locationId = config.locationId;
+
+        // Shared elements template definitions
+        var tpl = {
+            shared: {
+                form: '<form class="' + config.cssForm + '">' +
+						'<input class="' + config.cssInput + '" />' +
+						'</form>',
+                container: '<div class="' + config.cssContent + '"></div>',
+                header: '<div class="' + config.cssHeader + '"></div>',
+                refresh: '<div class="' + prfx.css + 'refresh">' +
+							'<a href="javascript:void(0);" title="Refresh"></a></div>',
+                provider: '<div class="' + prfx.css + 'provider"><a href="javascript:void(0);" ' +
+							'title="Weather and geolocation providers">?</a>' +
+							'<div class="' + prfx.css + 'providers-list"></div></div>' +
+							'<hr class="' + prfx.css + 'hr-sep" />',
+                spinner: '<div class="' + prfx.css + 'spinner"></div>'
+            }
+        };
+
+        // Cookie manager object (used only if localStorage not supported or turned off)
+        var ewCookie = {
+            set: function (name, value, duration) {
+                var date,
+					expires = '';
+                if (duration) {
+                    date = new Date();
+                    date.setTime(date.getTime() + duration);
+                    expires = "; expires=" + date.toGMTString();
+                }
+                document.cookie = name + "=" + (value) + expires + "; path=/";
+            },
+            remove: function (name) {
+                this.set(name, '', -1);
+            },
+            removeAll: function (prfx) {
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') { c = c.substring(1, c.length); }
+                    if (c.indexOf(prfx) === 0) { this.remove(c.split['='][0]); }
+                }
+            },
+            get: function (name) {
+                var nameEQ = name + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') { c = c.substring(1, c.length); }
+                    if (c.indexOf(nameEQ) === 0) { return (c.substring(nameEQ.length, c.length)); }
+                }
+                return null;
+            }
+        };
+
+        this.each(function () {
+
+            //Adds container css class
+            $(this).addClass(config.theme + ' ' + config.cssContainer + ' ' + prfx.css + config.orientation);
+            if (config.width) { $(this).css({ width: config.width }); }
+            if (config.height) { $(this).css({ height: config.height }); }
+
+            //Shared elements
+            $(this).prepend(
+				(config.searchBox ? tpl.shared.form : (config.header ? tpl.shared.header : '')) +
+				tpl.shared.container +
+				(config.refreshLink ? tpl.shared.refresh : '') +
+				tpl.shared.provider
+            );
+
+            this.cont = $(this).children("div." + config.cssContent);
+            this.header = null;
+            this.location = config.location;
+            this.locationObj = null;
+
+            // Expose public properties
+            this.config = function () { return config; };
+            this.originalProviderId = config.providerId;
+            this.provider = function () { return provider; };
+            this.geoProvider = function () { return geoProvider; };
+            this.getWeatherData = function () { return weatherObj; };
+            this.prfx = prfx;
+            this.locationId = function () { return locationId; };
+            this.msg = msg;
+            this.load = load;
+            this.locate = locate;
+            this.refresh = refresh;
+            this.getWeatherProviderIds = getWeatherProviderIds;
+            this.getGeoProviderIds = getGeoProviderIds;
+            this.setWeatherProvider = setWeatherProvider;
+            this.setGeoProvider = setGeoProvider;
+            this.getLocation = getLocation;
+            this.setLocation = setLocation;
+            this.displayLocation = displayLocation;
+            this.getRetriesCounter = getRetriesCounter;
+            this.getValidStoredItem = getValidStoredItem;
+            this.getStoredItemName = getStoredItemName;
+            this.storeItem = storeItem;
+            //this.removeStoredItem = removeStoredItem;
+            this.clearAllCache = clearAllCache;
+            this.clearCache = clearCache;
+            this.getTemplate = getTemplate;
+            this.getWeekDay = getWeekDay;
+            this.showError = showError;
+            this.showSpinner = showSpinner;
+
+            if (config.searchBox) {
+                var o = this;
+                this.form = $(this).children("form." + config.cssForm);
+                this.inp = this.form.children("input." + config.cssInput);
+                this.form.on('submit', function (e) {
+                    if (isLoaded && config.enableSearch) {
+                        search.call(o);
+                    } else { load.call(o); }
+                    return false;
+                });
+                this.inp.on('keydown', function (e) {
+                    isTyping = true;
+                    if (submitInterval) {
+                        window.clearTimeout(submitInterval);
+                        submitInterval = null;
+                    }
+                });
+                this.inp.on('keyup', function (e) {
+                    if (e.keyCode === 13) {
+                        window.clearTimeout(submitInterval);
+                        submitInterval = null;
+                        return false;
+                    }
+                    var self = this;
+                    isTyping = false;
+                    if (!submitInterval) {
+                        submitInterval = window.setTimeout(function () {
+                            if (self.value === '' || isTyping) { return false; }
+                            if (isLoaded && config.enableSearch) {
+                                search.call(o);
+                            } else { load.call(o); }
+                            return false;
+                        }, submitTimeout);
+                    }
+                });
+                this.inp.on('focus', function (e) {
+                    var self = this;
+                    window.setTimeout(function () { self.select(); }, 0);
+                });
+                this.inp.on('blur', function (e) {
+                    if (this.value === '') { o.displayLocation(o.location); return false; }
+                });
+            } else {
+                if (config.header) {
+                    this.header = $(this).children("div." + config.cssHeader);
+                }
+            }
+
+            if (config.location.toLowerCase() === 'auto') {
+                resolveLocation.call(this);
+            } else {
+                if (config.searchBox) { this.form.submit(); }
+                else { load.call(this); }
+            }
+
+            setAttributions.call(this);
+            $(this).find('.' + prfx.css + 'provider').on('click', function () {
+                var cont = $(this).find('.' + prfx.css + 'providers-list');
+                if (cont.is(':visible')) { cont.hide('fast'); }
+                else { cont.show('fast'); }
+            });
+
+            $(this).find('.' + prfx.css + 'refresh').on('click', $.proxy(this.refresh, this, true));
+
+            $(this).trigger('ew.create');
+            if ($.isFunction(config.create)) { config.create.call(this); }
+
+        }); //this.each
+
+        function setGlobalSettings(provider, geoProvider) {
+            if (!provider || !geoProvider) { return; }
+            // Global settings applied if not supplied by configuration object
+            if (!config.key) { config.key = provider.key; }
+            if (!config.cacheDuration) { config.cacheDuration = EW.Settings.cacheDuration; }
+            if (config.enableSearch && !config.searchBox) { config.searchBox = true; }
+            if (!config.language) { config.language = EW.Helpers.language(); }
+            if (!config.nbForecastDays) { config.nbForecastDays = provider.nb_forecast_days; }
+            else { if (config.nbForecastDays > provider.max_nb_forecast_days) { config.nbForecastDays = provider.max_nb_forecast_days; } }
+            if (!config.nbSearchResults) { config.nbSearchResults = provider.nb_search_results; }
+            if (!config.template.current) { config.template.current = EW.Settings.Template.get('current'); }
+            if (!config.template.forecast) { config.template.forecast = EW.Settings.Template.get('forecast'); }
+        }
+
+        // Returns an array containing the weather provider ids
+        function getWeatherProviderIds() {
+            var ids = config.providerSequenceIds.split('|');
+            if (config.providerId !== ids[0]) {
+                for (var i = 0; i < ids.length; i++) {
+                    if (ids[i] === config.providerId) {
+                        ids.splice(i, 1);
+                        break;
+                    }
+                }
+                ids.unshift(config.providerId);
+            }
+            return ids;
+        }
+
+        // Returns an array containing the geolocation provider ids
+        function getGeoProviderIds() {
+            var ids = config.geoProviderSequenceIds.split('|');
+            if (config.geoProviderId !== ids[0]) {
+                for (var i = 0; i < ids.length; i++) {
+                    if (ids[i] === config.geoProviderId) {
+                        ids.splice(i, 1);
+                        break;
+                    }
+                }
+                ids.unshift(config.geoProviderId);
+            }
+            return ids;
+        }
+
+        // Returns a weather provider setting object
+        function getWeatherProvider(id) {
+            var providerId = id || config.providerId;
+            return getProvider(EW.Settings.Providers.Weather, providerId);
+        }
+
+        function setWeatherProvider(id) {
+            config.providerId = id;
+            provider = getWeatherProvider();
+        }
+
+        // Returns a geolocation provider setting object
+        function getGeoProvider(id) {
+            var providerId = id || config.geoProviderId;
+            return getProvider(EW.Settings.Providers.Geolocation, providerId);
+        }
+
+        function setGeoProvider(id) {
+            config.geoProviderId = id;
+            geoProvider = getGeoProvider();
+        }
+
+        // Returns a provider setting object
+        function getProvider(providers, providerId) {
+            var p = {};
+            $.map(providers, function (provider, key) {
+                if (provider.id === providerId) { p = provider; }
+            });
+            return p;
+        }
+
+        // Returns a retries counter
+        function getRetriesCounter(type) {
+            return xhrCounter[type];
+        }
+
+        // Performs location search
+        function search() {
+            if ($.isFunction(config.fnSearch)) { config.fnSearch.call(this); return; }
+            var msg = 'Searching ' + getWeatherProvider().name;
+            showSpinner.call(this, msg);
+            var sUrl = getSearchUrl.call(this);
+
+            $.ajax({
+                url: sUrl,
+                dataType: 'jsonp',
+                context: this,
+                timeout: xhrTimeout
+            })
+            .done(processSearchData)
+            .fail(function (jqXHR, txt, err) {
+                if (xhrCounter.search < xhrRetries) { search.call(this); }
+                else { showError.call(this, msg.error_occurred); }
+                xhrCounter.search++;
+            });
+            return false; // prevents form submission
+        }
+
+        function forecasts(curdata) {
+            var msg = 'Retrieving forecasts from ' + getWeatherProvider().name;
+            showSpinner.call(this, msg);
+
+            var reqTime = new Date().getTime(), //request time in ms
+				name = getStoredItemName.call(this, null, true), // store name
+				itemData = getValidStoredItem(name, reqTime), // check item is in localstorage and is valid
+				loadData = true;
+            //localStorage.removeItem(getStoredItemName.call(this, null, true));
+            if (itemData) {
+                loadData = false;
+                displayData.call(this, curdata, itemData);
+            }
+
+            if (loadData) {
+                var url = getForecastsUrl.call(this),
+					o = this;
+
+                $.ajax({
+                    url: url,
+                    dataType: 'jsonp',
+                    context: this,
+                    timeout: xhrTimeout
+				})
+				.done(function (data) { processForecastsData.call(o, data, curdata); })
+				.fail(function (jqXHR, txt, err) {
+					showError.call(this, this.msg.error_occurred);
+					this.config().forecasts = false;
+					// If forecast call fails current condition data is processed anyway
+					processData.call(this, curdata);
+				});
+            }
+        }
+
+        // Loads weather information
+        function load() {
+            if (isLoaded) {
+                this.location = getLocation.call(this);
+            }
+            if (!this.location || this.location === '') { return; }
+
+            displayLocation.call(this, this.location);
+            setAttributions.call(this);
+
+            if ($.isFunction(config.fnLoad)) { config.fnLoad.call(this); return; }
+
+            //localStorage.removeItem(getStoredItemName.call(this));
+            var reqTime = new Date().getTime(), //request time in ms
+				name = getStoredItemName.call(this),
+                itemData = getValidStoredItem(name, reqTime), // check stored item is valid
+				loadData = true;
+
+            if (itemData) {
+                loadData = false;
+                processData.call(this, itemData);
+            }
+
+            if (loadData) {
+                var msg = 'Contacting ' + getWeatherProvider().name + '...';
+                showSpinner.call(this, msg);
+                var wUrl = getUrl.call(this);
+
+                $.ajax({
+                    url: wUrl,
+                    dataType: 'jsonp',
+                    context: this,
+                    timeout: xhrTimeout
+                })
+				.done(processData)
+				.fail(function (jqXHR, txt, err) {
+					var reload = retryLoad.call(this);
+					if (!reload) { showError.call(this, this.msg.error_occurred); }
+				});
+            }
+        }
+
+        function retryLoad() {
+            var success = true;
+            if (!config.providerSequence) {
+                // n retries with same provider
+                if (xhrCounter.load < xhrRetries) { load.call(this); }
+                else { success = false; }
+            } else {
+                locationId = null;
+                // n providers retries before error is displayed
+                if (xhrCounter.load < xhrRetries) {
+                    var id = getWeatherProviderIds()[xhrCounter.load + 1];
+                    if (id) {
+                        setWeatherProvider(id);
+                        load.call(this);
+                    } else { success = false; }
+                } else { success = false; }
+            }
+            xhrCounter.load++;
+            return success;
+        }
+
+        function refresh(resetOriginalProvider) {
+            // Remove cached item first
+			var name = getStoredItemName.call(this),
+				fname = getStoredItemName.call(this, null, true); // forecasts
+            removeStoredItem(name);
+            removeStoredItem(fname);
+            if (resetOriginalProvider) {
+                setWeatherProvider.call(this, this.originalProviderId); // set original provider
+            }
+            if (this.location === 'auto') {
+                resolveLocation.call(this);
+            } else {
+                this.load();
+            }
+        }
+
+        function getLocation() {
+            var locSearch = this.inp ? this.inp.val() : this.location;
+            if (locSearch !== config.location) {
+                return locSearch;
+            }
+            else if (config.location) {
+                return config.location;
+            } else {
+                return null;
+            }
+        }
+
+        function displayLocation(loc) {
+            if (config.searchBox) {
+                this.inp.val((loc != 'auto' ? loc : ''));
+                this.inp.attr('title', loc);
+            } else {
+                if (config.header) {
+                    this.header.html(loc);
+                }
+            }
+        }
+
+        function setLocation(loc, loadWeather) {
+            this.location = loc;
+            if (loadWeather) { this.load(); }
+        }
+
+        function resolveLocation() {
+            if (!config.enableGeolocation) {
+                locate.call(this);
+            } else {
+                geoLocate.call(this);
+            }
+        }
+
+        function locate() {
+            if ($.isFunction(config.fnLocate)) { config.fnLocate.call(this); return; }
+
+			var reqTime = new Date().getTime(), //request time in ms
+				name = getStoredItemName.call(this), // store name
+				itemData = getValidStoredItem(name, reqTime), // check item is in localstorage and is valid
+				loadData = true;
+            //localStorage.removeItem(getStoredItemName.call(this));
+
+            if (itemData) {
+                loadData = false;
+                this.locationObj = itemData;
+                // set the resolved location
+                this.location = itemData.city +
+                	(config.showRegion ? ' ' + itemData.region_name : '') +
+                	(config.showCountry ? ' ' + itemData.country_name : '');
+                $(this).trigger('ew.locate', [itemData]);
+                if ($.isFunction(config.locate)) { config.locate.call(this, itemData); }
+
+                // load weather data
+                load.call(this);
+                return;
+            }
+
+            if (loadData) {
+                var msg = 'Resolving location with ' + getGeoProvider().name;
+                showSpinner.call(this, msg);
+                var dataUrl = getGeoUrl.call(this);
+
+                $.ajax({
+                    url: dataUrl,
+                    dataType: this.geoProvider().data_type || 'jsonp',
+                    context: this,
+                    timeout: xhrTimeout
+                })
+				.done(function (data) {
+					//Sanity check
+					if (!this.geoProvider().sanity_check.call(this, data)) {
+						// Try to use geolocation
+						geoLocate.call(this);
+						return;
+					}
+
+					data = this.geoProvider().convert_data.call(this, data);
+
+					if (data) {
+						this.locationObj = data;
+						var name = getStoredItemName.call(this);
+						storeItem.call(this, name, data);
+						this.location = data.city +
+							(config.showRegion ? ' ' + data.region_name : '') +
+							(config.showCountry ? ' ' + data.country_name : '');
+						$(this).trigger('ew.locate', [data]);
+						if ($.isFunction(config.locate)) { config.locate.call(this, data); }
+
+						load.call(this);
+					}
+				})
+				.fail(function (jqXHR, txt, err) {
+					var showErr = false;
+					if (!config.geoProviderSequence) {
+						// n retries with same provider
+						if (xhrCounter.locate < xhrRetries) { locate.call(this); }
+						else {
+							// Try to use geolocation
+							geoLocate.call(this);
+						}
+					} else {
+						// n providers retries before error is displayed
+						if (xhrCounter.locate < xhrRetries) {
+							var id = getGeoProviderIds()[xhrCounter.locate + 1];
+							if (id) {
+								setGeoProvider(id);
+								locate.call(this);
+							} else { showErr = true; }
+						} else { showErr = true; }
+					}
+					xhrCounter.locate++;
+					if (showErr) { showError.call(this, this.msg.error_occurred); }
+				});
+            }
+        }
+
+        function geoLocate() {
+            if (navigator.geolocation) {
+                var o = this;
+                return navigator.geolocation.getCurrentPosition(
+					function (position) { geoSuccess.call(o, position); },
+					function () { geoError.call(o); },
+					{ timeout: xhrTimeout }
+				);
+            } else {
+                showError.call(this, msg.geolocation_not_supported);
+            }
+        }
+
+        function geoSuccess(position) {
+            this.location = position.coords.latitude + ',' + position.coords.longitude;
+            if ($.isFunction(config.locate)) { config.locate.call(this, position); }
+            load.call(this);
+        }
+
+        function geoError() {
+            showError.call(this, msg.geolocation_error);
+        }
+
+        function getUrl() {
+            return this.provider().get_url.call(this);
+        }
+
+        function getGeoUrl() {
+            return this.geoProvider().url.call(this);
+        }
+
+        function getSearchUrl() {
+            return this.provider().get_search_url.call(this);
+        }
+
+        function getForecastsUrl() {
+            return this.provider().get_forecasts_url.call(this);
+        }
+
+		function hasLocalStorage() {
+        	return (config.localStorage && ('localStorage' in window && window["localStorage"] !== null));
+        }
+
+        function getStoredItemTime(item) {
+            if (!item) { return 0; }
+            return parseInt(item[0], 10);
+        }
+
+        function getStoredItemName(loc, isForecasts) {
+            var f = (isForecasts ? '_forecasts' : '');
+            return prfx.app + this.provider().id + f + '_' + (loc || this.location);
+        }
+
+        function getStoredItemData(item) {
+            if (!item) { return {}; }
+            return item[1];
+        }
+
+        function getValidStoredItem(name, reqTime) {
+            var ewItem,
+				ewItemTime;
+            if (hasLocalStorage()) {
+                if (!localStorage[name]) { return null; }
+                else {
+                    ewItem = JSON.parse(localStorage[name]);
+                    ewItemTime = getStoredItemTime(ewItem);
+                }
+            } else { // cookie alternative
+                if (!ewCookie.get(name)) { return null; }
+                try {
+                    ewItem = JSON.parse(ewCookie.get(name));
+                    ewItemTime = getStoredItemTime(ewItem);
+                } catch (e) {
+                    //console.log(e);
+                    return null;
+                }
+            }
+            if ((reqTime - ewItemTime) <= config.cacheDuration) {
+                //console.log('load cache!');
+                // retrieve local storage data
+                return getStoredItemData(ewItem);
+            } else {
+                //console.log('cache expired!');
+                return null;
+            }
+        }
+
+        function storeItem(name, data, timestamp) {
+            var timeStamp = timestamp || new Date().getTime();
+
+            // Check local storage
+            if (hasLocalStorage()) {
+                try {
+                    // Location data is stored as stringified JSON
+                    localStorage.setItem(name, JSON.stringify([timeStamp, data]));
+                } catch (e) {
+                    if (e === QUOTA_EXCEEDED_ERR) {
+                        showError.call(this, msg.quota_exceeded);
+                    }
+                }
+            } else {
+                var rgx = new RegExp(';', 'gi');
+                ewCookie.set(name, (JSON.stringify([timeStamp, data]).replace(rgx, '')), config.cacheDuration);
+            }
+        }
+
+        function removeStoredItem(name) {
+            if (hasLocalStorage()) {
+                localStorage.removeItem(name);
+            } else {
+                ewCookie.remove(name);
+            }
+        }
+
+        function clearAllCache() {
+            if (hasLocalStorage()) {
+                var key;
+                for (var i = localStorage.length - 1; i >= 0 ; i--) {
+                    key = localStorage.key(i);
+                    if (key.indexOf(prfx.app) !== -1) {
+                        removeStoredItem(key);
+                    }
+                }
+            } else {
+                ewCookie.removeAll(prfx.app);
+            }
+        }
+
+        function clearCache() {
+        	var name = getStoredItemName.call(this);
+        	removeStoredItem.call(this, name);
+        }
+
+        function processData(data) {
+            //Sanity check
+            if (this.provider().sanity_check.call(this, data)) {
+                var name = getStoredItemName.call(this);
+                storeItem.call(this, name, data);
+                if (!$.isFunction(this.provider().get_forecasts_url) || !this.config().forecasts) {
+                    displayData.call(this, data);
+                } else {
+                    forecasts.call(this, data);
+                }
+            } else {
+                this.showError.call(this, this.msg.location_not_found);
+
+                // Retry with another provider
+                if (config.providerSequence) {
+                    retryLoad.call(this);
+                }
+                isLoaded = true;
+                return;
+            }
+        }
+
+        function displayData(data, forecastsData) {
+            // Convert provider object into weather object
+            var wData;
+            if (this.config().forecasts && forecastsData) {
+                wData = this.provider().convert_data.call(this, data, forecastsData);
+            } else {
+                wData = this.provider().convert_data.call(this, data);
+            }
+            weatherObj = wData;
+
+            this.cont.html(fillTemplate(wData));
+
+            // Attach forecasts link event handlers
+            if (this.config().forecastsLink) {
+                var f = this.cont.find('.' + prfx.css + 'forecasts');
+                this.cont.find('.' + prfx.css + 'lnk-forecasts').unbind('click');
+                this.cont.find('.' + prfx.css + 'lnk-forecasts').bind('click', function (e) {
+                    e.preventDefault();
+                    f.toggle();
+                });
+            }
+
+            // Make sure a 'n/a' icon is loaded when a load error happens
+            this.cont.find('img').bind('error', function (e) {
+                $(this).attr('src', config.basePath + 'img/icn_na.png');
+                $(this).unbind('error');
+            });
+
+            //Resolved city is written in text-box or header
+            var areaStr = wData.Location.city +
+            	(config.showRegion &&
+            		wData.Location.region !== null &&
+            		wData.Location.region !== '' ? ', ' + wData.Location.region : '') +
+            	(config.showCountry ? ', ' + wData.Location.country : '');
+            displayLocation.call(this, areaStr);
+
+            isLoaded = true;
+            $(this).trigger('ew.load', [data]);
+            if ($.isFunction(config.load)) { config.load.call(this); }
+        }
+
+        function processSearchData(data) {
+            //Sanity check
+            if (!this.provider().search_sanity_check.call(this, data)) {
+                showError.call(this, msg.location_not_found);
+                return;
+            }
+            displaySearchData.call(this, data);
+            //this.inp.blur();
+
+            $(this).trigger('ew.search', [data]);
+            if ($.isFunction(config.search)) { config.search.call(this, data); }
+        }
+
+        function displaySearchData(data) {
+            // Convert provider search object into custom search object
+            var res = this.provider().convert_search_data.call(this, data);
+            if (res.length === 0) {
+                showError.call(this, msg.no_results);
+                return;
+            }
+
+            var o = this,
+            	ul = $('<ul class="' + prfx.css + 'results"></ul>'),
+            	a,
+            	name,
+            	country,
+            	region,
+            	locid,
+                dataAttr;
+
+            for (var i = 0; i < res.length; i++) {
+                a = res[i];
+            	name = (a.city ? a.city + ' ' : '');
+            	country = (a.country ? a.country : '');
+            	region = (a.region ? a.region + ' ' : '');
+            	locid = (a.location_id ? a.location_id : '');
+            	dataAttr = prfx.css + 'data-locid';
+
+                var li = $('<li ' + dataAttr + '="' + locid + '" >' + name + region + country + '</li>');
+                (function(a) {
+                	li.on('click', function () {
+	                    if ($(this).attr(dataAttr) !== '') {
+	                        locationId = $(this).attr(dataAttr); // location id
+	                    } else {
+	                    	locationId = null;
+	                    	if(o.provider().search_api === false) {
+		                    	o.locationObj.longitude = a.longitude;
+		                    	o.locationObj.latitude = a.latitude;
+		                    	o.locationObj.city = a.city;
+		                    	o.locationObj.country_name = a.country;
+		                    	o.locationObj.region_name = a.region;
+		                    	o.locationObj.country_code = null;
+		                    	o.locationObj.areacode = null;
+		                    	o.locationObj.region_code = null;
+	                    	}
+	                    }
+	                    o.inp.val($(this).html());
+	                    load.call(o);
+                	});
+                })(a);
+                ul.append(li);
+            }
+            this.cont.contents().replaceWith(ul);
+        }
+
+        function processForecastsData(data, curdata) {
+            //Sanity check
+            if (!this.provider().forecasts_sanity_check.call(this, data)) {
+                showError.call(this, this.msg.location_not_found);
+            } else {
+                var name = getStoredItemName.call(this, null, true);
+                storeItem.call(this, name, data);
+            }
+            // display at least current weather
+            displayData.call(this, curdata, data);
+        }
+
+        function getTemplate(type) {
+            return config.template[(type || 'current')]
+        			.replace(new RegExp('{cssprfx}', 'g'), prfx.css);
+        }
+
+        function fillTemplate(data) {
+            var condition = data.Condition,
+        		icnUrl = ($.isFunction(config.fnSetIconUrl) ?
+            				config.fnSetIconUrl.call(this, condition) : condition.icon_url),
+            	tempUnit = config.showUnit ? config.tempUnit.toLowerCase() : '',
+            	temp = condition['temp_' + config.tempUnit.toLowerCase()] + '&#176;' + tempUnit,
+            	min = condition['min_temp_' + config.tempUnit.toLowerCase()] ? condition['min_temp_' + config.tempUnit.toLowerCase()] + '&#176;' + tempUnit : '',
+    			max = condition['max_temp_' + config.tempUnit.toLowerCase()] ? condition['max_temp_' + config.tempUnit.toLowerCase()] + '&#176;' + tempUnit : '';
+
+            var template = getTemplate()
+        					.replace('{icn}', icnUrl)
+            				.replace('{temp}', temp)
+            				.replace(new RegExp('{desc}', 'g'), condition.description)
+            				.replace('{date}', '<span title="' + condition.date + '">' + config.todayLabel + '</span>');
+
+            // optional additional info
+            if (!config.showDescription) {
+                template = template.replace('{Condition.description}', '');
+            }
+            if (config.showMinMax && max !== '' && min !== '') {
+                template = template.replace(
+            		'{minmax}',
+            		'<span class="' + prfx.css + 'min" title="min temperature">' + min +
+            		'</span> - <span class="' + prfx.css + 'max" title="max temperature">' + max + '</span>'
+            	);
+            } else {
+                template = template.replace('{minmax}', '');
+            }
+
+            if (config.showDetails) {
+                var wind = condition['wind_' + config.windSpeedUnit.charAt(0).toLowerCase()],
+        			na = 'n/a';
+
+                template = template.replace('{Condition.humidity}',
+            					(config.details.indexOf('humidity') !== -1
+            					? config.detailLabels.humidity + (condition.humidity || na) : ''))
+            				.replace('{Condition.precipitation}',
+            					(config.details.indexOf('precipitation') !== -1
+            					? config.detailLabels.precipitation + (condition.precipitation || na) : ''))
+            				.replace('{Condition.wind}',
+            					(config.details.indexOf('wind') !== -1
+            					? config.detailLabels.wind + (wind || na) : ''))
+            				.replace('{Condition.pressure}',
+            					(config.details.indexOf('pressure') !== -1
+            					? config.detailLabels.pressure + (condition.pressure || na) : ''))
+            				.replace('{Condition.visibility}',
+            					(config.details.indexOf('visibility') !== -1
+            					? config.detailLabels.visibility + (condition.visibility || na) : ''));
+            } else {
+                template = template.replace('{Condition.humidity}', '')
+            				.replace('{Condition.precipitation}', '')
+            				.replace('{Condition.wind}', '')
+            				.replace('{Condition.pressure}', '')
+            				.replace('{Condition.visibility}', '');
+            }
+
+            if (config.forecasts) {
+                var weather = data.Forecasts,
+            		tplForecasts = '';
+
+                // show/hide forecasts link
+                if (config.forecastsLink) {
+                    template = template.replace(
+				            		'{lnkforecasts}',
+				            		'<a href="javascript:void(0);" class="' + prfx.css + 'lnk-forecasts" ' +
+				            		'title="' + config.nbForecastDays + ' days forecast">' + config.nbForecastDays + ' days</a>'
+				            	)
+				            	.replace('{forecastsdisplay}', 'none');
+                } else {
+                    template = template.replace('{lnkforecasts}', '')
+            					.replace(
+            						'{forecastsdisplay}',
+        							config.orientation === 'horizontal' ? 'inline-block' : 'block'
+        						);
+                }
+
+                for (var i = 1; i <= config.nbForecastDays; i++) {
+                    if (!weather[i]) { continue; }
+                    var item = weather[i],
+	            		date = item.date,
+	            		day = getWeekDay(date),
+	            		fmin = item['min_temp_' + config.tempUnit.toLowerCase()] ? item['min_temp_' + config.tempUnit.toLowerCase()] + '&#176;' + tempUnit : '',
+	            		fmax = item['max_temp_' + config.tempUnit.toLowerCase()] ? item['max_temp_' + config.tempUnit.toLowerCase()] + '&#176;' + tempUnit : '',
+	            		code = item.code,
+	            		desc = item.description,
+	            		iconUrl = ($.isFunction(config.fnSetIconUrl) ?
+	            					config.fnSetIconUrl.call(this, item) : item.icon_url);
+
+                    tplForecasts += getTemplate('forecast')
+    									.replace('{icn}', iconUrl)
+            							.replace(new RegExp('{icndesc}', 'g'), desc)
+            							.replace(
+            								'{minmax}',
+            								'<span class="' + prfx.css + 'min" title="min temperature">' + fmin + '</span> - ' +
+            								'<span class="' + prfx.css + 'max" title="max temperature">' + fmax + '</span>')
+            							.replace('{date}', '<span title="' + date + '">' + day + '</span>');
+                    if (config.showDescription) {
+                        tplForecasts = tplForecasts.replace('{desc}', desc);
+                    } else {
+                        tplForecasts = tplForecasts.replace('{desc}', '');
+                    }
+                }
+
+                template = template.replace('{forecasts}', tplForecasts);
+
+            } else {
+                template = template.replace('{forecasts}', '')
+            				.replace('{lnkforecasts}', '')
+            				.replace('{forecastsdisplay}', '');
+            }
+
+            return template.replace(/\{([\w\.]*)\}/g,
+	            function (str, key) {
+	                var keys = key.split("."),
+				        v = data[keys.shift()],
+                        l;
+	                for (i = 0, l = keys.length; i < l; i++) { v = v[keys[i]]; }
+	                return (typeof v !== "undefined" && v !== null) ? v : "";
+       		});
+        }
+
+        function getWeekDay(dateStr) {
+            if (!dateStr) { return null; }
+            var d = new Date(dateStr);
+            return config.weekDays[d.getDay()];
+        }
+
+        function setAttributions() {
+            var container = $(this).find('.' + prfx.css + 'providers-list');
+            container.html(
+				'Data providers: <ul>' +
+				'<li>' + this.provider().get_link() + '</li>' +
+				'<li>' + this.geoProvider().get_link() + '</li></ul>' +
+				'<p>Powered by <a href="http://mguglielmi.free.fr/scripts/easyweather">EasyWeather</a></p>'
+			);
+        }
+
+        function showError(msg) {
+            this.cont.html(
+        		'<div class="' + prfx.css + 'error">' + msg + '</div>'
+        	);
+            $(this).trigger('ew.error', [msg]);
+            if ($.isFunction(config.error)) { config.error.call(this); }
+        }
+
+        function showSpinner(msg, cont) {
+            var container = cont || this.cont;
+            container.html(
+            	tpl.shared.spinner +
+            	(msg ? '<span class="' + prfx.css + 'spinner-msg">' + msg + '</span>' : '')
+            );
+            $(this).trigger('ew.spinner');
+        }
+
+        return this;
+
+    }; //fn.EasyWeather
+
+    function ewSettings() {
+        // Global settings, data providers definitions
+        return {
+            Settings: {
+                Providers: {
+                    Weather: [{
+                        id: 'yhw',
+                        name: 'Yahoo! Weather',
+                        description: 'Yahoo! Weather content provider',
+                        get_link: function () {
+                            return '<a href="http://weather.yahoo.com" ' +
+							    'title="' + this.name + ': ' + this.description + '" target="_blank">' + this.name + '</a>';
+                        },
+                        key: null,
+                        query: 'SELECT * FROM weather.forecast WHERE u="{unit}" AND woeid in (select woeid from geo.places where text="{query}" limit 1)',
+                        query2: 'SELECT * FROM weather.forecast WHERE u="{unit}" AND woeid="{query}" limit 1', // search result alternative
+                        url: function () {
+                            return EW.Helpers.protocol() +
+							'//query.yahooapis.com/v1/public/yql?q={q}&format=json&_nocache={}&diagnostics=true&env=store://datatables.org/alltableswithkeys';
+                        },
+                        search_query: 'SELECT * from geo.places where text="{query}" limit {nbres}',
+                        max_nb_forecast_days: 4,
+                        nb_forecast_days: 3,
+                        nb_search_results: 8,
+                        get_url: function () { // this = EasyWeather instance
+                            var loc = this.locationId() ? this.locationId() : this.location,
+							unit = this.config().tempUnit.toLowerCase(),
+							q = this.locationId() ? this.provider().query2 : this.provider().query,
+							url = this.provider().url();
+
+                            q = q.replace('{query}', loc).replace('{unit}', unit);
+                            url = url.replace('{q}', q);
+                            return url;
+                        },
+                        get_search_url: function () { // this = EasyWeather instance
+                            var q = this.provider().search_query;
+
+                            q = q.replace('{query}', encodeURIComponent(this.getLocation()))
+				    		.replace('{nbres}', encodeURIComponent(this.config().nbSearchResults));
+                            return this.provider().url().replace('{q}', q);
+                        },
+                        sanity_check: function (data) { // this = EasyWeather instance
+                            if (!data || !data.query || data.query.count === 0
+	                        || data.query.results.channel.item.title.toLowerCase() === 'city not found') {
+                                return false;
+                            }
+                            return true;
+                        },
+                        search_sanity_check: function (data) {
+                            if (!data || !data.query || data.query.count === 0) {
+                                return false;
+                            }
+                            return true;
+                        },
+                        convert_data: function (data) {
+                            var wO = $.extend({}, EW.Settings.Data.Model.Weather);
+                            var channel = data.query.results.channel,
+							item = channel.item,
+							condition = item.condition,
+							area = channel.location,
+							atmosphere = channel.atmosphere,
+							link = channel.link,
+							units = channel.units,
+							wind = channel.wind,
+							weather = item.forecast, // forecasts collection
+							icnUrl = EW.Helpers.protocol() + '//l.yimg.com/a/i/us/we/52/{code}.gif';
+
+                            wO.Location.city = area.city;
+                            wO.Location.country = area.country;
+                            wO.Location.region = area.region;
+                            wO.Location.latitude = item.lat;
+                            wO.Location.longitude = item.long;
+
+                            wO.Condition.code = condition.code;
+                            wO.Condition.date = condition.date;
+                            wO.Condition.description = condition.text;
+                            wO.Condition.humidity = atmosphere.humidity + '%';
+                            wO.Condition.icon_url = icnUrl.replace('{code}', condition.code);
+                            wO.Condition.max_temp_c = weather[0].high;
+                            wO.Condition.max_temp_f = weather[0].high;
+                            wO.Condition.min_temp_c = weather[0].low;
+                            wO.Condition.min_temp_f = weather[0].low;
+                            wO.Condition.precipitation = null;
+                            wO.Condition.pressure = atmosphere.pressure + ' ' + units.pressure;
+                            wO.Condition.provider_link = link;
+                            wO.Condition.temp_c = condition.temp;
+                            wO.Condition.temp_f = condition.temp;
+                            wO.Condition.visibility = atmosphere.visibility + ' ' + units.distance;
+                            wO.Condition.wind_k = wind.speed + ' ' + units.speed;
+                            wO.Condition.wind_m = wind.speed + ' ' + units.speed;
+
+                            wO.Forecasts = [];
+                            for (var i = 0; i < weather.length; i++) {
+                                if (!weather[i]) { continue; }
+                                var fO = $.extend({}, EW.Settings.Data.Model.Weather.Condition),
+								itm = weather[i];
+
+                                fO.code = itm.code;
+                                fO.date = itm.date;
+                                fO.description = itm.text;
+                                fO.icon_url = icnUrl.replace('{code}', itm.code);
+                                fO.max_temp_c = itm.high;
+                                fO.max_temp_f = itm.high;
+                                fO.min_temp_c = itm.low;
+                                fO.min_temp_f = itm.low;
+
+                                wO.Forecasts.push(fO);
+                            }
+                            return wO;
+                        },
+                        convert_search_data: function (data) {
+                            var results = [],
+				        	res = data.query.results.place,
+				        	sO;
+
+                            if($.isPlainObject(res)){
+                                sO = $.extend({}, EW.Settings.Data.Model.Search);
+                                sO.city = res.name;
+                                sO.region = res.admin1 ? res.admin1.content : null;
+                                sO.country = res.country ? res.country.content : null;
+                                sO.location_id = res.woeid;
+                                sO.longitude = res.centroid ? res.centroid.longitude : null;
+                                sO.latitude = res.centroid ? res.centroid.latitude : null;
+                                results.push(sO);
+                                return results;
+                            }
+
+							else if($.isArray(res)){
+	                            for (var i = 0; i < res.length; i++) {
+	                                sO = $.extend({}, EW.Settings.Data.Model.Search);
+	                                sO.city = res[i].name;
+	                                sO.region = res[i].admin1 ? res[i].admin1.content : null;
+	                                sO.country = res[i].country ? res[i].country.content : null;
+	                                sO.location_id = res[i].woeid;
+	                                sO.longitude = res[i].centroid ? res[i].centroid.longitude : null;
+	                                sO.latitude = res[i].centroid ? res[i].centroid.latitude : null;
+	                                results.push(sO);
+	                            }
+	                            return results;
+                          } else {
+							sO = $.extend({}, EW.Settings.Data.Model.Search);
+        					results.push(sO);
+        					return results;
+                          }
+                        }
+                    },
+					{
+					    id: 'wwo',
+					    name: 'World Weather Online',
+					    description: 'Free local weather content provider',
+					    get_link: function () {
+					        return '<a href="http://www.worldweatheronline.com/" ' +
+								'title="' + this.name + ': ' + this.description + '" target="_blank">' + this.name + '</a>';
+					    },
+					    key: (EasyWeather.Keys.wwo ? EasyWeather.Keys.wwo.key() : null),
+					    url: function () {
+					        return EW.Helpers.protocol() +
+								'//api.worldweatheronline.com/free/v1/weather.ashx?q={query}&format=json&num_of_days={nbdays}&includelocation=yes&key={key}';
+					    },
+					    search_url: function () {
+					        return EW.Helpers.protocol() +
+								'//api.worldweatheronline.com/free/v1/search.ashx?q={query}&num_of_results={nbres}&timezone=yes&format=json&key={key}';
+					    },
+					    max_nb_forecast_days: 5,
+					    nb_forecast_days: 3,
+					    nb_search_results: 8,
+					    get_url: function () { // this = EasyWeather instance
+					        return this.provider().url()
+									.replace('{query}', encodeURIComponent(this.location))
+									.replace('{nbdays}', encodeURIComponent(this.config().nbForecastDays))
+									.replace('{key}', encodeURIComponent(this.provider().key));
+					    },
+					    get_search_url: function () { // this = EasyWeather instance
+					        return this.provider().search_url()
+					    			.replace('{query}', encodeURIComponent(this.getLocation()))
+									.replace('{nbres}', encodeURIComponent(this.config().nbSearchResults))
+									.replace('{key}', encodeURIComponent(this.provider().key));
+					    },
+					    sanity_check: function (data) { // this = EasyWeather instance
+					        if (!data || !data.data) {
+					            return false;
+					        }
+					        else if (data.data.error) { // error message from provider
+					            var o = this;
+					            var t = window.setTimeout(function () {
+					                o.showError.call(o, data.data.error[0].msg);
+					                window.clearTimeout(t);
+					            }, 10);
+					            return false;
+					        }
+					        return true;
+					    },
+					    search_sanity_check: function (data) { // this = EasyWeather instance
+					        if (!data || !data.search_api || !data.search_api.result) {
+					            return false;
+					        }
+					        return true;
+					    },
+					    convert_data: function (data) {
+					        var wO = $.extend({}, EW.Settings.Data.Model.Weather);
+
+					        var item = data.data,
+								condition = item.current_condition[0],
+								area = item.nearest_area[0],
+								weather = item.weather; // forecasts collection
+
+					        wO.Location.city = area.areaName ? area.areaName[0].value : null;
+					        wO.Location.country = area.country ? area.country[0].value : null;
+					        wO.Location.region = area.region ? area.region[0].value : null;
+					        wO.Location.latitude = area.latitude;
+					        wO.Location.longitude = area.longitude;
+
+					        wO.Condition.code = condition.weatherCode;
+					        wO.Condition.date = weather[0].date;
+					        wO.Condition.description = condition.weatherDesc[0].value;
+					        wO.Condition.humidity = condition.humidity + '%';
+					        wO.Condition.icon_url = condition.weatherIconUrl[0].value;
+					        wO.Condition.max_temp_c = weather[0].tempMaxC;
+					        wO.Condition.max_temp_f = weather[0].tempMaxF;
+					        wO.Condition.min_temp_c = weather[0].tempMinC;
+					        wO.Condition.min_temp_f = weather[0].tempMinF;
+					        wO.Condition.precipitation = condition.precipMM + ' mm';
+					        wO.Condition.pressure = condition.pressure + ' hPa';
+					        wO.Condition.provider_link = area.weatherUrl[0].value;
+					        wO.Condition.temp_c = condition.temp_C;
+					        wO.Condition.temp_f = condition.temp_F;
+					        wO.Condition.visibility = condition.visibility + ' Km';
+					        wO.Condition.wind_k = condition.winddir16Point + ', ' + condition.windspeedKmph + ' Km/h';
+					        wO.Condition.wind_m = condition.winddir16Point + ', ' + condition.windspeedMiles + ' Mph';
+
+					        wO.Forecasts = [];
+					        for (var i = 0; i < weather.length; i++) {
+					            if (!weather[i]) { continue; }
+					            var fO = $.extend({}, EW.Settings.Data.Model.Weather.Condition),
+									itm = weather[i];
+
+					            fO.code = itm.weatherCode;
+					            fO.date = itm.date;
+					            fO.description = itm.weatherDesc[0].value;
+					            fO.icon_url = itm.weatherIconUrl[0].value;
+					            fO.max_temp_c = itm.tempMaxC;
+					            fO.max_temp_f = itm.tempMaxF;
+					            fO.min_temp_c = itm.tempMinC;
+					            fO.min_temp_f = itm.tempMinF;
+
+					            wO.Forecasts.push(fO);
+					        }
+					        return wO;
+					    },
+					    convert_search_data: function (data) {
+					        var results = [],
+					        	res = data.search_api.result,
+					        	sO;
+
+					        if (res.length === 0) {
+					            sO = $.extend({}, EW.Settings.Data.Model.Search);
+					            results.push(sO);
+					            return results;
+					        }
+
+					        for (var i = 0; i < res.length; i++) {
+					            sO = $.extend({}, EW.Settings.Data.Model.Search);
+					            sO.city = res[i].areaName ? res[i].areaName[0].value : null;
+					            sO.region = res[i].region ? res[i].region[0].value : null;
+					            sO.country = res[i].country ? res[i].country[0].value : null;
+					            sO.location_id = null;
+					            sO.longitude = res[i].longitude;
+					            sO.latitude = res[i].latitude;
+					            results.push(sO);
+					        }
+					        return results;
+					    }
+					},
+					{
+					    id: 'owm',
+					    name: 'Open Weather Map',
+					    description: 'Open Weather Map - free weather data and forecast API',
+					    get_link: function () {
+					        return '<a href="http://openweathermap.org" ' +
+								'title="' + this.name + ': ' + this.description + '" target="_blank">' + this.name + '</a>';
+					    },
+					    key: (EasyWeather.Keys.owm ? EasyWeather.Keys.owm.key() : null),
+					    url: function () { // https not supported
+					        return 'http://api.openweathermap.org/data/2.5/weather?' +
+				        			'q={query}&id={locid}&lat={lat}&lon={lon}&mode=json&units={unit}&lang={lang}&APPID={key}';
+					    },
+					    search_url: function () { // https not supported
+					        return 'http://api.openweathermap.org/data/2.5/find?' +
+					       			'q={query}&units={unit}&lang={lang}&mode=json&APPID={key}';
+					    },
+					    forecasts_url: function () { // https not supported
+					        return 'http://api.openweathermap.org/data/2.5/forecast/daily?' +
+					    			'q={query}&id={locid}&lat={lat}&lon={lon}&mode=json&units={unit}&lang={lang}&cnt={cnt}&APPID={key}';
+					    },
+					    max_nb_forecast_days: 7,
+					    nb_forecast_days: 3,
+					    nb_search_results: 8,
+					    get_url: function () { // this = EasyWeather instance
+					        var units = this.config().tempUnit.toLowerCase() === 'c' ? 'metric' : 'imperial';
+
+					        if (this.locationId()) {
+					            return this.provider().url()
+									.replace('q={query}&', '')
+									.replace('&lat={lat}', '')
+									.replace('&lon={lon}', '')
+									.replace('{locid}', this.locationId())
+									.replace('{unit}', encodeURIComponent(units))
+									.replace('{lang}', encodeURIComponent(this.config().language))
+									.replace('{key}', encodeURIComponent(this.provider().key));
+					        } else {
+					            return this.provider().url()
+									.replace('{query}', encodeURIComponent(this.location))
+									.replace('&id={locid}', '')
+									.replace('&lat={lat}', '')
+									.replace('&lon={lon}', '')
+									.replace('{unit}', encodeURIComponent(units))
+									.replace('{lang}', encodeURIComponent(this.config().language))
+									.replace('{key}', encodeURIComponent(this.provider().key));
+					        }
+					    },
+					    get_search_url: function () { // this = EasyWeather instance
+					        var units = this.config().tempUnit.toLowerCase() === 'c' ? 'metric' : 'imperial';
+					        return this.provider().search_url()
+				    			.replace('{query}', encodeURIComponent(this.getLocation()))
+								.replace('{unit}', encodeURIComponent(units))
+								.replace('{lang}', encodeURIComponent(this.config().language))
+								.replace('{key}', encodeURIComponent(this.provider().key));
+					    },
+					    get_forecasts_url: function () { // this = EasyWeather instance
+					        var units = this.config().tempUnit.toLowerCase() === 'c' ? 'metric' : 'imperial';
+
+					        if (this.locationId()) {
+					            return this.provider().forecasts_url()
+								.replace('q={query}&', '')
+								.replace('&lat={lat}', '')
+								.replace('&lon={lon}', '')
+								.replace('{locid}', this.locationId())
+								.replace('{unit}', encodeURIComponent(units))
+								.replace('{lang}', encodeURIComponent(this.config().language))
+	                            .replace('{cnt}', encodeURIComponent(this.config().nbForecastDays + 1))
+								.replace('{key}', encodeURIComponent(this.provider().key));
+					        } else {
+					            return this.provider().forecasts_url()
+								.replace('{query}', encodeURIComponent(this.location))
+								.replace('&id={locid}', '')
+								.replace('&lat={lat}', '')
+								.replace('&lon={lon}', '')
+								.replace('{unit}', encodeURIComponent(units))
+								.replace('{lang}', encodeURIComponent(this.config().language))
+	                            .replace('{cnt}', encodeURIComponent(this.config().nbForecastDays + 1))
+								.replace('{key}', encodeURIComponent(this.provider().key));
+					        }
+					    },
+					    sanity_check: function (data) { // this = EasyWeather instance
+					        if (!data || !data['weather']) {
+					            return false;
+					        }
+					        return true;
+					    },
+					    search_sanity_check: function (data) {
+					        if (!data || !data.list || data.count === 0) {
+					            return false;
+					        }
+					        return true;
+					    },
+					    forecasts_sanity_check: function (data) { // this = EasyWeather instance
+					        if (!data || !data['list'] || data['cnt'] === 0) {
+					            return false;
+					        }
+					        return true;
+					    },
+					    convert_data: function (data, forecastsData) {
+					        var wO = $.extend({}, EW.Settings.Data.Model.Weather);
+
+					        var item = data.main,
+				        	weather = data.weather,
+				        	sys = data.sys,
+				        	coord = data.coord;
+
+					        wO.Location.city = data['name'];
+					        wO.Location.country = sys.country;
+					        wO.Location.region = null;
+					        wO.Location.latitude = coord.lat;
+					        wO.Location.longitude = coord.lon;
+
+					        wO.Condition.code = weather[0] ? weather[0].id : null;
+					        wO.Condition.date = new Date(data['dt'] * 1000); // date in unix timestamp
+					        wO.Condition.description = weather[0] ? weather[0].description : null;
+					        wO.Condition.humidity = item.humidity + '%';
+					        wO.Condition.icon_url = 'http://openweathermap.org/img/w/' + weather[0].icon + '.png';
+					        wO.Condition.max_temp_c = Math.round(item.temp_max);
+					        wO.Condition.max_temp_f = Math.round(item.temp_max);
+					        wO.Condition.min_temp_c = Math.round(item.temp_min);
+					        wO.Condition.min_temp_f = Math.round(item.temp_min);
+					        wO.Condition.precipitation = null;
+					        wO.Condition.pressure = item.pressure + ' hPa';
+					        wO.Condition.provider_link = 'http://openweathermap.org/Maps';
+					        wO.Condition.temp_c = Math.round(item.temp);
+					        wO.Condition.temp_f = Math.round(item.temp);
+					        wO.Condition.visibility = null;
+					        wO.Condition.wind_k = Math.round(data.wind.deg) + '&deg;, ' + data.wind.speed + ' Km/h';
+					        wO.Condition.wind_m = Math.round(data.wind.deg) + '&deg;, ' + data.wind.speed + ' Mph';
+
+					        if (!forecastsData || !$.isPlainObject(forecastsData)) { return wO; }
+
+					        wO.Forecasts = [];
+					        var forecasts = forecastsData.list || [];
+					        for (var i = 0; i < forecasts.length; i++) {
+					            if (!forecasts[i]) { continue; }
+					            var fO = $.extend({}, EW.Settings.Data.Model.Weather.Condition),
+								itm = forecasts[i],
+								fweather = itm.weather,
+								temp = itm.temp;
+
+					            fO.code = fweather[0] ? fweather[0].id : null;
+					            fO.date = new Date(itm['dt'] * 1000); // date in unix timestamp;
+					            fO.description = fweather[0] ? fweather[0].description : null;
+					            fO.icon_url = 'http://openweathermap.org/img/w/' + fweather[0].icon + '.png';
+					            fO.max_temp_c = temp && temp.max ? Math.round(temp.max) : null;
+					            fO.max_temp_f = temp && temp.max ? Math.round(temp.max) : null;
+					            fO.min_temp_c = temp && temp.min ? Math.round(temp.min) : null;
+					            fO.min_temp_f = temp && temp.min ? Math.round(temp.min) : null;
+
+					            wO.Forecasts.push(fO);
+					        }
+
+					        return wO;
+					    },
+					    convert_search_data: function (data) {
+					        var results = [],
+				        	res = data.list,
+				        	sO;
+
+					        if (data.count === 0) {
+					            sO = $.extend({}, EW.Settings.Data.Model.Search);
+					            results.push(sO);
+					            return results;
+					        }
+
+					        for (var i = 0; i < res.length; i++) {
+					            sO = $.extend({}, EW.Settings.Data.Model.Search);
+					            sO.city = res[i].name ? res[i].name : null;
+					            sO.region = null;
+					            sO.country = res[i].sys.country ? res[i].sys.country : null;
+					            sO.location_id = res[i].id;
+					            sO.longitude = res[i].coord.lon;
+					            sO.latitude = res[i].coord.lat;
+					            results.push(sO);
+					        }
+					        return results;
+					    }
+					},
+	                {
+	                    id: 'wug',
+	                    name: 'Wunderground.com',
+	                    description: 'Weather Forecast &amp; Reports - Long Range &amp; Local | Wunderground | Weather Underground',
+	                    get_link: function () {
+	                        return '<a href="http://www.wunderground.com/" ' +
+							    'title="' + this.name + ': ' + this.description + '" target="_blank">' + this.name + '</a>';
+	                    },
+	                    key: (EasyWeather.Keys.wug ? EasyWeather.Keys.wug.key() : null),
+	                    url: function () {
+	                        return EW.Helpers.protocol() +
+				            '//api.wunderground.com/api/{key}/conditions/lang:SP/q/{query}.json';
+	                    },
+	                    search_url: function () {
+	                        return EW.Helpers.protocol() +
+				            '//autocomplete.wunderground.com/aq?query={query}&cb=?';
+	                    },
+	                    forecasts_url: function () {
+	                        return EW.Helpers.protocol() +
+				            '//api.wunderground.com/api/{key}/forecast10day/lang:SP/q/{query}.json';
+	                    },
+	                    max_nb_forecast_days: 10,
+	                    nb_forecast_days: 3,
+	                    nb_search_results: 8,
+	                    get_url: function () { // this = EasyWeather instance
+	                        if (this.locationId()) {
+	                            return this.provider().url()
+								    .replace('{query}', encodeURIComponent(this.locationId()))
+								    .replace('{key}', encodeURIComponent(this.provider().key));
+	                        } else {
+	                            var q = this.locationObj ? this.locationObj.latitude + ',' + this.locationObj.longitude : this.location;
+	                            return this.provider().url()
+								    .replace('{query}', q)
+								    .replace('{key}', encodeURIComponent(this.provider().key));
+	                        }
+	                    },
+	                    get_search_url: function () { // this = EasyWeather instance
+	                        return this.provider().search_url()
+				    		    .replace('{query}', encodeURIComponent(this.getLocation()));
+	                    },
+	                    get_forecasts_url: function () { // this = EasyWeather instance
+	                        if (this.locationId()) {
+	                            return this.provider().forecasts_url()
+								    .replace('{query}', encodeURIComponent(this.locationId()))
+								    .replace('{key}', encodeURIComponent(this.provider().key));
+	                        } else {
+	                            var q = this.locationObj ? this.locationObj.latitude + ',' + this.locationObj.longitude : this.location;
+	                            return this.provider().forecasts_url()
+								    .replace('{query}', q)
+								    .replace('{key}', encodeURIComponent(this.provider().key));
+	                        }
+	                    },
+	                    sanity_check: function (data) { // this = EasyWeather instance
+	                        if (!data || data['error'] || !data['current_observation']) {
+	                            return false;
+	                        }
+	                        return true;
+	                    },
+	                    search_sanity_check: function (data) {
+	                        if (!data || !data['RESULTS']) {
+	                            return false;
+	                        }
+	                        return true;
+	                    },
+	                    forecasts_sanity_check: function (data) { // this = EasyWeather instance
+	                        if (!data || data['error'] || !data['forecast'] || !data['forecast']['simpleforecast']) {
+	                            return false;
+	                        }
+	                        return true;
+	                    },
+	                    convert_data: function (data, forecastsData) {
+	                        var wO = $.extend({}, EW.Settings.Data.Model.Weather);
+
+	                        var obs = data['current_observation'],
+				        	    location = obs['display_location'];
+
+	                        wO.Location.city = location['city'];
+	                        wO.Location.country = location['country'];
+	                        wO.Location.region = location['state'];
+	                        wO.Location.latitude = location['latitude'];
+	                        wO.Location.longitude = location['longitude'];
+
+	                        wO.Condition.code = obs['station_id'];
+	                        wO.Condition.date = new Date(obs['observation_epoch'] * 1000);
+	                        wO.Condition.description = obs['weather'];
+	                        wO.Condition.humidity = obs['relative_humidity'];
+	                        wO.Condition.icon_url = obs['icon_url'];
+	                        wO.Condition.max_temp_c = null;
+	                        wO.Condition.max_temp_f = null;
+	                        wO.Condition.min_temp_c = null;
+	                        wO.Condition.min_temp_f = null;
+	                        wO.Condition.precipitation = obs['precip_today_metric'];
+	                        wO.Condition.pressure = obs['pressure_mb'] ? obs['pressure_mb'] + ' hPa' : null;
+	                        wO.Condition.provider_link = obs['forecast_url'];
+	                        wO.Condition.temp_c = Math.round(obs['temp_c']);
+	                        wO.Condition.temp_f = Math.round(obs['temp_f']);
+	                        wO.Condition.visibility = obs['visibility_km'] && obs['visibility_km'] !== 'N/A' ? obs['visibility_km'] + ' Km' : null;
+	                        wO.Condition.wind_k = obs['wind_dir'] + ', ' + obs['wind_kph'] + ' Km/h';
+	                        wO.Condition.wind_m = obs['wind_dir'] + ', ' + obs['wind_mph'] + ' Mph';
+
+	                        if (!forecastsData || !$.isPlainObject(forecastsData) || !forecastsData['forecast']) { return wO; }
+
+	                        wO.Forecasts = [];
+	                        var forecasts = forecastsData.forecast.simpleforecast.forecastday || [];
+	                        for (var i = 0; i < forecasts.length; i++) {
+	                            if (!forecasts[i]) { continue; }
+	                            var fO = $.extend({}, EW.Settings.Data.Model.Weather.Condition),
+								    item = forecasts[i],
+								    date = item.date;
+
+	                            fO.code = null;
+	                            fO.date = new Date(date['epoch'] * 1000);
+	                            fO.description = item['conditions'];
+	                            fO.icon_url = item['icon_url'];
+	                            fO.max_temp_c = item['high']['celsius'];
+	                            fO.max_temp_f = item['high']['fahrenheit'];
+	                            fO.min_temp_c = item['low']['celsius'];
+	                            fO.min_temp_f = item['low']['fahrenheit'];
+
+	                            wO.Forecasts.push(fO);
+	                        }
+	                        return wO;
+	                    },
+	                    convert_search_data: function (data) {
+	                        var results = [],
+				        	    res = data['RESULTS'],
+				        	    sO;
+
+	                        if (res.length === 0) {
+	                            sO = $.extend({}, EW.Settings.Data.Model.Search);
+	                            results.push(sO);
+	                            return results;
+	                        }
+
+	                        for (var i = 0; i < res.length; i++) {
+	                            sO = $.extend({}, EW.Settings.Data.Model.Search);
+	                            sO.city = res[i].name ? res[i].name : null;
+	                            sO.region = null;
+	                            sO.country = res[i].c ? res[i].c : null;
+	                            sO.location_id = res[i].l ? res[i].l.replace('/q/', '') : null;
+	                            sO.longitude = null;
+	                            sO.latitude = null;
+	                            results.push(sO);
+	                        }
+	                        return results;
+	                    }
+	                },
+	                {
+	                    id: 'ham',
+	                    name: 'HAMweather',
+	                    description: 'AERIS, a streamlined and flexible weather API',
+	                    get_link: function () {
+	                        return '<a href="http://www.hamweather.com/" ' +
+							    'title="' + this.name + ': ' + this.description + '" target="_blank">' + this.name + '</a>';
+	                    },
+	                    key: (EasyWeather.Keys.ham ? EasyWeather.Keys.ham.key() : null),
+	                    secret_key: (EasyWeather.Keys.ham ? EasyWeather.Keys.ham.secret_key() : null),
+	                    url: function () {
+	                        return EW.Helpers.protocol() +
+				            '//api.aerisapi.com/observations/{query}?client_id={key}&client_secret={secret}';
+	                    },
+	                    search_url: function () {
+	                        return EW.Helpers.protocol() +
+				            '//api.aerisapi.com/places/search?query=name:{query}&limit={limit}&client_id={key}&client_secret={secret}';
+	                    },
+	                    forecasts_url: function () {
+	                        return EW.Helpers.protocol() +
+				            '//api.aerisapi.com/forecasts/{query}?limit={limit}&client_id={key}&client_secret={secret}';
+	                    },
+	                    max_nb_forecast_days: 10,
+	                    nb_forecast_days: 3,
+	                    nb_search_results: 8,
+	                    get_url: function () { // this = EasyWeather instance
+	                        if (this.locationId()) {
+	                            return this.provider().url()
+								    .replace('{query}', this.locationId())
+								    .replace('{key}', encodeURIComponent(this.provider().key))
+	                                .replace('{secret}', encodeURIComponent(this.provider().secret_key));
+	                        } else {
+	                            return this.provider().url()
+								    .replace('{query}', this.getLocation())
+								    .replace('{key}', encodeURIComponent(this.provider().key))
+	                                .replace('{secret}', encodeURIComponent(this.provider().secret_key));
+	                        }
+	                    },
+	                    get_search_url: function () { // this = EasyWeather instance
+	                        return this.provider().search_url()
+				    		    .replace('{query}', encodeURIComponent(this.getLocation()))
+	                            .replace('{limit}', encodeURIComponent(this.config().nbSearchResults))
+	                            .replace('{key}', encodeURIComponent(this.provider().key))
+	                            .replace('{secret}', encodeURIComponent(this.provider().secret_key));
+	                    },
+	                    get_forecasts_url: function () { // this = EasyWeather instance
+	                        if (this.locationId()) {
+	                            return this.provider().forecasts_url()
+								    .replace('{query}', encodeURIComponent(this.locationId()))
+	                                .replace('{limit}', encodeURIComponent(this.config().nbForecastDays + 1))
+								    .replace('{key}', encodeURIComponent(this.provider().key))
+	                                .replace('{secret}', encodeURIComponent(this.provider().secret_key));
+	                        } else {
+	                            return this.provider().forecasts_url()
+								    .replace('{query}', this.location)
+	                                .replace('{limit}', encodeURIComponent(this.config().nbForecastDays + 1))
+								    .replace('{key}', encodeURIComponent(this.provider().key))
+	                                .replace('{secret}', encodeURIComponent(this.provider().secret_key));
+	                        }
+	                    },
+	                    sanity_check: function (data) { // this = EasyWeather instance
+	                        if (!data || data['error']) {
+	                            return false;
+	                        }
+	                        return true;
+	                    },
+	                    search_sanity_check: function (data) {
+	                        if (!data || data['error']) {
+	                            return false;
+	                        }
+	                        return true;
+	                    },
+	                    forecasts_sanity_check: function (data) { // this = EasyWeather instance
+	                        if (!data || data['error']) {
+	                            return false;
+	                        }
+	                        return true;
+	                    },
+	                    convert_data: function (data, forecastsData) {
+	                        var wO = $.extend({}, EW.Settings.Data.Model.Weather);
+
+	                        var res = data['response'],
+				        	    obs = res['ob'],
+				        	    place = res['place'],
+				        	    loc = res['loc'];
+
+	                        wO.Location.city = place['name'];
+	                        wO.Location.country = place['country'];
+	                        wO.Location.region = place['state'];
+	                        wO.Location.latitude = loc['lat'];
+	                        wO.Location.longitude = loc['long'];
+
+	                        wO.Condition.code = res['id'];
+	                        wO.Condition.date = new Date(obs['timestamp'] * 1000);
+	                        wO.Condition.description = obs['weather'];
+	                        wO.Condition.humidity = obs['humidity'] + '%';
+	                        wO.Condition.icon_url = EW.Helpers.protocol() + '//js.aerisapi.com/img/' + obs['icon'];
+	                        wO.Condition.max_temp_c = null;
+	                        wO.Condition.max_temp_f = null;
+	                        wO.Condition.min_temp_c = null;
+	                        wO.Condition.min_temp_f = null;
+	                        wO.Condition.precipitation = null;
+	                        wO.Condition.pressure = obs['pressureMB'] + ' MB';
+	                        wO.Condition.provider_link = 'http://www.hamweather.com/';
+	                        wO.Condition.temp_c = Math.round(obs['tempC']);
+	                        wO.Condition.temp_f = Math.round(obs['tempF']);
+	                        wO.Condition.visibility = obs['visibilityKM'] ? obs['visibilityKM'].toFixed(2) + ' Km' : null;
+	                        wO.Condition.wind_k = obs['windDir'] + ', ' + obs['windSpeedKPH'] + ' Km/h';
+	                        wO.Condition.wind_m = obs['windDir'] + ', ' + obs['windSpeedMPH'] + ' Mph';
+
+	                        if (!forecastsData || forecastsData['response'].length === 0) { return wO; }
+
+	                        wO.Forecasts = [];
+	                        var forecasts = forecastsData.response[0].periods || [];
+	                        for (var i = 0; i < forecasts.length; i++) {
+	                            if (!forecasts[i]) { continue; }
+	                            var fO = $.extend({}, EW.Settings.Data.Model.Weather.Condition),
+								    item = forecasts[i];
+
+	                            fO.code = null;
+	                            fO.date = new Date(item['timestamp'] * 1000);
+	                            fO.description = item['weather'];
+	                            fO.icon_url = EW.Helpers.protocol() + '//js.aerisapi.com/img/' + item['icon'];
+	                            fO.max_temp_c = item['maxTempC'];
+	                            fO.max_temp_f = item['maxTempF'];
+	                            fO.min_temp_c = item['minTempC'];
+	                            fO.min_temp_f = item['minTempF'];
+
+	                            wO.Forecasts.push(fO);
+	                        }
+	                        return wO;
+	                    },
+	                    convert_search_data: function (data) {
+	                        var results = [],
+				        	    res = data['response'],
+				        	    sO;
+
+	                        if (res.length === 0) {
+	                            sO = $.extend({}, EW.Settings.Data.Model.Search);
+	                            results.push(sO);
+	                            return results;
+	                        }
+
+	                        for (var i = 0; i < res.length; i++) {
+	                            var loc = res[i].loc,
+	                        	    place = res[i].place;
+	                            sO = $.extend({}, EW.Settings.Data.Model.Search);
+	                            sO.city = place['name'] ? place.name : null;
+	                            sO.region = place['region'] ? place.region : null;
+	                            sO.country = place['countryFull'] ? place.countryFull : null;
+	                            sO.longitude = loc['long'] ? loc.long : null;
+	                            sO.latitude = loc['lat'] ? loc.lat : null;
+	                            sO.location_id = sO.latitude + ',' + sO.longitude;
+	                            results.push(sO);
+	                        }
+	                        return results;
+	                    }
+	                },
+	                {
+	                	id: 'fio',
+	                	name: 'Forecast.io',
+	                	description: 'The easiest, most advanced, weather API on the web',
+	                	get_link: function () {
+	                        return '<a href="http://forecast.io/" ' +
+							    'title="' + this.name + ': ' + this.description + '" target="_blank">' + this.name + '</a>';
+	                    },
+	                    key: (EasyWeather.Keys.fio ? EasyWeather.Keys.fio.key() : null),
+	                    url: function () {
+	                        return 'https://api.forecast.io/forecast/{key}/{lat},{lon}?units={unit}';
+	                    },
+	                    // Forecast.io does not provide a search API, Yahoo is used instead
+	                    search_api: false,
+	                    search_url: function () {
+                            return EW.Helpers.protocol() +
+							'//query.yahooapis.com/v1/public/yql?q={q}&format=json&_nocache={}&diagnostics=true&env=store://datatables.org/alltableswithkeys';
+                        },
+                        search_query: 'SELECT * from geo.places where text="{query}" limit {nbres}',
+	                    max_nb_forecast_days: 7,
+	                    nb_forecast_days: 3,
+	                    nb_search_results: 8,
+	                    get_url: function () { // this = EasyWeather instance
+	                    	var loc = this.locationObj ? this.locationObj : this.location;
+                            return this.provider().url()
+							    .replace('{key}', encodeURIComponent(this.provider().key))
+							    .replace('{lat}', loc.latitude)
+							    .replace('{lon}', loc.longitude)
+							    .replace('{unit}', (this.config().tempUnit.toLowerCase() === 'c' ? 'si' : 'us'));
+	                    },
+	                    get_search_url: function () { // this = EasyWeather instance
+                            var q = this.provider().search_query;
+
+                            q = q.replace('{query}', encodeURIComponent(this.getLocation()))
+				    				.replace('{nbres}', encodeURIComponent(this.config().nbSearchResults));
+                            return this.provider().search_url().replace('{q}', q);
+                        },
+	                    sanity_check: function (data) { // this = EasyWeather instance
+	                        if (!data || data['error']) {
+	                            return false;
+	                        }
+	                        return true;
+	                    },
+	                    search_sanity_check: function (data) {
+                            if (!data || !data.query || data.query.count === 0) {
+                                return false;
+                            }
+                            return true;
+                        },
+	                    convert_data: function (data) {
+					        var wO = $.extend({}, EW.Settings.Data.Model.Weather);
+
+					        var current = data.currently;
+
+					        wO.Location.city = this.locationObj.city;
+	                        wO.Location.country = this.locationObj.country_name;
+	                        wO.Location.region = this.locationObj.region_name;
+	                        wO.Location.latitude = data.latitude;
+	                        wO.Location.longitude = data.longitude;
+
+	                        wO.Condition.code = null;
+	                        wO.Condition.date = new Date(current.time * 1000);
+	                        wO.Condition.description = current.summary;
+	                        wO.Condition.humidity = parseInt(current.humidity*100, 10) + '%';
+	                        wO.Condition.icon_url = this.config().basePath + 'img/forecast.io/' + current.icon + '.png';
+	                        wO.Condition.max_temp_c = null;
+	                        wO.Condition.max_temp_f = null;
+	                        wO.Condition.min_temp_c = null;
+	                        wO.Condition.min_temp_f = null;
+	                        wO.Condition.precipitation = null;
+	                        wO.Condition.pressure = current.pressure + ' MB';
+	                        wO.Condition.provider_link = 'http://forecast.io/';
+	                        wO.Condition.temp_c = Math.round(current['temperature']);
+	                        wO.Condition.temp_f = Math.round(current['tempF']);
+	                        wO.Condition.visibility = current['visibility'] ? current['visibility'].toFixed(2) + ' Km' : null;
+	                        wO.Condition.wind_k = current['windBearing'] + '°, ' + current['windSpeed'] + ' Km/h';
+	                        wO.Condition.wind_m = current['windBearing'] + '°, ' + current['windSpeed'] + ' Mph';
+
+	                        wO.Forecasts = [];
+	                        var forecasts = data.daily.data || [];
+	                        for (var i = 0; i < forecasts.length; i++) {
+	                            if (!forecasts[i]) { continue; }
+	                            var fO = $.extend({}, EW.Settings.Data.Model.Weather.Condition),
+								    item = forecasts[i];
+
+	                            fO.code = null;
+	                            fO.date = new Date(item['time'] * 1000);
+	                            fO.description = item['summary'];
+	                            fO.icon_url = this.config().basePath + 'img/forecast.io/' + item['icon'] + '.png';
+	                            fO.max_temp_c = Math.round(item['temperatureMax']);
+	                            fO.max_temp_f = Math.round(item['temperatureMax']);
+	                            fO.min_temp_c = Math.round(item['temperatureMin']);
+	                            fO.min_temp_f = Math.round(item['temperatureMin']);
+
+	                            wO.Forecasts.push(fO);
+	                        }
+	                        return wO;
+						},
+						convert_search_data: function (data) {
+                            var results = [],
+				        	res = data.query.results.place,
+				        	sO;
+
+                            if (res.length === 0) {
+                                sO = $.extend({}, EW.Settings.Data.Model.Search);
+                                results.push(sO);
+                                return results;
+                            }
+
+                            for (var i = 0; i < res.length; i++) {
+                                sO = $.extend({}, EW.Settings.Data.Model.Search);
+                                sO.city = res[i].name;
+                                sO.region = res[i].admin1 ? res[i].admin1.content : null;
+                                sO.country = res[i].country ? res[i].country.content : null;
+                                sO.location_id = null;
+                                sO.longitude = res[i].centroid ? res[i].centroid.longitude : null;
+                                sO.latitude = res[i].centroid ? res[i].centroid.latitude : null;
+                                results.push(sO);
+                            }
+                            return results;
+                        }
+	                }],
+                	Geolocation: [{
+	                    id: 'fgip',
+	                    name: 'freegeoip.net',
+	                    description: 'A public web service for searching geolocation of IP addresses and host names',
+	                    key: null,
+	                    data_type: 'jsonp',
+	                    get_link: function () {
+	                        return '<a href="http://freegeoip.net" target="_blank">' + this.name + '</a>';
+	                    },
+	                    url: function () {
+	                        return EW.Helpers.protocol() + '//freegeoip.net/json/';
+	                    },
+	                    sanity_check: function (data) { // this = EasyWeather instance
+	                        // Sanity check
+	                        if (!data || !data['city']) {
+	                            return false;
+	                        }
+	                        return true;
+	                    },
+	                    convert_data: function (data) { // this = EasyWeather instance
+	                        var gO = $.extend({}, EW.Settings.Data.Model.Geolocation, data);
+	                        return gO;
+	                    }
+	                },
+				    {
+				        id: 'geopl',
+				        name: 'geoPlugin',
+				        description: 'Plugin to geo-targeting and unleash your site\'s potential',
+				        key: null,
+				        data_type: 'jsonp',
+				        get_link: function () {
+				            return '<a href="http://www.geoplugin.com/" target="_blank">' + this.name + '</a>';
+				        },
+				        url: function () {
+				            return EW.Helpers.protocol() + '//www.geoplugin.net/json.gp?jsoncallback=?';
+				        },
+				        sanity_check: function (data) { // this = EasyWeather instance
+				            if (!data || !data['geoplugin_status'] || data['geoplugin_status'] !== 200) {
+				                return false;
+				            }
+				            return true;
+				        },
+				        convert_data: function (data) { // this = EasyWeather instance
+				            var gO = $.extend({}, EW.Settings.Data.Model.Geolocation);
+				            gO.city = data.geoplugin_city;
+				            gO.country_name = data.geoplugin_countryName;
+				            gO.region_name = data.geoplugin_regionName;
+				            gO.longitude = data.geoplugin_longitude;
+				            gO.latitude = data.geoplugin_latitude;
+				            gO.ip = data.geoplugin_request;
+				            gO.metrocode = null;
+				            gO.region_code = data.geoplugin_regionCode;
+				            gO.country_code = data.geoplugin_countryCode;
+				            gO.areacode = data.geoplugin_areaCode;
+				            gO.zipcode = null;
+				            return gO;
+				        }
+				    },
+				    {
+				    	id: 'tlz',
+				    	name: 'Telize GeoIP',
+				    	description: 'Get IP address location in JSON format',
+				    	key: null,
+				    	get_link: function () {
+				            return '<a href="http://www.telize.com/" target="_blank">Telize GeoIP</a>';
+				        },
+				        url: function () {
+				            return EW.Helpers.protocol() + '//www.telize.com/geoip?callback=?';
+				        },
+				        sanity_check: function (data) { // this = EasyWeather instance
+				            if (!data || !data['city'] || !data['country']) {
+				                return false;
+				            }
+				            return true;
+				        },
+				        convert_data: function (data) { // this = EasyWeather instance
+				            var gO = $.extend({}, EW.Settings.Data.Model.Geolocation);
+				            gO.city = data.city;
+				            gO.country_name = data.country;
+				            gO.region_name = data.region;
+				            gO.longitude = data.longitude;
+				            gO.latitude = data.latitude;
+				            gO.ip = data.ip;
+				            gO.metrocode = null;
+				            gO.region_code = data.region_code;
+				            gO.country_code = data.country_code;
+				            gO.areacode = data.area_code;
+				            gO.zipcode = null;
+				            return gO;
+				        }
+				    }]
+            	},
+	            Data: {
+                Model: {
+                    Weather: {
+                        Location: { city: null, country: null, region: null, latitude: null, longitude: null },
+                        Condition: {
+                            date: null,
+                            provider_link: null,
+                            temp_c: null, temp_f: null,
+                            min_temp_c: null, max_temp_c: null,
+                            min_temp_f: null, max_temp_f: null,
+                            icon_url: null,
+                            description: null,
+                            code: null,
+                            humidity: null,
+                            precipitation: null,
+                            wind_k: null,
+                            wind_m: null,
+                            visibility: null,
+                            pressure: null
+                        },
+                        Forecasts: [] // Contains a collection of Condition
+                    },
+                    Geolocation: {
+                        city: null, region_code: null, region_name: null, areacode: null,
+                        ip: null, zipcode: null, longitude: null, country_name: null,
+                        country_code: null, metrocode: null, latitude: null
+                    },
+                    Search: {
+                        city: null, region: null, country: null, location_id: null,
+                        longitude: null, latitude: null
+                    }
+                }
+            },
+           	Template: {
+                current: '<div class="{cssprfx}wrap-cond">' +
+							'<div class="{cssprfx}left">' +
+							'<img src="{icn}" alt="{desc}" title="{desc}" />' +
+							'<div class="{cssprfx}date">{date}<a href="{Condition.provider_link}" target="_blank" title="More info">+</a></div>' +
+							'<div class="{cssprfx}lnkforecasts">{lnkforecasts}</div>' +
+							'</div>' +
+							'<div class="{cssprfx}cont-info">' +
+							'<div class="{cssprfx}temp">{temp}</div>' +
+							'<div class="{cssprfx}min-max">{minmax}</div>' +
+							'<div class="{cssprfx}desc">{Condition.description}</div>' +
+							'</div>' +
+						'</div>' +
+						'<div class="{cssprfx}cont-details">' +
+							'<div class="{cssprfx}humidity">{Condition.humidity}</div>' +
+							'<div class="{cssprfx}precipitation">{Condition.precipitation}</div>' +
+							'<div class="{cssprfx}wind">{Condition.wind}</div>' +
+							'<div class="{cssprfx}pressure">{Condition.pressure}</div>' +
+							'<div class="{cssprfx}visibility">{Condition.visibility}</div>' +
+						'</div>' +
+						'<div class="{cssprfx}forecasts" style="display:{forecastsdisplay};">{forecasts}</div>',
+				                forecast: '<div class="{cssprfx}wrap-cond">' +
+							'<div class="{cssprfx}left">' +
+							'<img src="{icn}" alt="{icndesc}" title="{icndesc}" />' +
+							'<div class="{cssprfx}date">{date}</div>' +
+							'</div>' +
+							'<div class="{cssprfx}cont-info">' +
+							'<div class="{cssprfx}min-max">{minmax}</div>' +
+							'<div class="{cssprfx}desc">{desc}</div>' +
+							'</div>' +
+							'<div class="{cssprfx}clear"></div>' +
+						'</div>',
+                get: function (type) { return this[type]; }
+            },
+ 	           cacheDuration: 3600000 // 1h in msecs
+        	},
+        	Helpers: {
+	            protocol: function () { return (location.protocol.indexOf('file') != -1 ? 'http:' : location.protocol); },
+	            language: function () { return window.navigator.userLanguage || window.navigator.language; }
+	        }
+    	};
+	} // fn
+
+})(jQuery, (window['EasyWeather'] || { Keys: {} }));
+
+
+
+// Source: https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/JSON
+// The following algorithm is an imitation of the native JSON object:
+if (!window.JSON) {
+  window.JSON = {
+    parse: function (sJSON) { return eval("(" + sJSON + ")"); },
+    stringify: function (vContent) {
+      if (vContent instanceof Object) {
+        var sOutput = "";
+        if (vContent.constructor === Array) {
+          for (var nId = 0; nId < vContent.length; sOutput += this.stringify(vContent[nId]) + ",", nId++);
+          return "[" + sOutput.substr(0, sOutput.length - 1) + "]";
+        }
+        if (vContent.toString !== Object.prototype.toString) { return "\"" + vContent.toString().replace(/"/g, "\\$&") + "\""; }
+        for (var sProp in vContent) { sOutput += "\"" + sProp.replace(/"/g, "\\$&") + "\":" + this.stringify(vContent[sProp]) + ","; }
+        return "{" + sOutput.substr(0, sOutput.length - 1) + "}";
+      }
+      return typeof vContent === "string" ? "\"" + vContent.replace(/"/g, "\\$&") + "\"" : String(vContent);
+    }
+  };
+}
