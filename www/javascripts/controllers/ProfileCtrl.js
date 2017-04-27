@@ -628,8 +628,13 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                 });
 
 
-                $scope.prependItem = function (newItem) {
-
+                $scope.prependItem = function () {
+					
+					var newItem = { 
+							nombre : ""
+						}
+					
+					
                     $scope.editUnit.lote.push(newItem);
 
                 };
@@ -868,9 +873,16 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                         console.log("this is marker info", event.latLng.lat() + ' , ' + event.latLng.lng());
 
                     });
+                    
+                   
+                    
                    if (!isNaN(index)) {
+	                   
+	                   
+	                   
 	                   var indString = index.toString();
 	                   var map2 = new google.maps.Map(document.getElementById("map-canvas" + indString), myOptions);
+	                   
 	                   var marker2 = new google.maps.Marker({
 	                        draggable: true,
 	                        position: myLatlng,
@@ -888,6 +900,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 	
 	                    });
                     }
+                   
                     
                     google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -953,7 +966,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             });
             	
             if (!isNaN(index)) {
-	            
+	          
 	            var indString = index.toString();
 	            var map2 = new google.maps.Map(document.getElementById("map-canvas" + indString), myOptions);
 	            var marker2 = new google.maps.Marker({

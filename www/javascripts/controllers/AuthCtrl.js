@@ -22,6 +22,9 @@ function ($scope, $state, auth, $window, $timeout, PouchDB) {
     $scope.logIn = function () {
         var isServerToLocalSync = false;
         var isLocalToServerSync = false;
+        if ($scope.loginForm.$valid) {
+       		 $scope.isFormSubmited = true;
+        }
         var lastSyncDateTime = PouchDB.GetLastSyncDateTime();
         $scope.user.lastSyncDateTime = lastSyncDateTime;
         auth.logIn($scope.user).error(function (error) {

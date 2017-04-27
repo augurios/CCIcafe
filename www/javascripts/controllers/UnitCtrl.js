@@ -464,10 +464,37 @@ function ($rootScope, $scope, $state, unit, auth, varieties, localStorageService
 
 
 
-    var spanishDateTimePickerOption = {
-        closeText: "Cerrar", prevText: "&#x3C;Ant", nextText: "Sig&#x3E;", currentText: "Hoy", monthNames: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"], monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"], dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"], dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"], dayNamesMin: ["D", "L", "M", "X", "J", "V", "S"], weekHeader: "Sm", firstDay: 1, isRTL: !1, showMonthAfterYear: !1, yearSuffix: ""
+      var spanishDateTimePickerOption = {
+        // Strings and translations
+		monthsFull: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+		monthsShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
+		weekdaysFull: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
+		weekdaysShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
+		showMonthsShort: undefined,
+		showWeekdaysFull: undefined,
+		
+		// Buttons
+		today: 'Hoy',
+		clear: 'limpiar',
+		close: 'Cerrar',
+		
+		// Accessibility labels
+		labelMonthNext: 'Sig&#x3E;',
+		labelMonthPrev: '&#x3C;Ant',
+		labelMonthSelect: 'Seleccione un mes',
+		labelYearSelect: 'Seleccione un año',
     }
-    $(".date-field").datepicker(spanishDateTimePickerOption);
+     
+    
+    $(".date-field").pickadate(spanishDateTimePickerOption);
+
+    
+    
+    
+    
+    
+    
+    
  $scope.saveUnit = function () {
 
         if ($scope.newunitForm.$valid) {

@@ -19,7 +19,7 @@
 	<script src="javascripts/angular.min.js"></script>
 	<script src="javascripts/angular-ui-router.js"></script>
 	<script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
-	<script src = "bower_components/angular-scroll-glue/src/scrollglue.js"></script>
+	<script src="bower_components/angular-scroll-glue/src/scrollglue.js"></script>
 	<script src="javascripts/jquery-ui.js"></script>
 	<script src="javascripts/picker.js"></script>
 	<script src="javascripts/picker.date.js"></script>
@@ -45,6 +45,7 @@
 	<script src="javascripts/controllers/RoyaCtrl.js"></script>
 	<script src="javascripts/controllers/GalloCtrl.js"></script>
 	<script src="javascripts/controllers/DosageCtrl.js"></script>
+	<script src="javascripts/controllers/VisitaCtrl.js"></script>
 	<script src="javascripts/controllers/VulneCtrl.js"></script>
 	<script src="javascripts/controllers/SupportCtrl.js"></script>
 	<script src="javascripts/controllers/WeatherCtrl.js"></script>
@@ -93,10 +94,12 @@
 	      <li ng-class="{ active: isActive('/news') }"><a href="#/news" snap-toggle><i class="fa fa-bell"></i> Noticias</a></li>
 	      <li ng-class="{ active: isActive('/support') }"><a href="#/support" snap-toggle><i class="fa fa-comment"></i> Comunicación</a></li>
 	      <li ng-class="{ active: isActive('/profile') }"><a href="#/profile" snap-toggle><i class="fa fa-user"></i> Perfil</a></li>
-	      <li><a href="#/home" ng-click="logOut()"><i class="fa fa-power-off"></i> Salir</a></li>
+	       
+	      <li><a href="#/login" ng-click="logOut()" snap-close><i class="fa fa-power-off"></i> Salir</a></li>
 	    </ul>
 	  </nav>
-	  <div class="pushbox" snap-content snap-opt-disable="'right'">
+
+	  <div class="pushbox" snap-content snap-opt-disable="'right'" id="snapbox">
 	  	<div class="nav-switch" ng-controller="NavCtrl"><button ng-show="isLoggedIn()" class="switch glyphicon glyphicon-menu-hamburger" type="button" snap-toggle></button></div>
 				<ui-view></ui-view>
 	  </div>
@@ -1114,22 +1117,23 @@
 				    <span>{{ error.message }}</span>
 				  </div>
 
-				  <form ng-submit="logIn()">
+				  <form ng-submit="logIn()" name="loginForm">
 				    <img src="images/pages-logo-dark.png" alt="" class="login-img img-responsive"/>
 				     <img src="images/LogoICAFE.svg" alt="" class="ana-img img-responsive"/>
 				    <div class="form-group">
 				       <label for="email">Usuario</label>
 				      <input type="text" name="email"
 				      class="form-control"
-				      ng-model="user.username"></input>
+				      ng-model="user.username" ng-disabled="isFormSubmited" required></input>
 				    </div>
 				    <div class="form-group">
 				      <label for="password">Contraseña</label>
 				      <input type="password" name="password"
 				      class="form-control"
-				      ng-model="user.password"></input>
+				      ng-model="user.password" ng-disabled="isFormSubmited" required></input>
 				    </div>
-				    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+				    <h6 ng-show="isFormSubmited" class="text-center" style="position: absolute;width: 100%;margin-left: -15px;"><i class="fa fa-spinner fa-spin"></i></h6>
+				    <button type="submit" class="btn btn-primary" ng-disabled="loginForm.$valid && isFormSubmited">Iniciar Sesión</button>
 				    <a href="#/register">¿No tiene cuenta?</a>
 				    <a href="#/forgotpassword">Cambia la contraseña</a>
 				    <div class="row signature">
@@ -1169,7 +1173,7 @@
 				      ng-model="user.Email"></input>
 				    </div>
 				    
-				    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+				    <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
 				    <a href="#/register">¿No tiene cuenta?</a>
 				    <a href="#/login">Iniciar sesión </a>
 				    <div class="row signature">
@@ -1203,20 +1207,20 @@
 				    <img src="images/pages-logo-dark.png" alt="" class="login-img img-responsive"/>
 				    <img src="images/LogoICAFE.svg" alt="" class="ana-img img-responsive"/>
 				    <div class="form-group">
-				      <label for="email">New Password</label>
+				      <label for="email">Nueva Contraseña</label>
 				      <input type="password" name="password"
 				      class="form-control"
 				      ng-model="user.password"></input>
 				    </div>
 				    <div class="form-group">
-				      <label for="email">Confirm Password</label>
+				      <label for="email">Confirmar Contraseña</label>
 				      <input type="password" name="cpassword"
 				      class="form-control"
 				      ng-model="user.cpassword"></input>
 				    </div>
-				    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-				    <a href="#/register">¿No tiene cuenta?</a>
-				    <a href="#/login">Iniciar sesión</a>
+				    <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+				   
+				    
 				    <div class="row signature">
 					    <div class="col-xs-6">
 						     <img src="images/USAIDLOGO.png" alt="" class="login-usaid img-responsive"/>
@@ -1248,13 +1252,14 @@
 				    <img src="images/pages-logo-dark.png" alt="" class="login-img img-responsive"/>
 				    <img src="images/LogoICAFE.svg" alt="" class="ana-img img-responsive"/>
 				    <div class="form-group">
+					    <p>Un correo electronico a sido envidado, por favor inserte el codigo OTP</p>
 				       <label for="email">OTP</label>
 				      <input type="text" name="number"
 				      class="form-control"  maxlength="6"
 				      ng-model="user.otp"></input>
 				    </div>
 				    
-				    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+				    <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
 				<!--     <a href="#/register">¿No tiene cuenta?</a>
 				    <a href="#/login">Atrás para iniciar sesión </a>
 				    <div class="row signature">
@@ -1806,18 +1811,24 @@
 	  </script>
 		
 		<script type="text/ng-template" id="/dosage.html">
-			<div class="roya-wrap">
+			<div class="roya-wrap dosage-wrap">
 						<h2 class="section-header">
 		  				CÁLCULO DE DOSIFICACION ADECUADA
 		  			</h2>
 					<div class="container">
 						<div class="row">
 							<div class="col-lg-6 col-lg-offset-3">
-								<br>
-								<br>
-								<form>
+								<p></p>
+									
+<div class="well">
+		<h6 style="margin-top:0;">Resultado</h6>
+									<strong> (cc/litros): <span class="badge" ng-bind="dosage.resultado"></span> </strong>	<br>
+								<strong	ng-show="dosage.resultadoS">Cepex (cc/litros): <span class="badge" ng-bind="dosage.resultadoS"></span> </strong>
+</div>	
+								
+								<form data-toggle="validator" name="dosageForm" novalidate class="form" role="form" ng-submit="calculateDosage()">
 									<span><strong>Tipo de Producto</strong></span>
-									<select ng-model="dosage.productType"  id="productType" class="form-control" >
+									<select ng-model="dosage.productType"  id="productType" class="form-control" ng-change="typeChange()">
 										<option value="Broca" >Broca</option>
 										<option value="Roya" >Roya</option>
 										<option value="Ojo de gallo" >Ojo de gallo</option>
@@ -1827,44 +1838,52 @@
 
 									<strong>Nombre del Producto:</strong> 
 									
-									<select ng-model="dosage.productName"  id="productType" class="form-control" required>
-										<option ng-show="dosage.productType == 'Broca'" value="cloropirifos48,2.0,2000,800" selected >Clorpirifos 48%</option>
-										<option ng-show="dosage.productType == 'Broca'" value="imidacloprid35,0.8,800,320" >Imidacloprid 35%</option>
-										<option ng-show="dosage.productType == 'Roya'" value="opera18-30SE,0.1,1000,400" >Opera 18,30 SE Roya</option>
-										<option ng-show="dosage.productType == 'Roya'" value="esfera26-75EC,0.4,400,160" >Esfera 26,75 EC Roya</option>
-										<option ng-show="dosage.productType == 'Roya'" value="soprano12-5SC,0.5,500,200" >Soprano 12,5 SC</option>
-										<option ng-show="dosage.productType == 'Roya'" value="atemi10SL,0.4,400,160" >Atemi 10 SL</option>
+									<select ng-model="dosage.productName" class="form-control" required>
+										<option ng-show="dosage.productType == 'Broca'" value="2000" selected >Clorpirifos 48%</option>
+										<option ng-show="dosage.productType == 'Broca'" value="800" >Imidacloprid 35%</option>
+										<option ng-show="dosage.productType == 'Roya'" value="1000" >Opera 18,30 SE Roya</option>
+										<option ng-show="dosage.productType == 'Roya'" value="400" >Esfera 26,75 EC Roya</option>
+										<option ng-show="dosage.productType == 'Roya'" value="500" >Soprano 12,5 SC</option>
+										<option ng-show="dosage.productType == 'Roya'" value="400" >Atemi 10 SL</option>
 										
-										<option ng-show="dosage.productType == 'Roya'" value="cyprosol10SL,0.4,400,160" >Cyprosol 10 SL</option>
-										<option ng-show="dosage.productType == 'Roya'" value="opus12-5SC,0.5,500,200" >Opus 12,5 SC</option>
+										<option ng-show="dosage.productType == 'Roya'" value="400" >Cyprosol 10 SL</option>
+										<option ng-show="dosage.productType == 'Roya'" value="500" >Opus 12,5 SC</option>
 										
-										<option ng-show="dosage.productType == 'Roya'" value="propicon25SC,0.5,500,200" >Propicon 25 SC</option>
-										<option ng-show="dosage.productType == 'Ojo de gallo'" value="atemi10SL+Cepex10SL,0.50+2,500+2000,200+800" >Atemi 10 SL + Cepex 10 SL</option>
-										<option ng-show="dosage.productType == 'Ojo de gallo'" value="cyprosol10SL+Cepex10SL,0.50+2,500+2000,200+800" >Cyprosol 10 SL +  Cepex 10 SL</option>
-										<option ng-show="dosage.productType == 'Ojo de gallo'" value="silvacur30EC+Cepex10SL,0.75+2,750+2000,300+800" >Silvacur 30 EC + Cepex 10 SL</option>
-										<option ng-show="dosage.productType == 'Ojo de gallo'" value="tebutriacell30EC+Cepex10SL,0.75+2,750+2000,300+800" >Tebutriacell 30 EC + Cepex 10 SL</option>
+										<option ng-show="dosage.productType == 'Roya'" value="500" >Propicon 25 SC</option>
+										<option ng-show="dosage.productType == 'Ojo de gallo'" value="500" >Atemi 10 SL</option>
+										<option ng-show="dosage.productType == 'Ojo de gallo'" value="500" >Cyprosol 10 SL</option>
+										<option ng-show="dosage.productType == 'Ojo de gallo'" value="750" >Silvacur 30 EC</option>
+										<option ng-show="dosage.productType == 'Ojo de gallo'" value="750" >Tebutriacell 30 EC</option>
 										
-										<option ng-show="dosage.productType == 'Derrite'" value="opera18-30SE,1.0,1000,400" >Opera 18,30 SE </option>
-										<option ng-show="dosage.productType == 'Derrite'" value="esfera26-75EC,0.4,400,160" >Esfera 26,75 EC </option>
-										<option ng-show="dosage.productType == 'Mal de hilachas'" value="opera18-30SE,1.0,1000,400" >Opera 18,30 SE</option>
-										<option ng-show="dosage.productType == 'Mal de hilachas'" value="esfera26-75EC,0.6,600,240" >Esfera 26,75 EC</option>
+										<option ng-show="dosage.productType == 'Derrite'" value="1000" >Opera 18,30 SE </option>
+										<option ng-show="dosage.productType == 'Derrite'" value="400" >Esfera 26,75 EC </option>
+										<option ng-show="dosage.productType == 'Mal de hilachas'" value="1000" >Opera 18,30 SE</option>
+										<option ng-show="dosage.productType == 'Mal de hilachas'" value="600" >Esfera 26,75 EC</option>
 									</select>
-
+									
+									
+									<div class="form-group" ng-show="dosage.productType == 'Ojo de gallo'">
+									      <div class="checkbox">
+									        <label>
+									          <input type="checkbox" ng-model="dosage.producto2"> Cepex 10 SL
+									        </label>
+									      </div>
+									  </div>
+									
+								
+									
 									<span>
 										<strong>Plantas Atomizadas:</strong> 
-										<input type="number" ng-model="dosage.plantsAtomised" class="form-control"  value="1"> 
+										<input type="number" ng-model="dosage.plantsAtomised" class="form-control"  value="1" required> 
 									</span>
 
 									<span>
 										<strong>Litros Gastados:</strong> 
-										<input type="number" ng-model="dosage.litersWornOut" class="form-control"  value="1">
+										<input type="number" ng-model="dosage.litersWornOut" class="form-control"  value="1" required>
 									</span>
 
-									
-
-									<br><span><strong>Resultado (cc/estañon): {{dosage.dosageByEstanion}}  </strong></span><br><br>
-										
-									<button type="button" ng-click="calculateDosage()" class="btn btn-modal">Resultado (cc/estañon)</button>
+									<button type="submit" class="btn btn-primary" ng-disabled="!dosageForm.$valid">Calcular</button>
+									<button type="button" class="btn" ng-click="clear()" ng-disabled="!dosageForm.$valid">Limpiar</button>
 								</form>
 							</div>
 						</div>
@@ -4350,6 +4369,86 @@
 					
 				</div>
 				
+		  </script>
+		
+			<script type="text/ng-template" id="/visita.html">
+			<div class="roya-wrap">
+						<h2 class="section-header">
+		  				Visita Tecnica
+		  			</h2>
+					<div class="container">
+						<div class="row">
+							<div class="col-md-6 col-md-offset-3">
+								<div class="visita-wrapper">
+									<h2>Resultados</h2>
+									<div class="visita-results">
+										<div class="list-group">
+											  <button type="button" class="list-group-item"  data-toggle="modal" data-target="#myModal">Unit Name</button>
+											  <button type="button" class="list-group-item"  data-toggle="modal" data-target="#myModal">Another Unit Name</button>
+											</div>
+											
+											<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+											  <div class="modal-dialog" role="document">
+											    <div class="modal-content">
+											      <div class="modal-header">
+											        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											        <h4 class="modal-title" id="myModalLabel">Unit Name</h4>
+											      </div>
+											      <div class="modal-body">
+												      <ul class="list-group">
+													      <li class="list-group-item">
+														   Nombre:  <span class="badge">Pena blanca</span>
+														  </li>
+														  
+														  <li class="list-group-item">
+														   Municipio: <span class="badge">Cuilapa</span>
+														  </li>
+														  
+														  <li class="list-group-item">
+														   Departamento: <span class="badge">Santa Rosa</span>
+														  </li>
+														</ul>
+												    
+														<h3>Recomendacion</h3>
+													
+													<textarea class="form-control" rows="3"></textarea>
+											      </div>
+											      <div class="modal-footer">
+											        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+											        <button type="button" class="btn btn-default">Sent recommendation</button>
+											      </div>
+											    </div>
+											  </div>
+										</div>
+									</div>
+									<div class="visita-controls">
+										<form class="form" id="search-units">
+										<div class="input-group">
+									      <input type="text" class="form-control" placeholder="{{ searchmode }}">
+									      <span class="input-group-btn">
+									        <button class="btn btn-default" type="button">Buscar</button>
+									      </span>
+									    </div>
+									    
+									    
+										</form>
+										<div class="row visita-controls-opt">
+									    		<input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Id" checked ng-model="searchmode">
+										    	<label class="col-xs-6" for="inlineRadio1">
+												   Por ID
+												</label>
+												
+												<input type="radio" name="inlineRadioOptions" id="inlineRadio2" ng-model="searchmode" value="Usuario">
+										    	<label class="col-xs-6" for="inlineRadio2">
+												   Por Usuario
+												</label>
+									    </div>
+									</div>
+								</div>
+							</div>
+						</div>						
+					</div>
+				</div>
 		  </script>
 		
 		<script type="text/ng-template" id="/weather.html">

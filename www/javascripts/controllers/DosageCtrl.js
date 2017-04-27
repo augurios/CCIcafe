@@ -10,23 +10,32 @@ function($scope, $state, auth,localStorageService, socket){
   /*if($scope.plantsByHa=='ot'){
 
   }*/
-
+  $scope.dosage = {resultado: "--"}
+  
+  
+  $scope.typeChange = function() {
+	  $scope.dosage.productName = "";
+  }
+  
   $scope.calculateDosage= function(){
-	var ProductDetails = $scope.dosage.productName.split(",");
 	
-	if ($scope.dosage.productType != 'Ojo de gallo') {
-		$scope.dosage.dosageByEstanion = (ProductDetails[1]/500)*ProductDetails[3];
-	} else {
-		var prodDtlSplt = ProductDetails[1].split("+"),
-			prodDtl = parseInt(prodDtlSplt[0]) + parseInt(prodDtlSplt[1]),
-			prodDtlBSplt = ProductDetails[3].split("+"),
-			prodDtlB = parseInt(prodDtlBSplt[0]) + parseInt(prodDtlBSplt[1]);
-			$scope.dosage.dosageByEstanion = (prodDtl/500)*prodDtlB;
-			
-	}
+    var litrosHa = ($scope.dosage.litersWornOut / $scope.dosage.plantsAtomised) * 5000;
+    console.log('litrosHa: ', litrosHa);
     
+    var resultado = $scope.dosage.productName / litrosHa;
+    
+    $scope.dosage.resultado = resultado.toFixed(2);
+    
+    if($scope.dosage.productType == 'Ojo de gallo' && $scope.dosage.producto2) {
+	    	var resultadoS = 2000 / litrosHa;
+    
+			$scope.dosage.resultadoS = resultadoS.toFixed(2);
+    }
     
   }
-
+  
+  $scope.clear = function() {
+	   $scope.dosage = {resultado: "--"}
+  }
 
 }]);

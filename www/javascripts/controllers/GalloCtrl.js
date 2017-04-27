@@ -7,11 +7,11 @@ app.controller('GalloCtrl', [
 'socket',
 'unit',
 'user',
-'methods',
+'methodsGallo',
 'gallo',
 'PouchDB',
 'onlineStatus',
-function($rootScope, $scope, $state, auth, localStorageService, socket, unit, user, methods, gallo, PouchDB, onlineStatus){
+function($rootScope, $scope, $state, auth, localStorageService, socket, unit, user, methodsGallo, gallo, PouchDB, onlineStatus){
   $scope.currentUser = auth.currentUser;
   var currentId = auth.currentUser();
   var testInStore = localStorageService.get('localTestgallo');
@@ -135,8 +135,8 @@ function($rootScope, $scope, $state, auth, localStorageService, socket, unit, us
 	  };
 	  
 	  
-	methods.get().then(function(methods){
-		 var meth = methods.data[0];
+	methodsGallo.get().then(function(methodsGallo){
+		 var meth = methodsGallo.data[0];
 		 var date = new Date();
 		 var currentMonth = date.getMonth();
 		if(currentMonth < 6 ){
