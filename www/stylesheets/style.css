@@ -454,7 +454,7 @@ a {
 }
 
 
-.profile-wrap .map .offline,
+/*.profile-wrap .map .offline,
 .register-profile-wrap .map .offline  {
   background-color: #f4d2d2;
   position: relative;
@@ -466,7 +466,7 @@ a {
   content: "Fuera de alcanze, intente de nuevo";
   color: red;
   line-height: 64px
-}
+}*/
 
 #latlongid,
 #latlongid1 {
@@ -611,7 +611,8 @@ a {
 /* roya calculador */
 
 .roya-wrap,
-.vul-wrap {
+.vul-wrap,
+.visita-wrap {
   background-color: #F0F3F2;
   min-height: 100%;
   padding-top: 60px;
@@ -1034,6 +1035,9 @@ input:checked + label + #otherArea {
     padding: 8px 0;
     margin: 6px 0;
     color: green;
+}
+
+.profile-wrap .modal .bg-success.row {
     position: absolute;
     left: 15px;
     right: 15px;
@@ -1316,6 +1320,11 @@ background-color: #3498db  !important;
 
 /* visita module */
 
+.visita-wrapper {
+  height: 100vh;
+  overflow:auto;
+}
+
 .visita-controls {
     position: fixed;
     bottom: 0;
@@ -1323,7 +1332,6 @@ background-color: #3498db  !important;
     right: 0;
     background: #21aaf7;
     padding: 15px;
-    box-shadow: 1px -2px 1px -1px rgba(0, 0, 0, 0.27);
 }
 
 .visita-controls input[type=text] {
@@ -1355,8 +1363,16 @@ background-color: #3498db  !important;
 .visita-controls .input-group {
   border-bottom: 5px solid #fe852d;
 }
+
+.visita-controls-opt-wrap {
+  margin: 0;
+  padding: 0;
+  border-top: 5px solid #fe852d;
+}
+
 .visita-controls-opt {
     margin: 0;
+    padding: 0;
 }
 
 .visita-controls-opt label {
@@ -1373,4 +1389,16 @@ background-color: #3498db  !important;
 
 .visita-controls-opt input[type=radio]:checked + label {
     background: #fe852d;
-}}
+}
+
+@media (max-width: 320px) {
+  
+  .unidad span {
+    max-width: 85px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+}
