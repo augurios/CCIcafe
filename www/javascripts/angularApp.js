@@ -1136,7 +1136,11 @@ app.factory('auth', ['$http', '$state', '$window', function ($http, $state, $win
         /*return $http.post('http://icafe.centroclima.org/requestpasswordchange', user).success(function(data){
           auth.saveToken(data.token);
         });*/
-        return $http.post('http://icafe.centroclima.org/requestpasswordchange', user).success(function (data) {
+        //return $http.post('http://icafe.centroclima.org/requestpasswordchange', user).success(function (data) {
+        //    return data;
+        //});
+        var serviceURL = global.setting.getServiceUrl() + "requestpasswordchange";
+        return $http.post(serviceURL, user).success(function (data) {
             return data;
         });
     };
@@ -1144,7 +1148,11 @@ app.factory('auth', ['$http', '$state', '$window', function ($http, $state, $win
         /*return $http.post('http://icafe.centroclima.org/changeauthenticate', user).success(function(data){
           auth.saveToken(data.token);
         });*/
-        return $http.post('http://icafe.centroclima.org/changeauthenticate', user).success(function (data) {
+        //return $http.post('http://icafe.centroclima.org/changeauthenticate', user).success(function (data) {
+        //    return data;
+        //});
+        var serviceURL = global.setting.getServiceUrl() + "changeauthenticate";
+        return $http.post(serviceURL, user).success(function (data) {
             return data;
         });
     };
@@ -1152,7 +1160,11 @@ app.factory('auth', ['$http', '$state', '$window', function ($http, $state, $win
         /*return $http.post('http://icafe.centroclima.org/passwordchange', user).success(function(data){
           auth.saveToken(data.token);
         });*/
-        return $http.post('http://icafe.centroclima.org/passwordchange', user).success(function (data) {
+        //return $http.post('http://icafe.centroclima.org/passwordchange', user).success(function (data) {
+        //    return data;
+        //});
+        var serviceURL = global.setting.getServiceUrl() + "passwordchange";
+        return $http.post(serviceURL, user).success(function (data) {
             return data;
         });
     };
