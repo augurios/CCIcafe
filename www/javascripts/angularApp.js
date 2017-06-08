@@ -901,7 +901,7 @@ app.directive('manageUnit', function () {
     directive.restrict = 'E';
     //template replaces the complete element with its text. 
     //directive.template = "Student: <b>saddfffgsdgf</b> , Roll No: <b>dfgdfgdfgfdgdf</b>";
-    directive.templateUrl = "Views/shared/manage-unit.html";
+    directive.templateUrl = "views/shared/manage-unit.html";
     //scope is used to distinguish each student element based on criteria.
     directive.scope = {
         editunitid: "="
