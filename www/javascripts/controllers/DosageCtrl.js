@@ -19,8 +19,12 @@ function($scope, $state, auth,localStorageService, socket){
   
   $scope.calculateDosage= function(){
 	
-    var litrosHa = ($scope.dosage.litersWornOut / $scope.dosage.plantsAtomised) * 5000;
+	var distanMetros = ($scope.dosage.hileras * $scope.dosage.plantas) / 1000
+	
+    var litrosHa = ($scope.dosage.litersWornOut / $scope.dosage.plantsAtomised) * distanMetros;
+    
     console.log('litrosHa: ', litrosHa);
+    
     
     var resultado = $scope.dosage.productName / litrosHa;
     

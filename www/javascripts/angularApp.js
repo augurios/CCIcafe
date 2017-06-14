@@ -1220,11 +1220,17 @@ app.factory('unit', ['$http', 'auth', '$window', function ($http, auth, $window)
     /* for sync data */
     //sync local PouchDb Data to server
     o.SyncUserLocalPouchDbToServer = function (dataList, id) {
-        return $http.post('http://icafe.centroclima.org/SyncUserLocalData/' + id + '/datalist', dataList, {
+        var serviceURL = global.setting.getServiceUrl() + "SyncUserLocalData/";
+        return $http.post(serviceURL + id + '/datalist', dataList, {
             headers: { Authorization: 'Bearer ' + auth.getToken() }
         }).success(function (data) {
             return data;
         });
+        //return $http.post('http://icafe.centroclima.org/SyncUserLocalData/' + id + '/datalist', dataList, {
+        //    headers: { Authorization: 'Bearer ' + auth.getToken() }
+        //}).success(function (data) {
+        //    return data;
+        //});
     };
     //sync Server data to pouchDb;
     o.SyncUserServerDataToLocalPouchDb = function (lastSyncDateTime, id) {

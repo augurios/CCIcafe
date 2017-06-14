@@ -95,7 +95,7 @@
 	      <li ng-class="{ active: isActive('/gallo') }"><a href="#/gallo" snap-toggle><i class="fa fa-leaf"></i> Cálculo de Ojo de Gallo</a></li>
 	      <li ng-class="{ active: isActive('/dosage') }"><a href="#/dosage" snap-toggle><i class="fa fa-cog"></i> Cálculo de Dosificación</a></li>
 	      <li ng-class="{ active: isActive('/campo') }"><a href="#/campo" snap-toggle><i class="fa fa-cog"></i> Hoja de enfermedad </a></li>
-	      <li ng-class="{ active: isActive('/vulnerability') }"><a href="#/vulnerability" snap-toggle><i class="fa fa-cog"></i> Vulnerabilidad</a></li>
+	      <!-- <li ng-class="{ active: isActive('/vulnerability') }"><a href="#/vulnerability" snap-toggle><i class="fa fa-cog"></i> Vulnerabilidad</a></li> -->
 	      <!--<li><a href="#" snap-toggle><i class="fa fa-cog"></i> Cálculo de fertilizante</a></li>
 	      <li><a href="#" snap-toggle><i class="fa fa-calculator"></i> Cálculo de cosecha</a></li>
 	      <li><a href="#" snap-toggle><i class="fa fa-shopping-cart"></i> Proveedores</a></li>-->
@@ -1332,12 +1332,7 @@
 						<div class="col-lg-6 col-lg-offset-3">
 							<h2>BIENVENIDO <span>{{ currentUser() }}</span></h2>
 							<p>Para llevar a cabo el Cálculo de Roya es necesario que elija 30 plantas (2 Bandolas) o 60 plantas (1 Bandola) al azar</p>
-							<div class="radio">
-							  <input type="radio" id="optionsRadios1" ng-value="false" ng-model="test.advMode"><label for="optionsRadios1">Basico</label>
-							</div>
-							<div class="radio">
-							  <input type="radio" id="optionsRadios2" ng-value="true" ng-model="test.advMode"><label for="optionsRadios2">Avanzado <small>(Incluye cálculo de severidad)</small></label>
-							</div>
+							<br />
 							
 							<h4 class="clearfix">Seleccione el lote para la prueba</h4>
 							
@@ -1900,6 +1895,24 @@
 										<strong>Litros Gastados:</strong> 
 										<input type="number" ng-model="dosage.litersWornOut" class="form-control"  value="1" required>
 									</span>
+									
+									<div class="row">
+										<div class="col-xs-12">
+											<strong>Distanciamiento en metros</strong>
+										</div>
+										<div class="col-xs-6">
+											<span>
+										<strong>Hileras:</strong> 
+										<input type="number" ng-model="dosage.hileras" class="form-control"  value="1" required>
+									</span>
+										</div>
+										<div class="col-xs-6">
+											<span>
+										<strong>Plantas:</strong> 
+										<input type="number" ng-model="dosage.plantas" class="form-control"  value="1" required>
+									</span>
+										</div>
+									</div>
 
 									<button type="submit" class="btn btn-primary" ng-disabled="!dosageForm.$valid">Calcular</button>
 									<button type="button" class="btn" ng-click="clear()" ng-disabled="!dosageForm.$valid">Limpiar</button>
@@ -6044,6 +6057,34 @@ Sending Recommendation                              </h6>
 																      ></input>
 															</div>
 														</div>
+                                 
+                                   	<div class="col-xs-12">
+															<div class="form-group">
+																<input type="number"
+																      class="form-control"
+																      placeholder="Hileras"
+																      ng-model="editUnit.lote[$index].hileras"	
+																      ></input>
+															</div>
+														</div>
+                                 <div class="col-xs-12">
+															<div class="form-group">
+																<input type="number"
+																      class="form-control"
+																      placeholder="Plantas"
+																      ng-model="editUnit.lote[$index].plantas"	
+																      ></input>
+															</div>
+														</div>
+                                 
+                                   <div class="col-xs-12">
+															<div class="form-group">
+																<input type="text" class="form-control" placeholder="Distanciamiento Ej: 2x1"
+																      ng-model="editUnit.lote[$index].distanciamiento"	
+																      ></input>
+															</div>
+														</div>
+                                     
 														<div class="col-xs-12">
 															<div class="form-group">
 																<p>¿Tiene sombra?</p>

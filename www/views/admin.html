@@ -1893,8 +1893,31 @@
 							<p class="text-center" ng-hide="varieties">
 							    <i class="fa fa-circle-o-notch fa-spin"></i>
 							</p>
+                  	<p class="text-center" ng-show="isprocessing">
+							    <i class="fa fa-circle-o-notch fa-spin"></i>
+							</p>
+                
 							    <ul class="list-group">
-									  <li class="list-group-item" ng-repeat="variety in varieties">{{ variety.name }} <a class="btn btn-danger pull-right btn-xs" ng-click="deleteVariety(variety._id, $index)">X</a></li>
+									  <li class="list-group-item" ng-repeat="variety in varieties">
+                      <span ng-show="!variety.isEditing">{{ variety.name }}</span>  
+                      <a class="btn btn-danger pull-right btn-xs" ng-show="!variety.isEditing" ng-click="deleteVariety(variety._id, $index)">
+                        <i class="fa fa-trash"></i>
+                      </a>
+                    <a class="btn btn-primary pull-right btn-xs" ng-show="!variety.isEditing" ng-click="variety.isEditing = true" style="margin-right: 10px;">
+                        <i class="fa fa-pencil"></i>
+                      </a>
+
+                      <input ng-show="variety.isEditing" type="text" ng-model="variety.name" style="width: 80%;"></input>
+
+                  <a class="btn btn-info pull-right btn-xs" ng-show="variety.isEditing" ng-click="variety.isEditing = false;variety.name = variety.original;">
+                    <i class="fa fa-times"></i>
+                  </a>
+                    
+                    <a class="btn btn-success pull-right btn-xs" ng-show="variety.isEditing" ng-click="updateVariety(variety)" style="margin-right: 10px;">
+                        <i class="fa fa-check"></i>
+                      </a>
+                    
+                  </li>
 									  
 								</ul>
 							    							  

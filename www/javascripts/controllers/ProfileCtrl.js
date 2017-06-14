@@ -897,7 +897,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         }
 
         $scope.updateUnitForm = function () {
-
+            debugger;
             if ($scope.updateunitForm.$valid) {
 
                 //Commented out as we need to update data from pouchDB only,that will be sync to server
