@@ -85,7 +85,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
     $(".date-field").pickadate(spanishDateTimePickerOption);
    
-    muni14.addDepts('departamentos');
+    //muni14.addDepts('departamentos');
 
     function wait(ms) {
         var start = new Date().getTime();
@@ -520,8 +520,17 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         console.log($scope.newunitForm.$valid);
         if ($scope.newunitForm.$valid) {
             
-            $scope.newUnit.departamento = $("#departamentos option:selected").text();
-            $scope.newUnit.municipio = $("#departamentos-munis option:selected").text();
+            //$scope.newUnit.departamento = $("#departamentos option:selected").text();
+            //$scope.newUnit.municipio = $("#departamentos-munis option:selected").text();
+
+
+            $scope.newUnit.departamento = $scope.selectedDepartment;// $("#departamentos option:selected").text();
+            if ($scope.selectedMunicipio && $scope.selectedMunicipio != "") {
+                $scope.newUnit.municipio = $scope.selectedMunicipio; //$("#departamentos-munis option:selected").text();
+            } else {
+                $scope.newUnit.municipio = "";
+            }
+
             $scope.newUnit.oficinaregional = $scope.oficinaregionalmodel.name;
             $scope.newUnit.lat = $('[name="lat"]').val();
             $scope.newUnit.lng = $('[name="lng"]').val();
@@ -579,11 +588,17 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             /*Sync */
             console.log($scope.newUnit);
 
-            $scope.newUnit.departamento = $("#departamentos option:selected").text();
-            $scope.newUnit.municipio = $("#departamentos-munis option:selected").text();
+            $scope.newUnit.departamento = $scope.selectedDepartment;// $("#departamentos option:selected").text();
+            if ($scope.selectedMunicipio && $scope.selectedMunicipio != ""){
+                $scope.newUnit.municipio = $scope.selectedMunicipio; //$("#departamentos-munis option:selected").text();
+            } else {
+                $scope.newUnit.municipio = "";
+            }
             $scope.newUnit.oficinaregional = $scope.oficinaregionalmodel.name;
             $scope.newUnit.lat = $('[name="lat"]').val();
             $scope.newUnit.lng = $('[name="lng"]').val();
+
+            console.log($scope.newUnit);
 
             $scope.newUnit.variedad = [];
             for (var vcounter = 0; vcounter < $scope.variedades.length; vcounter++) {
@@ -651,6 +666,8 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
     $scope.CancleForm = function () {
         $('#myModal2').modal('hide');
     }
+    $scope.depsList = [];
+    $scope.selectedDepartment = null;
     $scope.initializeNewUnit = function () {
         $scope.newUnit = {
             PouchDBId: '',
@@ -805,7 +822,73 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             console.log($scope.variedades);
         }
         console.log("here1");
+        $scope.depsList = $scope.getDepartments();
+        $scope.selectedDepartment = $scope.depsList[0];
+        $scope.$apply();
     }
+
+    $scope.getMunicipoList = function (dept) {
+        var deps = [];
+        deps.push(" ");
+        for (var i = 0, t = this.departamentoData.length; i < t; i++) {
+            if (this.departamentoData[i].dept === dept) {
+                var munis=this.departamentoData[i].munis;
+                for (var j = 0; j < munis.length; j++) {
+                    deps.push(munis[j]);
+                }
+            }
+        }
+        deps.sort();
+        return deps;
+    }
+
+    $scope.municipioList = [];
+    $scope.selectedMunicipio = null;
+    $scope.onDepartmentoChange = function () {
+        $scope.municipioList = [];
+        if($scope.selectedDepartment){
+            if ($scope.selectedDepartment != " ") {
+                $scope.municipioList = $scope.getMunicipoList($scope.selectedDepartment);
+                $scope.selectedMunicipio = $scope.municipioList[0];
+            } 
+        } 
+    }
+
+    $scope.departamentoData = [{
+        dept: " ",
+        munis: []
+    }, {
+        dept: "ALAJUELA",
+        munis: ["ALAJUELA", "SAN RAMON", "GRECIA", "SAN MATEO", "ATENAS", "NARANJO", "PALMARES", "POAS", "OROTINA", "SAN CARLOS", "ALFARO RUIZ", "VALVERDE VEGA", "UPALA", "LOS CHILES", "GUATUSO"]
+    }, {
+        dept: "CARTAGO",
+        munis: ["CARTAGO", "PARAISO", "LA UNION", "JIMENEZ", "TURRIALBA", "ALVARADO", "OREAMUNO", "EL GUARCO"]
+    }, {
+        dept: "GUANACASTE",
+        munis: ["LIBERIA", "NICOYA", "SANTA CRUZ", "BAGACES", "CARRILLO", "CAÑAS", "ABANGARES", "TILARAN", "NANDAYURE", "LA CRUZ", "HOJANCHA"]
+    }, {
+        dept: "HEREDIA",
+        munis: ["HEREDIA", "BARVA", "SANTO DOMINGO", "SANTA BARBARA", "SAN RAFAEL", "SAN ISIDRO", "BELEN", "FLORES", "SAN PABLO", "SARAPIQUI"]
+    }, {
+        dept: "LIMON",
+        munis: ["LIMON", "POCOCI", "SIQUIRRES", "TALAMANCA", "MATINA", "GUACIMO"]
+    }, {
+        dept: "PUNTARENAS",
+        munis: ["PUNTARENAS", "ESPARZA", "BUENOS AIRES", "MONTES DE ORO", "OSA", "AGUIRRE", "GOLFITO", "COTO BRUS", "PARRITA", "CORREDORES", "GARABITO"]
+    }, {
+        dept: "SAN JOSE",
+        munis: ["SAN JOSE", "ESCAZU", "DESAMPARADOS", "PURISCAL", "TARRAZU", "ASERRI", "MORA", "GOICOECHEA", "SANTA ANA", "ALAJUELITA", "VASQUEZ DE CORONADO", "ACOSTA", "TIBAS", "MORAVIA", "MONTES DE OCA", "TURRUBARES", "DOTA", "CURRIDABAT", "PEREZ ZELEDON", "LEON CORTES", ""]
+    }];
+
+    $scope.getDepartments = function () {
+        var deps = [];
+        for (var i = 0, t = this.departamentoData.length; i < t; i++) {
+            deps.push(this.departamentoData[i].dept);
+        }
+        deps.sort();
+        return deps;
+    }
+
     $scope.initializeEditUnit = function (id) {
         $scope.sucMsg = null;
         
@@ -821,11 +904,23 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
      
 
-                $("#departamentos option:selected").text($scope.newUnit.departamento);
-                var dindex = muni14.getDeptId($scope.newUnit.departamento);
-                document.getElementById("departamentos").forcechange(dindex, $scope.newUnit.municipio);
+                //           $("#departamentos option:selected").text($scope.newUnit.departamento);
+                //         var dindex = muni14.getDeptId($scope.newUnit.departamento);
+                //       document.getElementById("departamentos").forcechange(dindex, $scope.newUnit.municipio);
+
 
                 //$("#departamentos-munis option:selected").text($scope.newUnit.municipio);
+
+
+                $scope.depsList = $scope.getDepartments();
+                $scope.selectedDepartment = $scope.depsList[$scope.depsList.indexOf($scope.newUnit.departamento)];
+
+                if ($scope.newUnit.municipio && $scope.newUnit.municipio != "" && $scope.newUnit.municipio != " ") {
+                    $scope.municipioList = $scope.getMunicipoList($scope.selectedDepartment);
+                    $scope.selectedMunicipio = $scope.newUnit.municipio; //$scope.municipioList[$scope.newUnit.municipio];
+                } else {
+                    $scope.municipioList = [];
+                }
 
                 $scope.newUnit.oficinaregional = $scope.oficinaregionalmodel.name;
                 $('#myModal3').on('shown.bs.modal', function (e) {
@@ -839,8 +934,8 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                     $scope.newUnit.lote.push(newItem);
                 };
                 //$scope.newUnit.nombre.$setUntouched();
-                $scope.newunitForm.nombreInput.$setPristine();
-                $scope.newunitForm.nombreInput.$setUntouched();
+                //$scope.newunitForm.nombreInput.$setPristine();
+                //$scope.newunitForm.nombreInput.$setUntouched();
                 
                 if ($scope.variedades && $scope.newUnit.variedad) {
                     for (var vcounter = 0; vcounter < $scope.variedades.length; vcounter++) {
@@ -890,8 +985,8 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
     $scope.$on('MANAGEUNIT', function (e, args) {
         console.log("manage unit called");
-        $scope.newunitForm.nombreInput.$setPristine();
-        $scope.newunitForm.nombreInput.$setUntouched();
+        //$scope.newunitForm.nombreInput.$setPristine();
+        //$scope.newunitForm.nombreInput.$setUntouched();
         $scope.isOtherUser = args.isOtherUser;
         if (args.isRecommendationFieldRequired) {
             $scope.isRecommendationFieldRequired = args.isRecommendationFieldRequired;

@@ -158,7 +158,7 @@ function($rootScope, $scope, $state, auth, localStorageService, socket, unit, us
 	  $('.results').show();
   }
 	
-  $scope.startTest = function(selectedUnit) {
+  $scope.startTest = function(userid,selectedUnit) {
 	  selectedUnit["user"] = userid
 	  $scope.test.unidad = selectedUnit;
 	  $('.roya-wrap').addClass('initiated');

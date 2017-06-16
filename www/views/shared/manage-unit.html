@@ -19,7 +19,7 @@
         </div>
         <div class="col-xs-12">
             <div class="form-group">
-                <input type="number" min="0" step="1"
+                <input type="number" min="0" step="any"
                        class="form-control"
                        placeholder="Altitud"
                        ng-model="newUnit.altitud"></input> (msnm)
@@ -32,7 +32,15 @@
         </div>
         <div class="col-xs-12">
             <div class="form-group munis">
-                <select ng-model="newUnit.departamentos" id="departamentos" class="form-control" data-error="Campo requerido" required></select>
+               
+                 <!--<select ng-model="newUnit.departamentos" id="departamentos" class="form-control" data-error="Campo requerido" required></select>-->
+
+                <select ng-model="selectedDepartment" class="form-control" 
+                        data-error="Campo requerido" ng-options="item for item in depsList" ng-change="onDepartmentoChange()" required></select>
+
+                <select ng-model="selectedMunicipio" class="form-control" ng-show="municipioList.length >0"
+                        data-error="Campo requerido" ng-options="item for item in municipioList"></select>
+
 
                 <div class="help-block with-errors"></div>
             </div>
@@ -57,7 +65,7 @@
         </div>
         <div class="col-xs-6">
             <div class="form-group">
-                <input type="number" min="0" step="1"
+                <input type="number" min="0" step="any"
                        class="form-control"
                        placeholder="Area total"
                        ng-model="newUnit.areaTotal"></input>
@@ -74,7 +82,7 @@
         <div class="clearfix"></div>
         <div class="col-xs-6">
             <div class="form-group">
-                <input type="number" min="0" step="1"
+                <input type="number" min="0" step="any"
                        class="form-control"
                        placeholder="Area con café"
                        ng-model="newUnit.areaCafe"></input>
@@ -136,14 +144,7 @@
         </div>
 
 
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label for="selCoffeProducessOptions">Tipo de café que produce?</label>
-                <select class="form-control" id="selCoffeProducessOptions" multiple="true" ng-model="newUnit.typeOfCoffeProducessOptionSelected">
-                    <option ng-repeat="option in typesOfCoffeSelectionOptions" value="{{option.name}}">{{option.displayValue}}</option>
-                </select>
-            </div>
-        </div>
+      
 
         <div class="col-xs-12">
             <div class="form-group">

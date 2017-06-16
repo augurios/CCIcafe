@@ -1841,7 +1841,7 @@
 </div>	
 								
 								<form data-toggle="validator" name="dosageForm" novalidate class="form" role="form" ng-submit="calculateDosage()">
-									<span><strong>Tipo de Producto</strong></span>
+									<span><strong>Tipo de Plaga</strong></span>
 									<select ng-model="dosage.productType"  id="productType" class="form-control" ng-change="typeChange()">
 										<option value="Broca" >Broca</option>
 										<option value="Roya" >Roya</option>
@@ -6057,8 +6057,10 @@ Sending Recommendation                              </h6>
 																      ></input>
 															</div>
 														</div>
-                                 
-                                   	<div class="col-xs-12">
+									<div class="col-xs-12 text-center">
+										<p><strong>Distanciamiento en Metros</strong></p>
+									</div>
+                                   	<div class="col-xs-6">
 															<div class="form-group">
 																<input type="number"
 																      class="form-control"
@@ -6067,7 +6069,7 @@ Sending Recommendation                              </h6>
 																      ></input>
 															</div>
 														</div>
-                                 <div class="col-xs-12">
+                                 <div class="col-xs-6">
 															<div class="form-group">
 																<input type="number"
 																      class="form-control"
@@ -6077,13 +6079,7 @@ Sending Recommendation                              </h6>
 															</div>
 														</div>
                                  
-                                   <div class="col-xs-12">
-															<div class="form-group">
-																<input type="text" class="form-control" placeholder="Distanciamiento Ej: 2x1"
-																      ng-model="editUnit.lote[$index].distanciamiento"	
-																      ></input>
-															</div>
-														</div>
+                                   
                                      
 														<div class="col-xs-12">
 															<div class="form-group">
