@@ -10,7 +10,11 @@ function($scope, $state, auth,localStorageService, socket){
   /*if($scope.plantsByHa=='ot'){
 
   }*/
-  $scope.dosage = {resultado: "--"}
+  $scope.dosage = {
+	  resultado: "--",
+	  listrosHaResult: "--"
+	  	
+  }
   
   
   $scope.typeChange = function() {
@@ -23,7 +27,7 @@ function($scope, $state, auth,localStorageService, socket){
 	
     var litrosHa = ($scope.dosage.litersWornOut / $scope.dosage.plantsAtomised) * distanMetros;
     
-    console.log('litrosHa: ', litrosHa);
+    $scope.dosage.listrosHaResult = litrosHa.toFixed(2);
     
     
     var resultado = $scope.dosage.productName / litrosHa;
