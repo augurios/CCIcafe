@@ -587,7 +587,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
     $scope.AddNewUnit = function () {
         $scope.unitopmessage = null
-        $scope.modalText = "Nueva Unidad";
+        $scope.modalText = "Nueva Finca";
         $scope.$broadcast('MANAGEUNIT', { unitId: -1 });
         $("#myModal2").modal('show');
     }
@@ -897,7 +897,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         }
 
         $scope.updateUnitForm = function () {
-            debugger;
+           
             if ($scope.updateunitForm.$valid) {
 
                 //Commented out as we need to update data from pouchDB only,that will be sync to server

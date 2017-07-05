@@ -557,7 +557,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             {
                 var userId = $scope.userId;
                 //update unit to server database
-                $scope.sucMsg = '¡Unidad Actualizada exitosamente!';
+                $scope.sucMsg = '¡Finca Actualizada exitosamente!';
                 $scope.$emit('UNITEDITED', { unit: $scope.newUnit});
             }
             else {
@@ -567,7 +567,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                     }
                     else if (result.status == 'success') {
                         //$scope.editUnit = result.data;
-                        $scope.sucMsg = '¡Unidad Actualizada exitosamente!';
+                        $scope.sucMsg = '¡Finca Actualizada exitosamente!';
                         $scope.$emit('UNITEDITED', { unit: result.data });
 
                         $('#myModal2').modal('hide');

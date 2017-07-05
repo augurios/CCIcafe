@@ -1419,7 +1419,41 @@ app.factory('gallo', ['$http', 'auth', function ($http, auth) {
 }]);
 
 //pre loader animation controller
-app.run(function ($rootScope, $window) {
+app.run(function ($rootScope, $window,localStorageService) {
+	
+	// check for version and cache flush 
+	
+	var appVersion = null;
+	
+	if(typeof $cordovaAppVersion === 'undefined') {
+		
+		var appVersion = "108";
+		
+	} else {
+		
+		
+		 $cordovaAppVersion.getVersionNumber().then(function (version) {
+		      var appVersion = version;
+		    });
+		
+	}
+	
+	var checkNflush = function () {
+		
+		 /*get version code stored in localstorage*/
+		  var savedAppVersion = localStorage.getItem("appversion");
+		  /*if there is one check if it is the same*/
+		  if (savedAppVersion && savedAppVersion === appVersion) {
+		    // do nothing
+		  } else {
+			    /*clear all local storage*/
+			    localStorage.clear();
+			    /*save new code to ls*/
+			    localStorage.setItem("appversion", appVersion);
+		  }
+	}
+	
+	checkNflush();
 	
 	$rootScope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
         // Select open modal(s)
