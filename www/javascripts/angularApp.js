@@ -1171,6 +1171,7 @@ app.factory('auth', ['$http', '$state', '$window', function ($http, $state, $win
 
     auth.logOut = function () {
         $window.localStorage.removeItem('flapper-news-token');
+        $window.localStorage.clear();
         $state.go('login');
         
     };
