@@ -1172,7 +1172,9 @@ app.factory('auth', ['$http', '$state', '$window', function ($http, $state, $win
     auth.logOut = function () {
         $window.localStorage.removeItem('flapper-news-token');
         $window.localStorage.clear();
+        $window.indexedDB.deleteDatabase('_pouch_dummyDb');
         $state.go('login');
+        location.reload();
         
     };
 
