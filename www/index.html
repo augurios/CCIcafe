@@ -6098,13 +6098,13 @@ Sending Recommendation                              </h6>
 												                           
 												
 												
-												                            <input type="checkbox" ng-model="editUnit.lote[$index].variedad.isSelected"> {{variedad.name}}
+												                            <input type="checkbox" ng-model="editUnit.lote[$parent.$index].variedad[variedad.name]"> {{variedad.name}}
 												                        </label>
 												
 												                        <input type="text" 
 												                               class="form-control"
 												                               placeholder="¿cual?"
-												                               ng-model="editUnit.lote[$index].variedad.VAL" ng-show="editUnit.lote[$index].variedad.isSelected && variedad.ISUDF"></input>
+												                               ng-model="editUnit.lote[$parent.$index].variedad['cual']" ng-show="editUnit.lote[$parent.$index].variedad.isSelected && variedad.ISUDF"></input>
 												
 												
 												                         
