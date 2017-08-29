@@ -1173,8 +1173,10 @@ app.factory('auth', ['$http', '$state', '$window', function ($http, $state, $win
         $window.localStorage.removeItem('flapper-news-token');
         $window.localStorage.clear();
         $window.indexedDB.deleteDatabase('_pouch_dummyDb');
+        $window.indexedDB.deleteDatabase('_pouch__websqldb__pouch_dummyDb');
         $state.go('login');
         location.reload();
+        
         
     };
 
@@ -1430,7 +1432,7 @@ app.run(function ($rootScope, $window,localStorageService) {
 	
 	if(typeof $cordovaAppVersion === 'undefined') {
 		
-		var appVersion = "108";
+		var appVersion = "112";
 		
 	} else {
 		

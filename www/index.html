@@ -59,6 +59,12 @@
 
     <link href="javascripts/plugins/SweetAlert/sweetalert.css" rel="stylesheet" type="text/css" />
     <script src="javascripts/plugins/SweetAlert/sweetalert.min.js"></script>
+    
+    
+    <script type="text/javascript" src="javascripts/plugins/chartist/chartist.min.js"></script>
+	<script type="text/javascript" src="javascripts/plugins/chartist/chartist-plugin-tooltip.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="stylesheets/plugins/chartist.min.css">
+	<link rel="stylesheet" type="text/css" href="stylesheets/plugins/chartist-plugin-tooltip.css">
 
 	<script src="javascripts/easy-weather-keys.js"></script>
 	<script src="javascripts/easy-weather.js"></script>
@@ -1376,6 +1382,16 @@
 								      <div class="modal-body">
 									      <h6 ng-show="royaHistory.length == 0">¡No hay cálculos todavía!</h6>
 								        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+									        
+									        <!-- historic graphic -->
+									        
+									        
+									         <div id="datagUnit" class="ct-chart ct-chart-line" style="width: 100%; height: 250px; display: none"></div>
+									        
+									        
+									        <!--- end graphic -->
+									        
+									        
 									  <div class="panel panel-default" ng-repeat="roya in royaHistory">
 										    <div class="panel-heading" role="tab" id="{{ 'heading-' + $index }}">
 										      <h5 class="panel-title">
@@ -1407,6 +1423,8 @@
 									</div>
 								      </div>
 								      <div class="modal-footer">
+									      
+									      <button type="button" class="btn btn-default" ng-click="graficarHitorial()" >Gráfica</button>
 								        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
 								        
 								      </div>

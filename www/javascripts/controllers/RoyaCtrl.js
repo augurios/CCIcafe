@@ -435,6 +435,66 @@ function($rootScope, $scope, $state, auth, localStorageService, socket, unit, us
         
     };
     
+    $scope.graficarHitorial = function () {
+
+
+    Array.prototype.contains = function(obj) {
+        var i = this.length;
+        while (i--)
+            if (this[i] == obj)
+                return true;
+            return false;
+        }
+
+        $("#datagUnit").css({display:"block"});
+
+        var data = $scope.royaHistory;
+        var fechas = [];
+        var puntosIncidencia = [];
+
+
+        for (var i = 0; i < data.length; i++) {
+
+            if (!fechas.contains(data[i].createdAt)){
+                fechas.push(data[i].createdAt);    
+            } 
+
+            puntosIncidencia.push({meta: data[i].unidad.nombre,value: data[i].incidencia});
+
+        }
+
+        console.log(fechas);
+        console.log(puntosIncidencia);
+
+
+        var dataG = new Chartist.Line('#datagUnit', {
+          labels: fechas,
+          series: [puntosIncidencia]
+      }, {
+          fullWidth: true,
+
+          chartPadding: {
+            right: 40
+        },
+        plugins: [
+            Chartist.plugins.tooltip()
+        ]
+
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+    }
+    
     var usrid = auth.userId();;
     
     var historialLaunchFunc = function() {
