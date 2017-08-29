@@ -1598,6 +1598,16 @@ function ($stateProvider, $urlRouterProvider) {
               }
           }]
       })
+      .state('royatec', {
+          url: '/royatec',
+          templateUrl: '/royatec.html',
+          controller: 'RoyatecCtrl',
+          onEnter: ['$state', 'auth', function ($state, auth) {
+              if (!auth.isLoggedIn()) {
+                  $state.go('login');
+              }
+          }]
+      })
       .state('gallo', {
           url: '/gallo',
           templateUrl: '/gallo.html',

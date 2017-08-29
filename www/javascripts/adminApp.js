@@ -168,7 +168,7 @@ app.factory('socket', ['socketFactory',
 	function (socketFactory) {
 	    return socketFactory({
 	        prefix: '',
-	        ioSocket: io.connect('http://coffeecloud.centroclima.org')
+	        ioSocket: io.connect('http://icafe.centroclima.org')
 	    });
 	}
 ]);

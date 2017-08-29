@@ -18,6 +18,17 @@ function ($scope, $state, auth, $window, $timeout, PouchDB) {
             });            
         });
     };
+    
+    $scope.checkchar =  function (e) {
+            if (e.which < 48 || 
+			    (e.which > 57 && e.which < 65) || 
+			    (e.which > 90 && e.which < 97) ||
+			    e.which > 122) {
+			    e.preventDefault();
+			}
+
+        }
+
 
     $scope.registerProfile = function () {
         $state.go('location');

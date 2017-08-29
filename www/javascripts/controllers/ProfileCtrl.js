@@ -252,30 +252,6 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         }
     });
 
-    //console.log("Is INTERNET AVAILABLE=" + $rootScope.IsInternetOnline);
-    //if ($rootScope.IsInternetOnline) {
-    //    console.log('app online');
-    //    user.get($scope.user_Ided).then(function (user) {
-    //        $scope.userO7 = user;
-    //        //region to  get data from server
-    //        $scope.units = $scope.userO7.units;
-    //        //endregion
-
-    //    });
-    //} else {
-    //    console.log('app offline');
-    //    //region to  get user unit from local PouchDB instead of server
-    //    PouchDB.GetAllUserUnit(auth.userId()).then(function (result) {
-    //        if (result.status == 'fail') {
-    //            $scope.error = result.message;
-    //        }
-    //        else if (result.status == 'success') {
-    //            $scope.units = result.data;
-    //            console.log('local mode:', result.data);
-    //        }
-    //    });
-    //    //endregion
-    //}
     PouchDB.GetAllUserUnit(auth.userId()).then(function (result) {
         if (result.status == 'fail') {
             $scope.error = result.message;
@@ -814,60 +790,10 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
         $scope.updateUnit = function (e, id) {
 
-
+			console.log($scope.editUnit.lote);
 
             $scope.sucMsg = null;
-            //Commented out as we need to update data from pouchDB only,that will be sync to server
-            //if ($rootScope.IsInternetOnline) {
-            //    unit.get(auth.userId(), id).then(function (unitD) {
-
-            //        $scope.editUnit = unitD;
-
-            //        console.log($scope.editUnit);
-            //        $('#myModal3').on('shown.bs.modal', function (e) {
-            //            $('.collapse').collapse('hide');
-            //        });
-            //        $scope.prependItem = function (newItem) {
-
-            //            $scope.editUnit.lote.unshift(newItem);
-            //        };
-
-            //        $scope.updateUnitForm = function () {
-            //            if ($scope.updateunitForm.$valid) {
-            //                unit.update(id, auth.userId(), $scope.editUnit).then(function (unitN) {
-            //                    user.get($scope.user_Ided).then(function (user) {
-            //                        $scope.userO = user;
-            //                        $scope.units = $scope.userO.units;
-            //                    });
-            //                    $scope.editUnit = {};
-            //                    console.log("return  updated data=" + JSON.stringify(unitN.data));
-            //                    $scope.editUnit = unitN.data;
-            //                    $scope.sucMsg = '¡Unidad Actualizada exitosamente!';
-            //                });
-            //            }
-            //        }
-            //    });
-            //} else {
-            //    //region to get unit from local PouchDB instead of server
-            //    PouchDB.GetUnit(id, auth.userId()).then(function (result) {
-            //        if (result.status == 'fail') {
-            //            $scope.error = result.message;
-            //        }
-            //        else if (result.status == 'success') {
-            //            $scope.editUnit = result.data;
-            //            $('#myModal3').on('shown.bs.modal', function (e) {
-            //                $('.collapse').collapse('hide');
-            //            });
-
-
-            //            $scope.prependItem = function (newItem) {
-
-            //                $scope.editUnit.lote.push(newItem);
-
-            //            };
-            //        }
-            //    });
-            //}
+            
             PouchDB.GetUnit(id, auth.userId()).then(function (result) {
                 if (result.status == 'fail') {
                     $scope.error = result.message;

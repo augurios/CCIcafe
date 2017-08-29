@@ -16,6 +16,8 @@ function ($rootScope, $scope, $state, unit, auth, varieties, localStorageService
         onlineStatus = $scope.online_status_string
 
     });
+    
+    
 
     PouchDB.GetUserDataFromPouchDB(auth.userId()).then(function (result) {
         if (result.status == 'fail') {
@@ -26,7 +28,6 @@ function ($rootScope, $scope, $state, unit, auth, varieties, localStorageService
 
         }
     });
-
 
     //console.log("Is INTERNET AVAILABLE=" + $rootScope.IsInternetOnline);
     if ($rootScope.IsInternetOnline) {

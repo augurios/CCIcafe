@@ -43,7 +43,7 @@ function ($scope, auth, socket, user,Upload,$base64) {
 	                userObj.image = null;
 	            }
 	            var nickName = userObj.nickname || userObj.username;
-	            var userImage = userObj.image || '../images/ChatUser.png';
+	            var userImage = userObj.image || '/images/ChatUser.png';
 	            var res = $.grep($scope.userImageList, function (item) {
 	                return item._id == userObj._id;
 	            });
@@ -165,14 +165,14 @@ function ($scope, auth, socket, user,Upload,$base64) {
 					if($scope.UserName!='admin')
 					{
 					    //$scope.UserImage = userObj.image || '../images/ChatUser.png';
-					    $scope.UserImageBottom = userObj.image || '../images/ChatUser.png';
+					    $scope.UserImageBottom = userObj.image || '/images/ChatUser.png';
 						$scope.UserName=userObj.username;
 					}
 					else	
 					{
 						$scope.UserName = userObj.nickname || userObj.username;
 						//$scope.UserImage = userObj.imageurl || '../images/ChatUser.png';
-						$scope.UserImageBottom = userObj.image || '../images/ChatUser.png';
+						$scope.UserImageBottom = userObj.image || '/images/ChatUser.png';
 					}
 	    });
 	}

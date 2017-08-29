@@ -5,13 +5,14 @@ app.controller('NewsCtrl', [
 '$sce',
 'posts',
 function($scope, auth, $filter, $sce, posts){
+	
   $scope.isLoggedIn = auth.isLoggedIn;
   $scope.currentUser = auth.currentUser;
   $scope.currentPage = 0;
   $scope.pageSize = 9;
   $scope.data = posts.posts;
   $scope.q = '';
-  console.log($scope.data);
+  console.log($scope.posts);
   $scope.getData = function () {
       return $filter('filter')($scope.data, $scope.q)
      
