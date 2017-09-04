@@ -296,6 +296,17 @@ a {
   border-radius: 0;
 }
 
+.reg-username + .error-msg {
+  display: none;
+}
+
+.reg-username.ng-invalid.ng-dirty.ng-invalid-pattern + .error-msg {
+  color: red;
+  display: block;
+  text-align: left;
+  opacity: 0.6;
+}
+
 .register-wrap .form-control:focus {
   border-bottom-color: #27AE60;
 }
