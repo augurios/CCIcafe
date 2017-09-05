@@ -550,144 +550,6 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
     }
 
 
-    //pouchDbFactory.SaveUserNotSyncUnitToPouchDB = function (userData) {
-    //    var deferred = $q.defer();
-    //    var result = {
-    //        status: '',
-    //        data: {},
-    //        message: ''
-    //    };
-    //    if (userData.data != undefined && userData.data.units) {
-
-    //        var isError = false;
-    //        var message = '';
-    //        console.log("userData.data.units" + userData.data.units.length);
-    //        for (var i = 0; i < userData.data.units.length; i++) {
-    //            console.log("inside foreach loop");
-    //            var element = userData.data.units[i];
-    //            var editUnit = element;
-    //            delete element["__v"];
-    //            //element.isSync=true;
-    //            element.type = "Units";
-    //            console.log(element._id + " pouch " + element.PouchDBId);
-    //            if (element.PouchDBId && element.PouchDBId != null && element.PouchDBId != undefined) {
-    //                element._id = element.PouchDBId;
-    //            }
-    //            if (element._id == undefined) {
-    //                var dt = new Date();
-    //                var documentId = dt.getFullYear().toString() + dt.getMonth().toString() + dt.getDate().toString() + dt.getHours().toString() + dt.getMinutes().toString() + dt.getSeconds().toString() + dt.getMilliseconds().toString();
-    //                element._id = documentId;
-    //            }
-    //            var pouchPromise = localPouchDB.get(element._id);
-    //            $q.when(pouchPromise).then(function (doc) {
-    //                editUnit.isSync = true;
-    //                doc = editUnit;
-    //                var UpdatePouchPromise = localPouchDB.put(doc);
-    //                $q.when(UpdatePouchPromise).then(function (res) {
-    //                    if (res && res.ok == true) {
-    //                        console.log("unit data updated ");
-    //                        editUnit.isSync = true;
-    //                        delete
-    //                        unit.update(editUnit._id, auth.userId(), editUnit).then(function (unitN) {
-    //                            console.log("User unit updated to server=" + editUnit._id);
-    //                        });
-    //                    }
-    //                }).catch(function (err) {
-    //                    isError = true;
-    //                    message = err;
-    //                    console.log(err)
-    //                });
-    //            }).catch(function (err) {
-    //                console.log("error while finding" + err);
-    //                if (err.status == 404) {
-    //                    localPouchDB.put(element).then(function () {
-    //                        console.log("unit inserted");
-    //                        editUnit.isSync = true;
-    //                        delete editUnit["_id"];
-    //                        delete editUnit["type"];
-    //                        unit.update(editUnit._id, auth.userId(), editUnit).then(function (unitN) {
-    //                            console.log("User unit updated to server=" + editUnit._id);
-    //                        });
-    //                    }).catch(function (err) {
-    //                        console.log(err);
-    //                        message = err;
-    //                        isError = true;
-    //                    });
-    //                }
-
-    //            });
-    //        }
-    //        if (!isError) {
-    //            result.status = "success";
-    //            result.message = message;
-    //            deferred.resolve(result);
-    //            return deferred.promise;
-
-    //        }
-    //        else {
-    //            result.status = "success";
-    //            deferred.resolve(result);
-    //            return deferred.promise;
-    //        }
-
-
-    //    }
-    //}
-    //pouchDbFactory.GetUserNotSyncUnitFromPouchDb = function (userId) {
-    //    var result = {
-    //        status: '',
-    //        data: {},
-    //        message: ''
-    //    };
-    //    function mapFunctionTypeUnit(doc) {
-    //        if ((doc.isSync == false && doc.type == "Unit")) {
-    //            emit([doc._id, doc.isSync]);
-    //        }
-    //    }
-    //    var pouchPromise = localPouchDB.query(mapFunctionTypeUnit, { include_docs: true });
-    //    return $q.when(pouchPromise).then(function (recordList) {
-    //        if (recordList) {
-    //            result.status = 'success';
-    //            if (recordList.rows.length > 0) {
-    //                for (i = 0; i < recordList.rows.length; i++) {
-    //                    var element = recordList.rows[i].doc;
-    //                    var documentId = recordList.rows[i].doc._id;
-    //                    var documentRevKey = recordList.rows[i].doc._rev;
-    //                    element.isSync = true;
-    //                    delete element["_id"];
-    //                    delete element["type"];
-    //                    unit.SyncUserUnits(element, auth.userId()).error(function (error) {
-    //                        console.log(error);
-    //                    }).then(function (data) {
-    //                        localPouchDB.get(documentId)
-    //                        .then(function (doc) {
-    //                            doc._rev = documentRevKey;
-    //                            doc.isSync = true;
-    //                            localPouchDB.put(doc);
-
-    //                        }).catch(function (err) {
-    //                            console.log(err);
-    //                        });
-    //                    })
-    //                            .catch(function (err) {
-    //                                console.log(err);
-    //                            });
-    //                }
-    //            }
-    //            else {
-    //                result.data = [];
-    //            }
-    //            return result;
-
-    //        }
-    //    }).catch(function (err) {
-    //        result.status = 'fail';
-    //        result.message = err;
-    //        return result
-    //    });
-
-    //};
-
     pouchDbFactory.AddUnit = function (newUnit, userId) {
         var result = {
             status: '',
@@ -1394,6 +1256,41 @@ app.factory('roya', ['$http', 'auth', function ($http, auth) {
     return o;
 }]);
 
+app.factory('chemicals', ['$http', 'auth', '$window', function ($http, auth, $window) {
+    var o = {};
+    o.getAll = function (id) {
+        return $http.get('http://icafe.centroclima.org/chemicals').success(function (data) {
+            return data;
+        });
+    };
+    o.create = function (chemicals) {
+        //localhost unit
+        return $http.post('http://icafe.centroclima.org/chemicals', chemicals, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).success(function (data) {
+            return data;
+        });
+    };
+
+    o.update = function (chemicals) {
+        return $http.post('http://icafe.centroclima.org/chemicals/update', chemicals, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).success(function (data) {
+            return data;
+        });
+    }
+
+    o.deleteChemical = function (Ided) {
+        console.log(Ided);
+        return $http.delete('http://icafe.centroclima.org/chemicals', {
+            headers: { Authorization: 'Bearer ' + auth.getToken(), variid: Ided.varId }
+        }).success(function (data) {
+            return Ided;
+        });
+    };
+    return o;
+}]);
+
 app.factory('gallo', ['$http', 'auth', function ($http, auth) {
     var o = {
 
@@ -1423,6 +1320,7 @@ app.factory('gallo', ['$http', 'auth', function ($http, auth) {
     return o;
 }]);
 
+
 //pre loader animation controller
 app.run(function ($rootScope, $window,localStorageService) {
 	
@@ -1432,7 +1330,7 @@ app.run(function ($rootScope, $window,localStorageService) {
 	
 	if(typeof $cordovaAppVersion === 'undefined') {
 		
-		var appVersion = "115";
+		var appVersion = "116";
 		
 	} else {
 		

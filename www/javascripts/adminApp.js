@@ -513,6 +513,19 @@ app.config([
 			            window.location.href = '/';
 			        }
 			    }]
+			}).state(' chemicals', {
+			    url: '/chemicals',
+			    templateUrl: '/chemicals.html',
+			    controller: 'ChemCtrl',
+			    onEnter: ['$state', 'auth', function ($state, auth) {
+			        var curUserRole = auth.currentUserRole();
+			        if (!auth.isLoggedIn()) {
+			            $state.go('login');
+			        }
+			        else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista') {
+			            window.location.href = '/';
+			        }
+			    }]
 			});
 
 	    $urlRouterProvider.otherwise('home');

@@ -1,5 +1,5 @@
-app.controller('ProfileCtrl', ['$http', '$scope', 'auth', 'unit', 'varieties', 'user', 'PouchDB', '$rootScope', 'onlineStatus',
-function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlineStatus) {
+app.controller('ProfileCtrl', ['$http', '$scope', 'auth', 'unit', '$filter', 'localStorageService', 'chemicals', 'varieties', 'user', 'PouchDB', '$rootScope', 'onlineStatus',
+function ($http, $scope, auth, unit, $filter, localStorageService, chemicals, varieties, user, PouchDB, $rootScope, onlineStatus) {
     var map;
     $scope.isLoggedIn = auth.isLoggedIn;
     $scope.currentUser = auth.currentUser;
@@ -22,10 +22,38 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             variedades = varids.data;
             variedades.push({ name: "otro" }, { name: "cual?" });
             $scope.variedades = variedades;
+            console.log("variedades: ", $scope.variedades);
         });
+        
+        
+        
+        if(!localStorageService.get('chemsContacto')) {	  
+	        	       	
+		        chemicals.getAll().then(function (varids) {
+	            chemicals = varids.data;
+	            localStorageService.set('chemslocal',chemicals);
+	            
+	            console.log("chem locals loaded");
+	           
+	        });
+        } else {
+	        
+	        
+	        
+	         chemicals.getAll().then(function (varids) {
+	            chemicals = varids.data;
+	            
+					localStorageService.set('chemslocal',chemicals);
+	            
+	            console.log("chem locals reloaded");
+        	});
+        }
+        $scope.chems = localStorageService.get('chemslocal');
     }
     else {
         console.log("app offline");
+         $scope.chems = localStorageService.get('chemslocal');
+         
         PouchDB.GetVarietiesFromPouchDB().then(function (result) {
             if (result.status == 'fail') {
                 $scope.error = result.message;
@@ -790,8 +818,6 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
         $scope.updateUnit = function (e, id) {
 
-			console.log($scope.editUnit.lote);
-
             $scope.sucMsg = null;
             
             PouchDB.GetUnit(id, auth.userId()).then(function (result) {
@@ -803,10 +829,6 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                     $('#myModal3').on('shown.bs.modal', function (e) {
                         $('.collapse').collapse('hide');
                     });
-
-                    console.log($scope.editUnit);
-
-                    console.log($scope.editUnit);
 
                     $scope.prependItem = function () {
 
@@ -824,51 +846,12 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
         $scope.updateUnitForm = function () {
            
-            if ($scope.updateunitForm.$valid) {
-
-                //Commented out as we need to update data from pouchDB only,that will be sync to server
-                //if ($rootScope.IsInternetOnline) {
-                //    unit.update(id, auth.userId(), $scope.editUnit).then(function (unitN) {
-                //        user.get($scope.user_Ided).then(function (user) {
-                //            $scope.userO = user;
-                //            $scope.units = $scope.userO.units;
-                //        });
-                //        $scope.editUnit = {};
-                //        console.log("return  updated data=" + JSON.stringify(unitN.data));
-                //        $scope.editUnit = unitN.data;
-                //        $scope.sucMsg = '¡Unidad Actualizada exitosamente!';
-                //        if ($rootScope.IsInternetOnline) {
-                //            PouchDB.SynServerDataAndLocalData().then(function () {
-                //                console.log("sync successfully.");
-                //            }).catch(function (err) {
-                //                console.log("Not able to sync" + error);
-                //            });
-                //        }
-                //    });
-
-
-                //} else {
-                //    //region to update data in local PouchDB instead , that will be sync to server
-                //    PouchDB.EditUnit($scope.editUnit, auth.userId()).then(function (result) {
-                //        if (result.status == 'fail') {
-                //            $scope.error = result.message;
-                //        }
-                //        else if (result.status == 'success') {
-                //            $scope.editUnit = result.data;
-                //            $scope.sucMsg = '¡Unidad Actualizada exitosamente!';
-                //            console.log(result.data)
-                //            for (var i = 0 ; i < $scope.units.length; i++) {
-                //                if ($scope.units[i]._id == $scope.editUnit._id) {
-                //                    $scope.units[i] = $scope.editUnit;
-                //                    break;
-                //                }
-                //            }
-                //        }
-                //    });
-                //}
+           
+	            
                 PouchDB.EditUnit($scope.editUnit, auth.userId()).then(function (result) {
                     if (result.status == 'fail') {
                         $scope.error = result.message;
+                        console.log(result.message)
                     }
                     else if (result.status == 'success') {
                         $scope.editUnit = result.data;
@@ -888,7 +871,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                         }
                     }
                 });
-            }
+            
         }
 
         $scope.saveUnit = function () {

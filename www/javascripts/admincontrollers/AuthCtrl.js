@@ -103,7 +103,12 @@ app.factory('auth', ['$http', '$state', '$window', function ($http, $state, $win
     };
     auth.logOut = function () {
         $window.localStorage.removeItem('flapper-news-token');
-        $state.go('home');
+        $window.localStorage.clear();
+        $window.indexedDB.deleteDatabase('_pouch_dummyDb');
+        $window.indexedDB.deleteDatabase('_pouch__websqldb__pouch_dummyDb');
+        $state.go('login');
+        location.reload();
+        console.log("logout inner");
     };
 
     return auth;
