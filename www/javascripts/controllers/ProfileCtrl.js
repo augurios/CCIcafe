@@ -1,5 +1,5 @@
-app.controller('ProfileCtrl', ['$http', '$scope', 'auth', 'unit', '$filter', 'localStorageService', 'chemicals', 'varieties', 'user', 'PouchDB', '$rootScope', 'onlineStatus',
-function ($http, $scope, auth, unit, $filter, localStorageService, chemicals, varieties, user, PouchDB, $rootScope, onlineStatus) {
+app.controller('ProfileCtrl', ['$http', '$scope', 'auth', 'unit', '$filter', 'localStorageService', 'chemicals', 'varieties', 'user', 'PouchDB', '$rootScope', 'onlineStatus', '$q',
+function ($http, $scope, auth, unit, $filter, localStorageService, chemicals, varieties, user, PouchDB, $rootScope, onlineStatus, $q) {
     var map;
     $scope.isLoggedIn = auth.isLoggedIn;
     $scope.currentUser = auth.currentUser;
@@ -27,28 +27,39 @@ function ($http, $scope, auth, unit, $filter, localStorageService, chemicals, va
         
         
         
-        if(!localStorageService.get('chemsContacto')) {	  
+        if(!localStorageService.get('chemslocal')) {	  
 	        	       	
 		        chemicals.getAll().then(function (varids) {
 	            chemicals = varids.data;
 	            localStorageService.set('chemslocal',chemicals);
-	            
+	            $scope.chems = localStorageService.get('chemslocal');
 	            console.log("chem locals loaded");
 	           
 	        });
         } else {
 	        
-	        
-	        
-	         chemicals.getAll().then(function (varids) {
-	            chemicals = varids.data;
-	            
+	        cleanLocals = function(){
+		        	var defer = $q.defer();
+		        	localStorageService.remove('chemslocal');
+			        defer.resolve("chems cleaning");
+		        	return defer.promise;
+		        	
+		        };
+		        
+	        cleanLocals().then(function(){
+		        console.log("chems cleared and reloading");
+		        chemicals.getAll().then(function (varids) {
+		            chemicals = varids.data;
+		            
 					localStorageService.set('chemslocal',chemicals);
-	            
-	            console.log("chem locals reloaded");
-        	});
+		            $scope.chems = localStorageService.get('chemslocal');
+		            console.log("chem locals reloaded");
+	        	});
+	        });
+	        
+	         
         }
-        $scope.chems = localStorageService.get('chemslocal');
+        
     }
     else {
         console.log("app offline");

@@ -12,19 +12,28 @@ app.controller('AdaptacionCtrl', [
 	        var active = (viewLocation === $location.path());
 	        return active;
 	    };
-	    var tableObject = {};
+	    var tableObject = {},
+	    	tableFill = false;
 
 	    methods.get().then(function (methods) {
 	        //console.log(methods.data[0]);
 	        tableObject = methods.data[0];
 	        $scope.table = tableObject;
+	        if($scope.table){
+		        tableFill = true;
+	        }
 	    })
 
 
 
 	    $scope.saveTable = function () {
-	        methods.update($scope.table);
-
+		    if(!$scope.table){
+		        methods.update($scope.table);
+	        } else {
+		        methods.create($scope.table);
+				tableFill = true;
+	        }
 	    };
+	    
 
 	}]);

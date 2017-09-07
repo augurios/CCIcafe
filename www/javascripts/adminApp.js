@@ -255,6 +255,8 @@ app.factory('methods', ['$http', 'auth', function ($http, auth) {
             headers: { Authorization: 'Bearer ' + auth.getToken() }
         }).success(function (data) {
             return data;
+        }).error(function (data) {
+            console.log(data)
         });
     };
     o.update = function (method) {

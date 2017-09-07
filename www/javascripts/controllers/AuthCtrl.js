@@ -49,31 +49,11 @@ function ($scope, $state, auth, $window, $timeout, PouchDB, localStorageService,
 	        
 	        chemicals.getAll().then(function (varids) {
 	            chemicals = varids.data;
-	            
-	            var contactoItems = chemicals.filter(function(item) {
-				  return item.category === 'contacto';
-				})[0];
-				
-				var sistemicosItems = chemicals.filter(function(item) {
-				  return item.category === 'sistemicos';
-				})[0];
-				
-				var biologicosItems = chemicals.filter(function(item) {
-				  return item.category === 'biologicos';
-				})[0];
-				
-				
-	            localStorageService.set('chemsContacto',contactoItems);
-	            localStorageService.set('chemsSistemicos',sistemicosItems);
-	            localStorageService.set('chemsBiologicos',biologicosItems);
-	            
-	            
-	            //localStorageService.set('chemsContacto',userhistory.data);
-	            $scope.chemicals = chemicals;
+	            localStorageService.set('chemslocal',chemicals);
 	            
 	            console.log("chem locals loaded");
-	           
-	        });
+	            
+	            });
             //region added code for saving user data to pouchDB, after saving ***Note need to add code for sync all data too, move to home			
             PouchDB.SaveUserDataToPouchDB(data).then(function (result) {
                 if (result.status == 'fail') {
