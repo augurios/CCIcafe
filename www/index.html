@@ -1552,7 +1552,7 @@
 										<button class="btn btn-primary" ng-click="initLeaf(modal.number)">Agregar</button>
 									</div>
 									<div ng-if="!test.bandolas && test.advMode" class="plant-editor-control" ng-hide="leafList.length >= 1">
-										<span>Hojas: <input type="number" only-num ng-model="modal.number" min="1" minlength="1" maxlength="2" max="99" name="amount" value="1"> </span>
+										<span>Hojas: <input type="number" only-num  ng-model="modal.number" min="1" minlength="1" maxlength="2" max="99" name="amount" value="1"> </span>
 										<button class="btn btn-primary" ng-click="initLeaf(modal.number)">Agregar </button>
 									</div>
 										<br/>
@@ -1579,7 +1579,7 @@
 									<form name="frmRoyaAddPlantaAffectedLeaf">
 									<ul>
 										<li>Indique el numero de hojas afectadas:</li>
-									    <li><span><input type="number" only-num ng-model="affect" min="0" minlength="1" maxlength="2" max="99" required > </span>
+									    <li><span><input type="number" only-num ng-model="affect" min="0" minlength="1" maxlength="2" max="99" ng-change="logChange()" required> </span>
 											<button class="btn btn-primary" ng-click="addLeaf(affect,true)">Agregar</button></li>
 									</ul>
 									<div class="clearfix"></div>
@@ -1597,7 +1597,7 @@
 					      </div>
 					      	<div class="clearfix"></div>
 								<div class="modal-footer" ng-disable="IsTotalPlantaAdded" ng-hide="IsTotalPlantaAdded">
-											<button type="button" ng-hide="IsHideCloseAndAddPlantaButtonInPopup " class="btn btn-default" ng-click="CloseAndAddPlant()" ><span class="glyphicon glyphicon-arrow-right"></span> Siguiente Planta</button>
+											<button type="button" ng-hide="IsHideCloseAndAddPlantaButtonInPopup" class="btn btn-default" ng-click="CloseAndAddPlant()" ng-disabled="leafList.length==0"><span class="glyphicon glyphicon-arrow-right"></span> Siguiente Planta</button>
 									</div>
 								<div class="clearfix"></div>
 					    </div>
@@ -6863,6 +6863,9 @@ Sending Recommendation                              </h6>
                                    </div>
                                  </div>
                                  
+                                 <div class="col-xs-12">
+	                                 <a class="btn btn-danger" ng-click="deleteItem($index)">Eliminar Lote</a>
+	                            </div>
                                  
 													</div>
 										      </div>

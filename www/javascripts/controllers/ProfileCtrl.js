@@ -47,7 +47,6 @@ function ($http, $scope, auth, unit, $filter, localStorageService, chemicals, va
 		        };
 		        
 	        cleanLocals().then(function(){
-		        console.log("chems cleared and reloading");
 		        chemicals.getAll().then(function (varids) {
 		            chemicals = varids.data;
 		            
@@ -849,6 +848,13 @@ function ($http, $scope, auth, unit, $filter, localStorageService, chemicals, va
 
 
                         $scope.editUnit.lote.push(newItem);
+
+                    };
+                    
+                    $scope.deleteItem = function (index) {
+
+                       
+                        $scope.editUnit.lote.splice(index, 1);
 
                     };
                 }

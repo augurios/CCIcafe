@@ -81,18 +81,19 @@ function ($scope, $state, auth, $window, $timeout, PouchDB, localStorageService,
                                             if (isLocalToServerSync && isServerToLocalSync) {
                                                 PouchDB.SetLastSyncDateTime(Number(new Date()));
                                                 $state.go('home');
-                                                location.reload();
+                                                 location.reload();
+                                                
                                             }
                                             else {
                                                 console.log("data not sync")
                                                 $state.go('home');
-                                                location.reload();
+                                                 location.reload();
                                             }
                                         }
                                         else {
                                             console.log("data not sync")
                                             $state.go('home');
-                                            location.reload();
+                                             location.reload();
                                         }
                                     });
                                 }
@@ -110,18 +111,21 @@ function ($scope, $state, auth, $window, $timeout, PouchDB, localStorageService,
                                             if (isLocalToServerSync && isServerToLocalSync) {
                                                 PouchDB.SetLastSyncDateTime(Number(new Date()));
                                                 $state.go('home');
-                                                location.reload();
+                                                 location.reload();
+                                                
                                             }
                                             else {
                                                 console.log("data not sync")
                                                 $state.go('home');
-                                                location.reload();
+                                                 location.reload();
+                                                
                                             }
                                         }
                                         else {
                                             console.log("data not sync")
                                             $state.go('home');
                                             location.reload();
+                                            
                                         }
                                     });
                                 }

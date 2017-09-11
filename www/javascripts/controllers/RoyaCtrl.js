@@ -237,6 +237,7 @@ function($rootScope, $scope, $state, auth, localStorageService, socket, unit, us
 
 	$scope.CloseAndAddPlant=function()
 	{
+		console.log($scope.leafList);
 		$scope.IsErrorInfrmRoyaAddPlanta=false;
 		$scope.IsErrorInfrmRoyaAddPlantaLeafAffectedLeaf=false;
 		$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
@@ -483,17 +484,15 @@ function($rootScope, $scope, $state, auth, localStorageService, socket, unit, us
 
     });
 
-
-
-
-
-
-
-
-
-
-
     }
+    
+    
+    
+    $scope.logChange = function() {
+		console.log("is changing");
+		console.log($scope.affect);
+		
+	};
     
     var usrid = auth.userId();;
     
