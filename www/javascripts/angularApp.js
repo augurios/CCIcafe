@@ -1325,9 +1325,7 @@ app.factory('gallo', ['$http', 'auth', function ($http, auth) {
 app.run(function ($rootScope, $window,localStorageService) {
 	console.log("app running");
 	
-	document.addEventListener('deviceready', function () {
-	    console.log("this device is fucking ready");
-	}, false);
+	
 	// check for version and cache flush 
 	
 	var appVersion = null;

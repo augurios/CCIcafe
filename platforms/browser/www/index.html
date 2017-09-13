@@ -70,7 +70,11 @@
 	<script src="javascripts/easy-weather-keys.js"></script>
 	<script src="javascripts/easy-weather.js"></script>
 	
-
+ <script src="js/cordova.js"></script>
+	  <script type="text/javascript">
+        cordovita.initialize();
+        
+    </script>
 
 <script type="text/javascript">function setupGeo(o) {
         window.geoplugin_request = function() { return o.ip; };
@@ -88,7 +92,7 @@
 	<style> .glyphicon-thumbs-up { cursor:pointer; } </style>
 </head>
 <body ng-app="coffeeScript" ng-controller="MainCtrl">
-	<div class="loader">
+	<div class="loader" id="deviceready">
 		<span>Cargando...</span>
 	</div>
 
@@ -6931,10 +6935,7 @@ Sending Recommendation                              </h6>
 
 	  <!-- Latest compiled and minified JavaScript -->
 	  
-	  <script src="js/cordova.js"></script>
-	  <script type="text/javascript">
-        cordovita.initialize();
-    </script>
+	 
 
 
 
