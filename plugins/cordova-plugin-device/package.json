@@ -2,30 +2,18 @@
   "_args": [
     [
       {
-        "raw": "cordova-plugin-device@*",
+        "raw": "cordova-plugin-device@~1.1.1",
         "scope": null,
         "escapedName": "cordova-plugin-device",
         "name": "cordova-plugin-device",
-        "rawSpec": "*",
-        "spec": "*",
+        "rawSpec": "~1.1.1",
+        "spec": ">=1.1.1 <1.2.0",
         "type": "range"
-      },
-      "/Users/augustovalerio/Sites/coffeeCloud/CCIcafe/node_modules/de.appplant.cordova.plugin.local-notification"
-    ],
-    [
-      {
-        "raw": "cordova-plugin-device",
-        "scope": null,
-        "escapedName": "cordova-plugin-device",
-        "name": null,
-        "rawSpec": "cordova-plugin-device",
-        "spec": "/Users/augustovalerio/Sites/coffeeCloud/CCIcafe/node_modules/cordova-plugin-device",
-        "type": "directory"
       },
       "/Users/augustovalerio/Sites/coffeeCloud/CCIcafe/node_modules"
     ]
   ],
-  "_from": "cordova-plugin-device@*",
+  "_from": "cordova-plugin-device@>=1.1.1 <1.2.0",
   "_id": "cordova-plugin-device@1.1.6",
   "_inCache": true,
   "_location": "/cordova-plugin-device",
@@ -41,22 +29,21 @@
   "_npmVersion": "3.10.10",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "cordova-plugin-device",
+    "raw": "cordova-plugin-device@~1.1.1",
     "scope": null,
     "escapedName": "cordova-plugin-device",
-    "name": null,
-    "rawSpec": "cordova-plugin-device",
-    "spec": "/Users/augustovalerio/Sites/coffeeCloud/CCIcafe/node_modules/cordova-plugin-device",
-    "type": "directory"
+    "name": "cordova-plugin-device",
+    "rawSpec": "~1.1.1",
+    "spec": ">=1.1.1 <1.2.0",
+    "type": "range"
   },
   "_requiredBy": [
-    "#USER",
-    "/de.appplant.cordova.plugin.local-notification"
+    "#USER"
   ],
   "_resolved": "https://registry.npmjs.org/cordova-plugin-device/-/cordova-plugin-device-1.1.6.tgz",
   "_shasum": "2d21764cad7c9b801523e4e09a30e024b249334b",
   "_shrinkwrap": null,
-  "_spec": "cordova-plugin-device",
+  "_spec": "cordova-plugin-device@~1.1.1",
   "_where": "/Users/augustovalerio/Sites/coffeeCloud/CCIcafe/node_modules",
   "author": {
     "name": "Apache Software Foundation"

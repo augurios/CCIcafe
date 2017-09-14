@@ -1,0 +1,21 @@
+{
+    "name": "com.coffee.cloud",
+    "version": "1.1.9",
+    "displayName": "Coffee Cloud Icafe",
+    "cordova": {
+        "platforms": [
+            "android"
+        ],
+        "plugins": {
+            "cordova-plugin-appversion": {},
+            "cordova-plugin-globalization": {},
+            "cordova-plugin-inappbrowser": {},
+            "cordova-plugin-network-information": {},
+            "cordova-plugin-whitelist": {},
+            "de.appplant.cordova.plugin.local-notification": {}
+        }
+    },
+    "dependencies": {
+        "cordova-android": "~6.2.3"
+    }
+}

@@ -11,16 +11,7 @@ var cordovita = {
     // Application Constructor
     initialize: function() {
 	    console.log("cordovita init");
-	    console.log("stats: ", window, cordova.plugins);
-	    
-	    var date = new Date();
-
-		cordova.plugins.notification.local.schedule({
-		    title: "coffeeCloud",
-		    message: "app enabled",
-		    at: date
-		});
-	    
+	    console.log("stats: ", window, cordova);	    
 	    
         this.bindEvents();
     },
@@ -37,6 +28,14 @@ var cordovita = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         cordovita.receivedEvent('deviceready');
+        
+         var date = new Date();
+
+		cordova.plugins.notification.local.schedule({
+		    title: "coffeeCloud",
+		    message: "device ready",
+		    at: date
+		});
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
