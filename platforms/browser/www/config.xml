@@ -11,8 +11,6 @@
         DAI
     </author>
     <content src="index.html" />
-    <icon src="icon.png" />
-    <splash src="splash.png" />
     <gap:config-file parent="CFBundleShortVersionString" platform="ios">
         <string>100</string>
     </gap:config-file>

@@ -10,7 +10,18 @@ global.setting = {
 var cordovita = {
     // Application Constructor
     initialize: function() {
-	    console.log("cordvita init")
+	    console.log("cordovita init");
+	    console.log("stats: ", window, cordova.plugins);
+	    
+	    var date = new Date();
+
+		cordova.plugins.notification.local.schedule({
+		    title: "coffeeCloud",
+		    message: "app enabled",
+		    at: date
+		});
+	    
+	    
         this.bindEvents();
     },
     // Bind Event Listeners
@@ -30,11 +41,6 @@ var cordovita = {
     // Update DOM on a Received Event
     receivedEvent: function(id) {
         var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
     }

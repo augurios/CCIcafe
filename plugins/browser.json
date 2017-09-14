@@ -7,11 +7,7 @@
         "files": {}
     },
     "installed_plugins": {
-        "phonegap-plugin-push": {
-            "SENDER_ID": "85075801930",
-            "PACKAGE_NAME": "com.coffee.cloud"
-        },
-        "cordova-plugin-geolocation": {
+        "de.appplant.cordova.plugin.local-notification": {
             "PACKAGE_NAME": "com.coffee.cloud"
         },
         "cordova-plugin-globalization": {
@@ -27,9 +23,6 @@
             "PACKAGE_NAME": "com.coffee.cloud"
         },
         "cordova-plugin-appversion": {
-            "PACKAGE_NAME": "com.coffee.cloud"
-        },
-        "de.appplant.cordova.plugin.local-notification": {
             "PACKAGE_NAME": "com.coffee.cloud"
         }
     },
