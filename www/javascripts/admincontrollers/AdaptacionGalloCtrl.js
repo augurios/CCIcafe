@@ -27,7 +27,7 @@ app.controller('AdaptacionGalloCtrl', [
 
 
 	    $scope.saveTable = function () {
-		    if(!$scope.table){
+		    if(tableFill){
 		        methodsGallo.update($scope.table);
 	        } else {
 		        methodsGallo.create($scope.table);

@@ -1323,17 +1323,14 @@ app.factory('gallo', ['$http', 'auth', function ($http, auth) {
 
 //pre loader animation controller
 app.run(function ($rootScope, $window,localStorageService) {
-	console.log("app running");
-	
 	
 	// check for version and cache flush 
 	
 	var appVersion = null;
 	
-	
 	if(typeof $cordovaAppVersion === 'undefined') {
 		
-		var appVersion = "118";
+		var appVersion = "119";
 		
 	} else {
 		

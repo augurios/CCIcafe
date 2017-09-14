@@ -28,14 +28,6 @@ var cordovita = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         cordovita.receivedEvent('deviceready');
-        
-         var date = new Date();
-
-		cordova.plugins.notification.local.schedule({
-		    title: "coffeeCloud",
-		    message: "device ready",
-		    at: date
-		});
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {

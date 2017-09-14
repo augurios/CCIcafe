@@ -27,7 +27,7 @@ app.controller('AdaptacionCtrl', [
 
 
 	    $scope.saveTable = function () {
-		    if(!$scope.table){
+		    if(tableFill){
 		        methods.update($scope.table);
 	        } else {
 		        methods.create($scope.table);

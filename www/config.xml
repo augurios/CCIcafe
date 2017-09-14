@@ -35,6 +35,9 @@
         <icon height="72" platform="ios" src="www/res/icon/ios/icon-72.png" width="72" />
         <icon height="144" platform="ios" src="www/res/icon/ios/icon-72@2x.png" width="144" />
     </platform>
+    <gap:config-file parent="CFBundleShortVersionString" platform="ios">
+        <string>100</string>
+    </gap:config-file>
     <allow-navigation href="*://*.centroclima.org/*" />
     <allow-navigation href="http://*/*" />
     <allow-navigation href="https://*/*" />

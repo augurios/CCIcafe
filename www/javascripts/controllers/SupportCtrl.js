@@ -147,7 +147,14 @@ function ($scope, auth, socket, user,Upload,$base64) {
         var userb = data.from_id;
         if (usera == $scope.loggedUser || userb == $scope.loggedUser) {
             $scope.setCurrentUserImage(data.chat.messages);
-			      $scope.$apply();
+             $scope.$apply();
+             var date = new Date();
+
+				cordova.plugins.notification.local.schedule({
+				    title: "Nube de Cafe",
+				    message: "Nuevo mensaje",
+				    at: date
+				});
         }
         
     });
