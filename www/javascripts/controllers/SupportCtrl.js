@@ -145,18 +145,22 @@ function ($scope, auth, socket, user,Upload,$base64) {
         data=JSON.parse(data);console.log("set msg", data);
         var usera = data.to_user;
         var userb = data.from_id;
+        
         if (usera == $scope.loggedUser || userb == $scope.loggedUser) {
             $scope.setCurrentUserImage(data.chat.messages);
              $scope.$apply();
-             var date = new Date();
-
-				cordova.plugins.notification.local.schedule({
-				    title: "Nube de Cafe",
-				    message: "Nuevo mensaje",
-				    at: date
-				});
-        }
+	             
+			 
+			 }
         
+        if (usera == $scope.loggedUser){
+	        var date = new Date();
+				 cordova.plugins.notification.local.schedule({
+					    title: "Nube de Cafe",
+					    message: "Nuevo mensaje",
+					    at: date
+					});
+        }
     });
 	if (!$scope.IsCall) {
 	    $scope.IsCall = true;
