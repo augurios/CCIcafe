@@ -1322,8 +1322,7 @@ app.factory('gallo', ['$http', 'auth', function ($http, auth) {
 
 
 //pre loader animation controller
-app.run(function ($rootScope, $window,localStorageService,socket) {
-	
+app.run(function ($rootScope, $window,localStorageService,socket,auth) {
 	// check for version and cache flush 
 	
 	var appVersion = null;
@@ -1360,25 +1359,29 @@ app.run(function ($rootScope, $window,localStorageService,socket) {
 	
 	
 	//chat notifications
-	
-	socket.on('set msg',function(data){
-        data=JSON.parse(data);console.log("set msg", data);
-        var usera = data.to_user;
-        var userb = data.from_id;
-        
-        if (usera == $scope.loggedUser){
-	        var date = new Date();
-				 cordova.plugins.notification.local.schedule({
-					    title: "Nube de Cafe",
-					    message: "Nuevo mensaje",
-					    at: date
-				});
-				
-				cordova.plugins.notification.local.on("click", function (notification) {
-				    $state.go('support');
-				});
-        }
-    });
+	if(auth.isLoggedIn){
+		var loggedUser = auth.currentUser();
+		
+		socket.on('set msg',function(data){
+	        data=JSON.parse(data);console.log("set msg", data);
+	        var usera = data.to_user;
+	        var userb = data.from_id;
+	        
+	        if (usera == loggedUser){
+		        var date = new Date();
+					 cordova.plugins.notification.local.schedule({
+						    title: "Nube de Cafe",
+						    message: "Nuevo mensaje",
+						    at: date
+					});
+					
+					cordova.plugins.notification.local.on("click", function (notification) {
+					    $state.go('support');
+					});
+	        }
+	    });
+	}
+		
 	
 	$rootScope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
         // Select open modal(s)
