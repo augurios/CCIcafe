@@ -35,7 +35,6 @@
 	<script src="javascripts/angular-base64.min.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4UV7wDq9fK_rQsP8yZqYwW-mnnz0J1Lc"></script>
 	<script src="javascripts/pouchdb-6.1.2.min.js"></script>
-	
 	<script src="javascripts/angularApp.js"></script>
 	<script src="javascripts/controllers/MainCtrl.js"></script>
 	<script src="javascripts/controllers/PostCtrl.js"></script>
@@ -56,8 +55,7 @@
 	<script src="javascripts/controllers/CampoCtrl.js"></script>
 	<script src="javascripts/controllers/shared/UnitManagerCtrl.js"></script>
 	    <script src="javascripts/controllers/RegisterCtrl.js"></script>
-		
-		
+
 	<script src="javascripts/global.js"></script>
 
     <link href="javascripts/plugins/SweetAlert/sweetalert.css" rel="stylesheet" type="text/css" />
@@ -72,8 +70,7 @@
 	<script src="javascripts/easy-weather-keys.js"></script>
 	<script src="javascripts/easy-weather.js"></script>
 	
-	
-	  <script type="text/javascript">
+	<script type="text/javascript">
         cordovita.initialize();
         
         
@@ -95,8 +92,8 @@
 	<style> .glyphicon-thumbs-up { cursor:pointer; } </style>
 </head>
 <body ng-app="coffeeScript" ng-controller="MainCtrl">
-	<div class="loader" id="deviceready">
-		<span>Cargando...</span>
+	<div class="loader">
+		<span id="deviceready">Cargando...</span>
 	</div>
 
 
@@ -1424,7 +1421,7 @@
 									<span ng-show="roya.incidencia < 11">{{methodsMonth.grade1}}</span>
 									<span ng-show="roya.incidencia > 10 && roya.incidencia < 21 ">{{methodsMonth.grade2}}</span>
 									<span ng-show="roya.incidencia > 20 && roya.incidencia < 51 ">{{methodsMonth.grade3}}</span>
-									<span ng-show="roya.incidencia > 50 ">{{methodsMonth.grade3}}</span>
+									<span ng-show="roya.incidencia > 50 ">{{methodsMonth.grade4}}</span>
 								</p>
 										        	 
 										      </div>
@@ -1487,7 +1484,7 @@
 									<span ng-show="test.incidencia < 11">{{methodsMonth.grade1}}</span>
 									<span ng-show="test.incidencia > 10 && test.incidencia < 21 ">{{methodsMonth.grade2}}</span>
 									<span ng-show="test.incidencia > 20 && test.incidencia < 51 ">{{methodsMonth.grade3}}</span>
-									<span ng-show="test.incidencia > 50 ">{{methodsMonth.grade3}}</span>
+									<span ng-show="test.incidencia > 50 ">{{methodsMonth.grade4}}</span>
 								</p>
 								<a href="#/support" class="btn btn-primary" ng-click="getHelp(totalPlants,avgplnt,avgplntDmgPct,currentUser())">Solicitar Asesoría Técnica</a>
 							</div>
@@ -6937,8 +6934,7 @@ Sending Recommendation                              </h6>
 	</script>
 
 	  <!-- Latest compiled and minified JavaScript -->
-	  
-	 
+
 
 
 
