@@ -1329,7 +1329,7 @@ app.run(function ($rootScope, $window,localStorageService,socket,auth) {
 	
 	if(typeof $cordovaAppVersion === 'undefined') {
 		
-		var appVersion = "119";
+		var appVersion = "121";
 		
 	} else {
 		

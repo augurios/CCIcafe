@@ -1410,7 +1410,8 @@
 										    <div id="{{ 'collapse-' + $index }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{ 'collapse-' + $index }}">
 										      <div class="panel-body">
 											      	<ul class="list-group">
-												      <li class="list-group-item"><strong>Incidencia</strong> <span class="badge">{{ (roya.incidencia).toFixed(2) }}%</span></li>
+												      <li class="list-group-item"><strong>Incidencia</strong> <span class="badge">{{ (roya.incidencia).toFixed(2) }}%</span>
+												     </li>
 													  <li class="list-group-item" >bandolas <span ng-show="roya.bandolas" class="badge">2</span><span ng-hide="roya.bandolas" class="badge">1</span></li>
 													  <li class="list-group-item" ng-show="roya.advMode">Severidad Promedio <span class="badge">{{(roya.severidadPromedio).toFixed()}}%</span></li>
 													  <li class="list-group-item" ng-show="roya.advMode">Incidencia promedio por planta <span class="badge">{{roya.inideanciaPromedioPlanta}}</span></li>
@@ -1477,7 +1478,10 @@
 						<div class="col-lg-6 col-lg-offset-3">
 							<div ng-show="test.advMode">
 								<h2>Resultados</h2>
-								<p><strong>Plantas:</strong><br> {{totalPlants}}</p>
+								<p><strong>Plantas:</strong><br> {{totalPlants}}
+									
+									 
+								</p>
 								<p><strong>Incidencia promedio</strong><br>{{(test.avgplnt).toFixed(2)}} / Planta ( {{(test.incidencia).toFixed(2)}}% )</p> 
 								<p><strong>Severidad promedio</strong><br>{{(test.avgplntDmgPct).toFixed()}}%</p>
 								<p><strong>Recomendación</strong><br>
@@ -1492,13 +1496,15 @@
 							<div ng-hide="test.advMode">
 								<h2>Resultados</h2>
 								<p><strong>Plantas:</strong><br> {{totalPlantis}}</p>
-								<p><strong>Incidencia: </strong><br>{{ (test.incidencia).toFixed(2) }}% </p> 
+								<p><strong>Incidencia: </strong><br>{{ (test.incidencia).toFixed(2) }}% 
+									
+								</p> 
 								<p><strong>Recomendación</strong><br>
 									
 									<span ng-show="test.incidencia < 11">{{methodsMonth.grade1}}</span>
 									<span ng-show="test.incidencia > 10 && test.incidencia < 21 ">{{methodsMonth.grade2}}</span>
 									<span ng-show="test.incidencia > 20 && test.incidencia < 51 ">{{methodsMonth.grade3}}</span>
-									<span ng-show="test.incidencia > 50 ">{{methodsMonth.grade3}}</span>
+									<span ng-show="test.incidencia > 50 ">{{methodsMonth.grade4}}</span>
 								</p>
 								<a href="#/support" class="btn btn-primary" ng-click="getHelp(currentUser())">Solicitar Asesoría Técnica</a>
 							</div>
