@@ -1,4 +1,4 @@
-var app = angular.module('coffeeScriptAdmin', ['btford.socket-io', 'ui.router', 'luegg.directives', 'ui.tinymce', 'ui.bootstrap', 'ngSanitize']);
+var app = angular.module('coffeeScriptAdmin', ['btford.socket-io', 'ui.router', 'luegg.directives', 'ui.tinymce', 'ui.bootstrap', 'ngSanitize', 'angular-desktop-notification']);
 app.directive('fileModel', ['$parse', function ($parse) {
     return {
         restrict: 'A',
@@ -311,6 +311,7 @@ app.factory('Excel', function ($window) {
         }
     };
 })
+
 
 app.config([
 	'$stateProvider',
